@@ -1,0 +1,10 @@
+@use "sass:map";
+@use "./variables" as *;
+
+body {
+  font-family: "Inter", sans-serif;
+  font-size: map.get($text , base);
+  font-weight: 400;
+  color: map.get($color, black);
+  background-color: map.get($color, white-secondary);
+}

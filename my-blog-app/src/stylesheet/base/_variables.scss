@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+$color: (
+  white: #ffffff,
+  black: #242424,
+  grey: #f2f2f2,
+  text: #6B6B6B,
+  input: #a1a3ab,
+  modal: #f9f9f9,
+  green: #05a301,
+  blue: #0225ff,
+  red: #f21e1e,
+);
+
+$text: (
+  2xl: 36px,
+  xl: 32px,
+  lg: 24px,
+  base: 16px,
+  sm: 14px,
+  xs: 12px,
+  xxs: 10px,
+);
