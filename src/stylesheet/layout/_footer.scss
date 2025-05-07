@@ -1,0 +1,15 @@
+@use "sass:map";
+@use "../base/variables";
+@use "../base/mixins";
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: map.get(variables.$layout, footer-height);
+  font-weight: 600;
+
+  p {
+    text-align: center;
+  }
+}
