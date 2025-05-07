@@ -87,9 +87,11 @@ const Register = () => {
         displayName: data.displayName!,
       });
       toast.success('Register successful!');
-      navigate('/auth/login');
+      setTimeout(() => {
+        navigate('/auth/login');
+      }, 300);
     } catch (error) {
-      toast.error('Register failed!');
+      toast.error(error?.response?.data?.errors[0] || 'Registration failed!');
     } finally {
       setIsLoading(false);
     }
