@@ -7,6 +7,9 @@ interface SelectProps {
   errorMsg?: string;
   options: { label: string; value: string }[];
   register?: UseFormRegisterReturn;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  onBlur?: () => void;
 }
 
 export const Select: React.FC<SelectProps> = ({
@@ -15,6 +18,9 @@ export const Select: React.FC<SelectProps> = ({
   errorMsg,
   options,
   register,
+  value,
+  onChange,
+  onBlur,
 }) => {
   const isShowError = !!errorMsg;
 
@@ -23,7 +29,11 @@ export const Select: React.FC<SelectProps> = ({
       <div className="input-group">
         <select
           id={name}
+          name={name}
           className={`form-control ${isShowError ? 'is-invalid' : ''}`}
+          value={value}
+          onChange={onChange}
+          onBlur={onBlur}
           {...register}
         >
           <option value="">Select {label?.toLowerCase()}</option>
