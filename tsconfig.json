@@ -21,6 +21,7 @@
       "@core/*": ["src/app/core/*"],
       "@shared/*": ["src/app/shared/*"],
       "@stylesheet/*": ["src/stylesheet/*"],
+      "@assets/*": ["src/assets/*"],
       "@config/*": ["src/config/*"]
     },
     "lib": ["es6", "es7", "dom"],
