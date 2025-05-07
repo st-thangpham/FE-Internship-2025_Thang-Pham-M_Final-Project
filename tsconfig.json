@@ -20,11 +20,19 @@
       "@app/*": ["src/app/*"],
       "@core/*": ["src/app/core/*"],
       "@shared/*": ["src/app/shared/*"],
+      "@stylesheet/*": ["src/stylesheet/*"],
       "@config/*": ["src/config/*"]
     },
     "lib": ["es6", "es7", "dom"],
     "types": ["vite-plugin-svgr/client", "node"]
   },
-  "include": ["./src/**/*"],
+  "include": [
+    "./src/**/*",
+    "vite.config.ts",
+    "eslint.config.js",
+    "tsconfig.app.json",
+    "tsconfig.json",
+    "tsconfig.node.json"
+  ],
   "exclude": ["dist", "build", "node_modules"]
 }
