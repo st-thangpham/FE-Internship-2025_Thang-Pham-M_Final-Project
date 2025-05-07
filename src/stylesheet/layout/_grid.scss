@@ -23,12 +23,13 @@ $grid-columns: 12;
 }
 
 // End mixins for build grid
-$grid-gutter: 24px;
+$grid-gutter: 12px;
+$container-padding: 24px;
 $container-width: 100vw;
 
 .container {
-  padding-left: $grid-gutter;
-  padding-right: $grid-gutter;
+  padding-left: $container-padding;
+  padding-right: $container-padding;
   margin: 0 auto;
   width: 100%;
   max-width: $container-width;

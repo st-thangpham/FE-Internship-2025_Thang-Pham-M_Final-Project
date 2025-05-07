@@ -21,7 +21,8 @@
 
   .navbar-brand {
     @include mixins.pxRem(width, 112);
-    display: block;
+    display: flex;
+    align-items: center;
   }
 
   .navbar-nav {
@@ -35,7 +36,6 @@
 
     .nav-link {
       @include mixins.pxRem(padding, 8 12);
-      display: block;
       font-weight: 500;
 
       &:hover {
