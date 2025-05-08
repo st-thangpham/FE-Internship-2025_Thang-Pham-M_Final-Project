@@ -1,4 +1,4 @@
-import { apiService } from './api.service';
+import { ApiService } from './api.service';
 import { User } from '@app/shared/models/user';
 
 interface RegisterPayload {
@@ -22,10 +22,12 @@ interface LoginResponse {
   userInfo: User;
 }
 
+const api = new ApiService();
+
 export const registerAccount = (data: RegisterPayload) => {
-  return apiService.post('/users/register', data);
+  return api.post(['users', 'register'], data);
 };
 
 export const loginAccount = (data: LoginPayload): Promise<LoginResponse> => {
-  return apiService.post('/users/login', data);
+  return api.post(['users', 'login'], data);
 };
