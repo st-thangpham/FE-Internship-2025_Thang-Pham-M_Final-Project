@@ -74,8 +74,8 @@ $button-sizes: (
   }
 
   &.btn-avatar {
-    @include mixins.pxRem(width, 40);
-    @include mixins.pxRem(height, 40);
+    @include mixins.pxRem(width, 32);
+    @include mixins.pxRem(height, 32);
     @include mixins.border-radius(50%);
     padding: 0;
     font-size: 0;
@@ -95,8 +95,8 @@ $button-sizes: (
     @include mixins.pxRem(width, 55);
     @include mixins.pxRem(height, 55);
     padding: 0;
-    font-size: 0;
     line-height: 0;
+    font-weight: 400 !important;
 
     &:hover {
       opacity: 0.8;
