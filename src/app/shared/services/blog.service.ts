@@ -7,6 +7,6 @@ export const getPublicPosts = (size = 5): Promise<PostResponse> => {
   return api.get(['posts', 'public'], { size });
 };
 
-export const getPrivatePosts = (params = {}): Promise<PostResponse> => {
+export const getAllPosts = (params = {}): Promise<PostResponse> => {
   return api.get(['posts'], params);
 };
