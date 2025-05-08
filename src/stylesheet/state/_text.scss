@@ -42,7 +42,7 @@
   @include mixins.pxRem(padding-bottom, 2);
   color: map.get(vars.$color, primary);
   position: relative;
-  font-weight: normal;
+  font-weight: bold;
 
   &:after {
     content: "";
