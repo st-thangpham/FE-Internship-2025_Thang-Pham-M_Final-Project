@@ -73,7 +73,6 @@ const Register = () => {
   });
 
   const onSubmit = async (data: RegisterFormData) => {
-    console.log('Form Data:', data);
     try {
       setIsLoading(true);
       await registerAccount({
@@ -87,9 +86,7 @@ const Register = () => {
         displayName: data.displayName!,
       });
       toast.success('Register successful!');
-      setTimeout(() => {
-        navigate('/auth/login');
-      }, 500);
+      navigate('/auth/login');
     } catch (error) {
       toast.error(error?.response?.data?.errors[0] || 'Registration failed!');
     } finally {
@@ -100,7 +97,7 @@ const Register = () => {
   return (
     <>
       <div className="page-heading">
-        <h1 className="page-title">Register</h1>
+        <h1 className="page-title">Sign Up</h1>
       </div>
       <div className="page-content">
         <form className="form" onSubmit={handleSubmit(onSubmit)}>
@@ -213,7 +210,7 @@ const Register = () => {
           <p>
             Already have an account?
             <Link to="/auth/login" className="txt-link ml-1">
-              Log in
+              Sign In
             </Link>
           </p>
         </div>

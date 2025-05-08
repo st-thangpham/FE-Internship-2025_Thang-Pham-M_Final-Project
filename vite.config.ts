@@ -46,6 +46,7 @@ export default ({ mode }: { mode: string }) => {
         '@shared': Path.resolve(__dirname, './src/app/shared'),
         '@core': Path.resolve(__dirname, './src/app/core'),
         '@assets': Path.resolve(__dirname, './src/assets'),
+        '@store': Path.resolve(__dirname, './src/store'),
       },
     },
     build: {

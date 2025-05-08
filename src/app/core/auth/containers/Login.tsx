@@ -1,18 +1,20 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 import { z } from 'zod';
 
+import { loginAccount } from '@app/core/services/auth.service';
 import { Button, Input } from '@app/shared/components/partials';
+import { AuthContext } from '@app/shared/contexts/auth.context';
 
 const schema = z.object({
   email: z
     .string()
     .email('Invalid email address')
     .nonempty('Email is required'),
-
   password: z
     .string()
     .min(6, 'Password must be at least 6 characters')
@@ -23,6 +25,7 @@ type LoginFormData = z.infer<typeof schema>;
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const { setUserSession } = useContext(AuthContext)!;
   const navigate = useNavigate();
 
   const {
@@ -34,19 +37,36 @@ const Login = () => {
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = (data: LoginFormData) => {
-    setIsLoading(true);
-    console.log('Login form submitted:', data);
-    setTimeout(() => {
-      setIsLoading(false);
+  const onSubmit = async (data: LoginFormData) => {
+    try {
+      setIsLoading(true);
+      const res = await loginAccount({
+        email: data.email,
+        password: data.password,
+      });
+
+      const { accessToken, userInfo } = res;
+
+      if (!accessToken || !userInfo) {
+        throw new Error('Invalid login response');
+      }
+
+      setUserSession(userInfo, accessToken);
+      toast.success('Login successful!');
       navigate('/');
-    }, 500);
+    } catch (error: any) {
+      const message =
+        error?.response?.data?.message || error.message || 'Login failed!';
+      toast.error(message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <>
       <div className="page-heading">
-        <h1 className="page-title">Login</h1>
+        <h1 className="page-title">Sign In</h1>
       </div>
       <div className="page-content">
         <form className="form" onSubmit={handleSubmit(onSubmit)}>
@@ -57,7 +77,6 @@ const Login = () => {
             register={register('email')}
             errorMsg={errors.email?.message}
           />
-
           <Input
             type="password"
             name="password"
@@ -65,7 +84,6 @@ const Login = () => {
             register={register('password')}
             errorMsg={errors.password?.message}
           />
-
           <div className="form-group">
             <Button
               type="submit"
@@ -81,7 +99,7 @@ const Login = () => {
           <p>
             Don't have an account?
             <Link to="/auth/register" className="txt-link ml-1">
-              Register
+              Sign Up
             </Link>
           </p>
         </div>
