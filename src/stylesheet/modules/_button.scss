@@ -95,7 +95,6 @@ $button-sizes: (
     @include mixins.pxRem(width, 55);
     @include mixins.pxRem(height, 55);
     padding: 0;
-    font-size: 0;
     line-height: 0;
 
     &:hover {

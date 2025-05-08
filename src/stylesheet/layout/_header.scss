@@ -29,14 +29,16 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
+    gap: 20px;
 
-    .nav-item {
-      @include mixins.pxRem(margin-left, 12);
-    }
+    // .nav-item {
+    //   @include mixins.pxRem(margin-left, 12);
+    // }
 
     .nav-link {
       @include mixins.pxRem(padding, 8 12);
       @include mixins.pxRem(font-size, 14);
+      gap: 6px;
       font-weight: 500;
 
       &:hover {

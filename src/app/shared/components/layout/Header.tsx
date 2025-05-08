@@ -56,6 +56,7 @@ export const Header = () => {
                   <li className="nav-item">
                     <span className="nav-link btn btn-icon">
                       <img src={writeIcon} alt="writeIcon" />
+                      Write
                     </span>
                   </li>
                   <li className="nav-item">
