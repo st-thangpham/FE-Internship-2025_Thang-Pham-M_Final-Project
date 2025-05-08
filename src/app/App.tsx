@@ -3,7 +3,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { Outlet, RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { ErrorBoundary } from 'react-error-boundary';
-import { ToastContainer } from 'react-toastify';
+import { Bounce, ToastContainer } from 'react-toastify';
 
 import '@stylesheet/_style.scss';
 
@@ -20,7 +20,7 @@ export const Root = () => {
       <ErrorBoundary FallbackComponent={AppErrorBoundaryFallback}>
         <AppSuspense fallback={<></>}>
           <Outlet />
-          <ToastContainer position="top-right" autoClose={3000} />
+          <ToastContainer position="top-center" autoClose={1500} />
         </AppSuspense>
       </ErrorBoundary>
     </>
