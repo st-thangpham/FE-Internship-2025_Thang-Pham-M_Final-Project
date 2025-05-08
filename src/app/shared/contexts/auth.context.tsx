@@ -1,4 +1,4 @@
-import React, { createContext, useState, ReactNode } from 'react';
+import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import { User } from '../models/user';
 import { AuthStorageService } from '@core/services/auth-storage.service';
 
@@ -22,6 +22,13 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const token = authStorage.getToken();
+    if (token) {
+      setIsAuthenticated(true);
+    }
+  }, []);
 
   const setUserSession = (user: User, token: string) => {
     setUser(user);
