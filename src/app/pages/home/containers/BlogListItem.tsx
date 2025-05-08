@@ -9,14 +9,14 @@ interface BlogListItemProps {
 
 const BlogListItem: React.FC<BlogListItemProps> = ({ post }) => {
   return (
-    <div className="blog-item">
+    <div className="blog-list-item">
       <div className="blog-author">
         <img
           src={post.user.picture || defaultAvatar}
           alt={post.user.displayName}
           className="author-avatar"
         />
-        <span className="author-name">{post.user.displayName}</span>
+        <span className="author-name txt-link">{post.user.displayName}</span>
       </div>
 
       <div className="blog-content">

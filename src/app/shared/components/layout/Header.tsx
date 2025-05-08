@@ -1,5 +1,5 @@
-import React, { useContext } from 'react';
-import { NavLink } from 'react-router-dom';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import { AuthContext } from '@app/shared/contexts/auth.context';
@@ -12,21 +12,38 @@ import writeIcon from '/icons/write.svg';
 export const Header = () => {
   const { isAuthenticated, user, clearUserSession } = useContext(AuthContext)!;
   const authStorage = new AuthStorageService();
+  const navigate = useNavigate();
 
-  const getNavLinkClass = ({ isActive }: { isActive: boolean }) =>
-    isActive ? 'nav-link nav-link-active' : 'nav-link';
+  const [hidden, setHidden] = useState(false);
+  const lastScrollY = useRef(0);
 
   const handleLogout = () => {
     clearUserSession();
     authStorage.removeToken();
     toast.success('Logout successful!');
-    setTimeout(() => {
-      window.location.reload();
-    }, 1000);
+    navigate('/');
   };
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      if (currentScrollY > lastScrollY.current && currentScrollY > 80) {
+        setHidden(true);
+      } else {
+        setHidden(false);
+      }
+
+      lastScrollY.current = currentScrollY;
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
-    <header className="header">
+    <header className={`header ${hidden ? 'hidden' : ''}`}>
       <div className="container">
         <nav className="navbar">
           <NavLink className="navbar-brand" to="/">
@@ -36,21 +53,14 @@ export const Header = () => {
           <div className="navbar-collapse">
             <ul className="navbar-nav d-flex align-items-center">
               {!isAuthenticated ? (
-                <>
-                  <li className="nav-item">
-                    <NavLink to="/auth/login" className={getNavLinkClass}>
-                      Sign In
-                    </NavLink>
-                  </li>
-                  <li className="nav-item">
-                    <NavLink
-                      to="/auth/register"
-                      className="nav-link btn btn-primary"
-                    >
-                      Sign Up
-                    </NavLink>
-                  </li>
-                </>
+                <li className="nav-item">
+                  <NavLink
+                    to="/auth/login"
+                    className="nav-link btn btn-primary"
+                  >
+                    Sign In
+                  </NavLink>
+                </li>
               ) : (
                 <>
                   <li className="nav-item">
