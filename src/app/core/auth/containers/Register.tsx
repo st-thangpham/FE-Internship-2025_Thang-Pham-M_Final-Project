@@ -89,7 +89,7 @@ const Register = () => {
       toast.success('Register successful!');
       setTimeout(() => {
         navigate('/auth/login');
-      }, 300);
+      }, 500);
     } catch (error) {
       toast.error(error?.response?.data?.errors[0] || 'Registration failed!');
     } finally {

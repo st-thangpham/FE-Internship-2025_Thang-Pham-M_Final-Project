@@ -44,6 +44,7 @@ $button-sizes: (
 
   @each $name, $color in $button-colors {
     &-#{$name} {
+      font-weight: bold;
       background-color: $color;
       color: map.get(variables.$color, white);
 
