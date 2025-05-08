@@ -1,12 +1,12 @@
 import React from 'react';
+import BlogList from './BlogList';
 
 const Home = () => {
   return (
     <div className="home-page">
       <div className="container">
         <div className="page-inner">
-          <h1 className="title">title</h1>
-          <p className="desc">desc</p>
+          <BlogList />
         </div>
       </div>
     </div>
