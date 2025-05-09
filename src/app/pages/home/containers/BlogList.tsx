@@ -5,7 +5,7 @@ import { getPublicPosts } from '@shared/services/blog.service';
 import BlogListItem from './BlogListItem';
 import BlogListItemSkeleton from './BlogListItemSkeleton';
 
-const SIZE_PAGE = 7; // Number of posts per page
+const SIZE_PAGE = 5; // Number of posts per page
 const SIZE_SKELETON = 3;
 
 const BlogList = () => {
@@ -13,7 +13,7 @@ const BlogList = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const [isBouncingUp, setIsBouncingUp] = useState(false); // 👈 New
+  const [isBouncingUp, setIsBouncingUp] = useState(false);
 
   const observer = useRef<IntersectionObserver | null>(null);
 

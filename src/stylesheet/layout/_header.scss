@@ -3,13 +3,13 @@
 @use "../base/variables";
 
 .header {
+  @include mixins.pxRem(height, map.get(variables.$layout, header-height));
   display: flex;
   align-items: center;
   background-color: map.get(variables.$color, white);
   position: fixed;
   width: 100%;
   z-index: 1000;
-  height: map.get(variables.$layout, header-height);
   border-bottom: solid 1px map.get(variables.$color, grey-a);
   transition: transform 0.3s ease;
 
@@ -28,6 +28,14 @@
     @include mixins.pxRem(width, 120);
     display: flex;
     align-items: center;
+    justify-content: center;
+    margin: auto 0;
+
+    .logo {
+      height: 100%;
+      display: block;
+      object-fit: contain;
+    }
   }
 
   .navbar-nav {

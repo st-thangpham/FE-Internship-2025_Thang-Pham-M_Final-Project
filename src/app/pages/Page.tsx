@@ -6,10 +6,9 @@ const Page = () => {
   return (
     <>
       <Header />
-      <main className="pages-container">
+      <main>
         <Outlet />
       </main>
-      <Footer />
     </>
   );
 };

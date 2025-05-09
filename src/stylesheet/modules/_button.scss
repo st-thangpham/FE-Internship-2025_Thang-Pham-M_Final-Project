@@ -92,6 +92,19 @@ $button-sizes: (
     }
   }
 
+  &.btn-auth {
+    @include mixins.pxRem(border-radius, 12);
+    @include mixins.pxRem(font-size, map.get(variables.$font-size, sm));
+    font-weight: 500;
+    background-color: map.get(variables.$color, primary);
+    color: map.get(variables.$color, white);
+    transition: transform 0.3s;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+
   &.btn-icon {
     @include mixins.pxRem(width, 20);
     @include mixins.pxRem(height, 20);
