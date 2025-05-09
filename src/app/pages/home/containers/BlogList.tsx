@@ -1,11 +1,12 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
-import { Spinner } from '@app/shared/components/common/Spinner';
 import { Post } from '@shared/models/post';
 import { getPublicPosts } from '@shared/services/blog.service';
 import BlogListItem from './BlogListItem';
+import BlogListItemSkeleton from './BlogListItemSkeleton';
 
 const SIZE_PAGE = 7; // Number of posts per page
+const SIZE_SKELETON = 3;
 
 const BlogList = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -59,24 +60,34 @@ const BlogList = () => {
   }, [page]);
 
   return (
-    <div
-      className={`blog-list ${isLoading ? 'is-loading' : ''} ${
-        isBouncingUp ? 'bounce-up' : ''
-      }`}
-    >
-      {posts.map((post, index) => {
-        const isLast = index === posts.length - 1;
-        return (
-          <div ref={isLast ? lastPostRef : null} key={post.id}>
-            <BlogListItem post={post} />
-          </div>
-        );
-      })}
-      <div className="blog-loading-wrapper">
-        {isLoading && <Spinner className="spinner-sm" />}
-        {!hasMore && <p className="blog-notification">No more blogs.</p>}
-      </div>
-    </div>
+    <>
+      <ul
+        className={`list list-blog ${isLoading ? 'is-loading' : ''} ${
+          isBouncingUp ? 'bounce-up' : ''
+        }`}
+      >
+        {posts.map((post, index) => {
+          const isLast = index === posts.length - 1;
+          return (
+            <div ref={isLast ? lastPostRef : null} key={post.id}>
+              <BlogListItem post={post} />
+            </div>
+          );
+        })}
+        <div className="blog-loading-wrapper">
+          {isLoading && posts.length > 0 && <BlogListItemSkeleton />}
+
+          {!hasMore && <p className="blog-notification">No more blogs.</p>}
+        </div>
+      </ul>
+      {isLoading && posts.length === 0 && (
+        <ul className="list list-blog">
+          {Array.from({ length: SIZE_SKELETON }).map((_, i) => (
+            <BlogListItemSkeleton key={i} />
+          ))}
+        </ul>
+      )}
+    </>
   );
 };
 
