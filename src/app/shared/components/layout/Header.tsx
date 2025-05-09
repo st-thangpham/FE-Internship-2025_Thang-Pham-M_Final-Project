@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import { AuthContext } from '@app/shared/contexts/auth.context';
 import { AuthStorageService } from '@core/services/auth-storage.service';
 
-import logo from '/icons/medium-seeklogo.svg';
+import logo from '/imgs/logo.png';
 import defaultAvatar from '/imgs/avatar.jpg';
 import writeIcon from '/icons/write.svg';
 
@@ -31,34 +31,37 @@ export const Header = () => {
 
       if (currentScrollY > lastScrollY.current && currentScrollY > 80) {
         setHidden(true);
+        document.body.classList.add('header-hidden');
       } else {
         setHidden(false);
+        document.body.classList.remove('header-hidden');
       }
 
       lastScrollY.current = currentScrollY;
     };
 
     window.addEventListener('scroll', handleScroll);
-
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      document.body.classList.remove('header-hidden');
+    };
   }, []);
 
   return (
     <header className={`header ${hidden ? 'hidden' : ''}`}>
       <div className="container">
         <nav className="navbar">
-          <NavLink className="navbar-brand" to="/">
-            <img src={logo} alt="Logo" className="logo" />
-          </NavLink>
+          <h1 className="navbar-brand">
+            <NavLink to="/">
+              <img src={logo} alt="Logo" className="logo" />
+            </NavLink>
+          </h1>
 
           <div className="navbar-collapse">
             <ul className="navbar-nav d-flex align-items-center">
               {!isAuthenticated ? (
                 <li className="nav-item">
-                  <NavLink
-                    to="/auth/login"
-                    className="nav-link btn btn-primary"
-                  >
+                  <NavLink to="/auth/login" className="btn btn-auth">
                     Sign In
                   </NavLink>
                 </li>

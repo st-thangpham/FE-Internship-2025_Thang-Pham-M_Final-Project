@@ -38,6 +38,12 @@
   text-transform: capitalize;
 }
 
+.txt-sm {
+  @include mixins.pxRem(font-size, map.get(vars.$font-size, sm));
+  color: map.get(vars.$color, grey-b);
+  font-weight: 400;
+}
+
 .txt-link {
   @include mixins.pxRem(padding-bottom, 2);
   color: map.get(vars.$color, primary);
