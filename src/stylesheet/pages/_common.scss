@@ -3,6 +3,7 @@
 @use "../base/mixins";
 
 .pages-container {
+  @include mixins.pxRem(max-width, 1336px);
   display: flex;
   flex-direction: column;
   margin: auto;

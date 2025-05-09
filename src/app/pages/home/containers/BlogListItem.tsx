@@ -1,15 +1,23 @@
 import React from 'react';
 
 import { Post } from '@shared/models/post';
+
 import defaultAvatar from '/imgs/avatar.jpg';
+import logo from '/imgs/logo.png';
 
 interface BlogListItemProps {
   post: Post;
 }
 
 const BlogListItem: React.FC<BlogListItemProps> = ({ post }) => {
+  const handleImageError = (
+    e: React.SyntheticEvent<HTMLImageElement, Event>
+  ) => {
+    e.currentTarget.src = logo;
+  };
+
   return (
-    <div className="blog-list-item">
+    <li className="list-item">
       <div className="blog-author">
         <img
           src={post.user.picture || defaultAvatar}
@@ -19,7 +27,7 @@ const BlogListItem: React.FC<BlogListItemProps> = ({ post }) => {
         <span className="author-name txt-link">{post.user.displayName}</span>
       </div>
 
-      <div className="blog-content">
+      <a className="blog-content">
         <div className="blog-info">
           <h3 className="blog-title">{post.title}</h3>
           <p className="blog-description">{post.description}</p>
@@ -27,11 +35,16 @@ const BlogListItem: React.FC<BlogListItemProps> = ({ post }) => {
 
         {post.cover && (
           <div className="blog-cover">
-            <img src={post.cover} alt={post.title} className="cover-image" />
+            <img
+              src={post.cover}
+              alt="Blog's Cover"
+              className="cover-image"
+              onError={handleImageError}
+            />
           </div>
         )}
-      </div>
-    </div>
+      </a>
+    </li>
   );
 };
 

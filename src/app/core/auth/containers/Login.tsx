@@ -55,9 +55,9 @@ const Login = () => {
       toast.success('Login successful!');
       navigate('/');
     } catch (error: any) {
-      const message =
-        error?.response?.data?.message || error.message || 'Login failed!';
-      toast.error(message);
+      toast.error(
+        error?.response?.data?.errors[0] || 'Invalid email or password.'
+      );
     } finally {
       setIsLoading(false);
     }

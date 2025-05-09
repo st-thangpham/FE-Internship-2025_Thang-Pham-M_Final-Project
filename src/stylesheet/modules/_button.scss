@@ -47,9 +47,10 @@ $button-sizes: (
       font-weight: bold;
       background-color: $color;
       color: map.get(variables.$color, white);
+      opacity: 0.8;
 
       &:hover {
-        opacity: 0.8;
+        opacity: 1;
         transition: opacity 0.3s;
       }
 
@@ -74,8 +75,8 @@ $button-sizes: (
   }
 
   &.btn-avatar {
-    @include mixins.pxRem(width, 32);
-    @include mixins.pxRem(height, 32);
+    @include mixins.pxRem(width, 30);
+    @include mixins.pxRem(height, 30);
     @include mixins.border-radius(50%);
     padding: 0;
     font-size: 0;
@@ -91,16 +92,23 @@ $button-sizes: (
     }
   }
 
-  &.btn-icon {
-    @include mixins.pxRem(width, 55);
-    @include mixins.pxRem(height, 55);
-    padding: 0;
-    line-height: 0;
-    font-weight: 400 !important;
+  &.btn-auth {
+    @include mixins.pxRem(border-radius, 12);
+    @include mixins.pxRem(font-size, map.get(variables.$font-size, sm));
+    font-weight: 500;
+    background-color: map.get(variables.$color, primary);
+    color: map.get(variables.$color, white);
+    transition: transform 0.3s;
 
     &:hover {
-      opacity: 0.8;
-      transition: opacity 0.3s;
+      transform: scale(1.05);
     }
+  }
+
+  &.btn-icon {
+    @include mixins.pxRem(width, 20);
+    @include mixins.pxRem(height, 20);
+    padding: 0;
+    line-height: 0;
   }
 }
