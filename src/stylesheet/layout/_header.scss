@@ -34,20 +34,20 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    gap: 20px;
+    @include mixins.pxRem(gap, 44);
 
     .nav-item {
       @include mixins.pxRem(margin-left, 12);
     }
 
     .nav-link {
-      @include mixins.pxRem(padding, 8 12);
-      @include mixins.pxRem(font-size, 16);
-      gap: 6px;
-      font-weight: 500;
+      @include mixins.pxRem(font-size, map.get(variables.$font-size, sm));
+      gap: 8px;
+      font-weight: 400;
+      color: map.get(variables.$color, grey-b);
 
       &:hover {
-        color: map.get(variables.$color, state-grey-b);
+        color: map.get(variables.$color, black);
       }
 
       &.nav-link-active {

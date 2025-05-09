@@ -47,9 +47,10 @@ $button-sizes: (
       font-weight: bold;
       background-color: $color;
       color: map.get(variables.$color, white);
+      opacity: 0.8;
 
       &:hover {
-        opacity: 0.8;
+        opacity: 1;
         transition: opacity 0.3s;
       }
 
@@ -74,8 +75,8 @@ $button-sizes: (
   }
 
   &.btn-avatar {
-    @include mixins.pxRem(width, 32);
-    @include mixins.pxRem(height, 32);
+    @include mixins.pxRem(width, 30);
+    @include mixins.pxRem(height, 30);
     @include mixins.border-radius(50%);
     padding: 0;
     font-size: 0;
@@ -92,15 +93,9 @@ $button-sizes: (
   }
 
   &.btn-icon {
-    @include mixins.pxRem(width, 55);
-    @include mixins.pxRem(height, 55);
+    @include mixins.pxRem(width, 20);
+    @include mixins.pxRem(height, 20);
     padding: 0;
     line-height: 0;
-    font-weight: 400 !important;
-
-    &:hover {
-      opacity: 0.8;
-      transition: opacity 0.3s;
-    }
   }
 }

@@ -9,7 +9,7 @@ interface BlogListItemProps {
 
 const BlogListItem: React.FC<BlogListItemProps> = ({ post }) => {
   return (
-    <div className="blog-list-item">
+    <li className="list-item">
       <div className="blog-author">
         <img
           src={post.user.picture || defaultAvatar}
@@ -19,7 +19,7 @@ const BlogListItem: React.FC<BlogListItemProps> = ({ post }) => {
         <span className="author-name txt-link">{post.user.displayName}</span>
       </div>
 
-      <div className="blog-content">
+      <a className="blog-content">
         <div className="blog-info">
           <h3 className="blog-title">{post.title}</h3>
           <p className="blog-description">{post.description}</p>
@@ -27,11 +27,11 @@ const BlogListItem: React.FC<BlogListItemProps> = ({ post }) => {
 
         {post.cover && (
           <div className="blog-cover">
-            <img src={post.cover} alt={post.title} className="cover-image" />
+            <img src={post.cover} alt="Blog's Cover" className="cover-image" />
           </div>
         )}
-      </div>
-    </div>
+      </a>
+    </li>
   );
 };
 

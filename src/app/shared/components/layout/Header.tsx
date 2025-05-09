@@ -21,6 +21,7 @@ export const Header = () => {
     clearUserSession();
     authStorage.removeToken();
     toast.success('Logout successful!');
+    window.location.reload();
     navigate('/');
   };
 
