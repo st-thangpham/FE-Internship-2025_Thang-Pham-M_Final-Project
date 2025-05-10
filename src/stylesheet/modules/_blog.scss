@@ -9,7 +9,6 @@
   flex-direction: column;
   gap: 24px;
   margin: 0 auto;
-  padding: 0 104px;
 
   @include mixins.respond-below(wide) {
     padding: 0;
@@ -54,15 +53,15 @@
       }
 
       .blog-info {
-        flex: 0 0 65%;
+        flex: 1 1 auto;
         display: flex;
         flex-direction: column;
         min-width: 0;
 
         .blog-title {
+          @include mixins.pxRem(font-size, map.get(variables.$font-size, xl));
           font-weight: 700;
           line-height: 1.3;
-          @include mixins.pxRem(font-size, map.get(variables.$font-size, xl));
 
           @include mixins.respond-above(medium) {
             @include mixins.pxRem(font-size, map.get(variables.$font-size, xxl));
@@ -80,12 +79,15 @@
       }
 
       .blog-cover {
-        height: 80%;
-        aspect-ratio: 16 / 11;
+        flex: 0 0 80px;
+        height: 45%;
+        margin-left: 56px;
+        aspect-ratio: 160 / 107;
         overflow: hidden;
 
         @include mixins.respond-above(medium) {
-          @include mixins.pxRem(height, 70%);
+          flex: 0 0 160px;
+          height: 70%;
         }
 
         .cover-image {

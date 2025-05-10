@@ -6,7 +6,7 @@ const Page = () => {
   return (
     <>
       <Header />
-      <main>
+      <main className="main">
         <Outlet />
       </main>
     </>
