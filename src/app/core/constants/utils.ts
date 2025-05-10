@@ -1,0 +1,17 @@
+export const tags = [
+  'React',
+  'JavaScript',
+  'CSS',
+  'HTML',
+  'Node.js',
+  'Python',
+  'Java',
+  'C++',
+  'Programming',
+  'Self Improvement',
+  'Data Science',
+  'Writing',
+  'Relationships',
+  'Technology',
+  'Politics',
+];

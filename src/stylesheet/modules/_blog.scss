@@ -10,10 +10,6 @@
   gap: 24px;
   margin: 0 auto;
 
-  @include mixins.respond-below(wide) {
-    padding: 0;
-  }
-
   // Blog item styles
   .list-item {
     width: 100%;
