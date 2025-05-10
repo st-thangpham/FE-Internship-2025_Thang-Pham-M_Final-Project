@@ -2,9 +2,10 @@
 @use "../base/mixins";
 @use "../base/variables";
 
-.home-page {
+.page-home {
+
   .page-inner {
-    margin-top: 20px;
+    padding-top: 30px;
   }
 
   .content-layout {
@@ -21,8 +22,7 @@
     flex: 1 1 auto;
     display: flex;
     justify-content: center;
-    padding: 0 40px;
-    border-right: 1px solid map.get(variables.$color, grey-a);
+    padding: 0 140px;
 
     @include mixins.respond-below(wide) {
       padding: 0 32px;
@@ -43,8 +43,9 @@
     padding: 0 40px;
     position: sticky;
     top: calc(map.get(variables.$layout, header-height) + 20px);
-    height: fit-content;
+    height: 100vh;
     align-self: flex-start;
+    border-left: 1px solid map.get(variables.$color, grey-a);
     transition: top 0.3s ease;
 
     body.header-hidden & {

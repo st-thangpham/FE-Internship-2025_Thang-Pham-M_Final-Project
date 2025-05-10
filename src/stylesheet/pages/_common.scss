@@ -11,3 +11,7 @@
   min-height: calc(100vh - map.get(variables.$layout, footer-height));
   padding-top: calc(map.get(variables.$layout, header-height) + 10px);
 }
+
+.main {
+  padding-top: map.get(variables.$layout, header-height);
+}

@@ -25,8 +25,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   useEffect(() => {
     const token = authStorage.getToken();
-    if (token) {
+    const storedUser = authStorage.getUserInfo();
+
+    if (token && storedUser) {
       setIsAuthenticated(true);
+      setUser(storedUser);
     }
   }, []);
 
@@ -34,12 +37,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setUser(user);
     setIsAuthenticated(true);
     authStorage.setToken(token);
+    authStorage.setUserInfo(user);
   };
 
   const clearUserSession = () => {
     setUser(null);
     setIsAuthenticated(false);
     authStorage.removeToken();
+    authStorage.removeUserInfo();
   };
 
   return (
