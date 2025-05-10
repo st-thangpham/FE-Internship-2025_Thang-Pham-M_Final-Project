@@ -111,4 +111,63 @@ $button-sizes: (
     padding: 0;
     line-height: 0;
   }
+
+  &.btn-scroll {
+    position: absolute;
+    width: 6%;
+    height: 100%;
+    border: none;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    z-index: 2;
+    cursor: pointer;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%) rotate(135deg);
+      left: 12px;
+      width: 8px;
+      height: 8px;
+      border: solid map.get(variables.$color, grey-b);
+      border-width: 0 2px 2px 0;
+      z-index: 3;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    &.left {
+      left: 0;
+
+      &::after {
+        background: linear-gradient(to right, white 40%, transparent);
+      }
+    }
+
+    &.right {
+      right: 0;
+
+      &::before {
+        transform: translateY(-50%) rotate(-45deg);
+        right: 12px;
+        left: auto;
+      }
+
+      &::after {
+        background: linear-gradient(to left, white 40%, transparent);
+      }
+    }
+  }
 }

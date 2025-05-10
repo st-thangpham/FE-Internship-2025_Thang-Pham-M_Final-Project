@@ -3,11 +3,6 @@
 @use "../base/variables";
 
 .page-home {
-
-  .page-inner {
-    padding-top: 30px;
-  }
-
   .content-layout {
     display: flex;
     flex-direction: row;
@@ -22,19 +17,10 @@
     flex: 1 1 auto;
     display: flex;
     justify-content: center;
-    padding: 0 140px;
 
-    @include mixins.respond-below(wide) {
-      padding: 0 32px;
-      border-right: none;
-    }
-
-    @include mixins.respond-below(medium) {
+    .list-blog {
+      max-width: 728px;
       padding: 0 24px;
-    }
-
-    @include mixins.respond-below(small) {
-      padding: 0 16px;
     }
   }
 
