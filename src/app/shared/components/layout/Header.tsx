@@ -49,7 +49,7 @@ export const Header = () => {
 
   return (
     <header className={`header ${hidden ? 'hidden' : ''}`}>
-      <div className="container">
+      <div className="no-container">
         <nav className="navbar">
           <h1 className="navbar-brand">
             <NavLink to="/">

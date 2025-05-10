@@ -1,14 +1,17 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-
 import { Post } from '@shared/models/post';
 import { getPublicPosts } from '@shared/services/blog.service';
 import BlogListItem from './BlogListItem';
 import BlogListItemSkeleton from './BlogListItemSkeleton';
 
-const SIZE_PAGE = 5; // Number of posts per page
+const SIZE_PAGE = 5;
 const SIZE_SKELETON = 3;
 
-const BlogList = () => {
+type BlogListProps = {
+  filterTag?: string;
+};
+
+const BlogList = ({ filterTag }: BlogListProps) => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -17,6 +20,40 @@ const BlogList = () => {
 
   const observer = useRef<IntersectionObserver | null>(null);
 
+  useEffect(() => {
+    setPosts([]);
+    setPage(1);
+    setHasMore(true);
+  }, [filterTag]);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      setIsLoading(true);
+      try {
+        const res = await getPublicPosts(page, SIZE_PAGE);
+        let fetchedPosts = res.data;
+
+        if (filterTag) {
+          fetchedPosts = fetchedPosts.filter((post) =>
+            post.tags?.includes(filterTag)
+          );
+        }
+
+        setPosts((prev) => [...prev, ...fetchedPosts]);
+        if (fetchedPosts.length < SIZE_PAGE) {
+          setHasMore(false);
+        }
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, [page, filterTag]);
+
+  // Intersection Observer cho infinite scroll
   const lastPostRef = useCallback(
     (node: HTMLDivElement | null) => {
       if (isLoading || isBouncingUp) return;
@@ -38,27 +75,6 @@ const BlogList = () => {
     [isLoading, isBouncingUp, hasMore]
   );
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        const res = await getPublicPosts(page, SIZE_PAGE);
-        const newPosts = res.data;
-
-        setPosts((prev) => [...prev, ...newPosts]);
-        if (newPosts.length < SIZE_PAGE) {
-          setHasMore(false);
-        }
-      } catch (err) {
-        console.error('Error fetching posts:', err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [page]);
-
   return (
     <>
       <ul
@@ -74,12 +90,13 @@ const BlogList = () => {
             </div>
           );
         })}
+
         <div className="blog-loading-wrapper">
           {isLoading && posts.length > 0 && <BlogListItemSkeleton />}
-
           {!hasMore && <p className="blog-notification">No more blogs.</p>}
         </div>
       </ul>
+
       {isLoading && posts.length === 0 && (
         <ul className="list list-blog">
           {Array.from({ length: SIZE_SKELETON }).map((_, i) => (

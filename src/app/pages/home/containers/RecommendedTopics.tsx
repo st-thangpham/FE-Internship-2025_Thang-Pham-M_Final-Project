@@ -1,26 +1,25 @@
 import React from 'react';
+import { useNavigate } from 'react-router';
+import { tags } from '@app/core/constants/utils';
 
-const tags = [
-  'Programming',
-  'Self Improvement',
-  'Data Science',
-  'Writing',
-  'Relationships',
-  'Technology',
-  'Politics',
-];
+const RecommendedTopics = () => {
+  const navigate = useNavigate();
+  const handleClick = (tag: string) => {
+    navigate(`/blog?tag=${encodeURIComponent(tag)}`);
+  };
 
-const RecommendedTopics = () => (
-  <div className="recommended-topics">
-    <h3 className="title">Recommended topics</h3>
-    <ul className="tag-list">
-      {tags.map((tag) => (
-        <li key={tag} className="tag-item">
-          {tag}
-        </li>
-      ))}
-    </ul>
-  </div>
-);
+  return (
+    <div className="recommended-topics">
+      <h3 className="title">Topics</h3>
+      <ul className="tag-grid-list">
+        {tags.map((tag) => (
+          <li key={tag} className="tag-item" onClick={() => handleClick(tag)}>
+            {tag}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
 
 export default RecommendedTopics;

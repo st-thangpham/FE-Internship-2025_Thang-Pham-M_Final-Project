@@ -2,11 +2,7 @@
 @use "../base/mixins";
 @use "../base/variables";
 
-.home-page {
-  .page-inner {
-    margin-top: 20px;
-  }
-
+.page-home {
   .content-layout {
     display: flex;
     flex-direction: row;
@@ -21,20 +17,10 @@
     flex: 1 1 auto;
     display: flex;
     justify-content: center;
-    padding: 0 40px;
-    border-right: 1px solid map.get(variables.$color, grey-a);
 
-    @include mixins.respond-below(wide) {
-      padding: 0 32px;
-      border-right: none;
-    }
-
-    @include mixins.respond-below(medium) {
+    .list-blog {
+      max-width: 728px;
       padding: 0 24px;
-    }
-
-    @include mixins.respond-below(small) {
-      padding: 0 16px;
     }
   }
 
@@ -43,8 +29,9 @@
     padding: 0 40px;
     position: sticky;
     top: calc(map.get(variables.$layout, header-height) + 20px);
-    height: fit-content;
+    height: 100vh;
     align-self: flex-start;
+    border-left: 1px solid map.get(variables.$color, grey-a);
     transition: top 0.3s ease;
 
     body.header-hidden & {
