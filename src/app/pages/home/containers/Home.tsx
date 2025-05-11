@@ -14,7 +14,6 @@ const Home = () => {
             </div>
             <aside className="sidebar">
               <RecommendedTopics />
-              <Footer />
             </aside>
           </div>
         </div>
