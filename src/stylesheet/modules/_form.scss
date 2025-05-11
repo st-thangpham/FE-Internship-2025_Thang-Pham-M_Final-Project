@@ -116,6 +116,10 @@ input:-webkit-autofill:active {
     &:focus {
       border-color: map.get(vars.$color, primary);
     }
+
+    &.form-select {
+      cursor: pointer;
+    }
   }
 
   .form-label {

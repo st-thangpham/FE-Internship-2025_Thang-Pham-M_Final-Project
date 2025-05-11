@@ -9,6 +9,7 @@ const Page = () => {
       <main className="main">
         <Outlet />
       </main>
+      <Footer />
     </>
   );
 };

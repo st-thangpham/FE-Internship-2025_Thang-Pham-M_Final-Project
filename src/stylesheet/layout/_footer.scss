@@ -12,6 +12,31 @@
   height: map.get(variables.$layout, footer-height);
   font-weight: 600;
 
+  &.footer-basic {
+    right: unset;
+    width: 100%;
+    padding: 0 24px;
+
+    .menu-list {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+
+      .footer-logo {
+        display: flex;
+        align-items: center;
+        max-width: 100px;
+
+        .logo {
+          width: 100%;
+          height: auto;
+          object-fit: contain;
+        }
+      }
+    }
+  }
+
   p {
     text-align: center;
   }

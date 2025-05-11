@@ -75,3 +75,7 @@
     }
   }
 }
+
+.txt-danger {
+  color: map.get(vars.$color, danger);
+}
