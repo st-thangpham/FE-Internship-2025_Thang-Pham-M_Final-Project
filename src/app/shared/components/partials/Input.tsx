@@ -17,6 +17,7 @@ interface InputProps {
   isDisabled?: boolean;
   register?: UseFormRegisterReturn;
   value?: string;
+  isRequired?: boolean;
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -36,6 +37,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       isDisabled = false,
       register,
       value,
+      isRequired = false,
     },
     ref
   ) => {
@@ -44,6 +46,23 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const inputClassName = `form-control ${className} ${
       isShowError ? 'is-invalid' : ''
     }`;
+
+    const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      if (/^[0-9]*$/.test(value)) {
+        onInputChange?.(value);
+      }
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+      const key = e.key;
+      if (
+        !/[0-9]/.test(key) &&
+        !['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight'].includes(key)
+      ) {
+        e.preventDefault();
+      }
+    };
 
     return (
       <div className="form-group">
@@ -56,7 +75,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             placeholder={label || placeHolder}
             maxLength={maxLength}
             onBlur={(e) => onInputBlur?.(e.target.value)}
-            onChange={(e) => onInputChange?.(e.target.value)}
+            onChange={
+              name === 'phone'
+                ? handlePhoneChange
+                : (e) => onInputChange?.(e.target.value)
+            }
+            onKeyDown={name === 'phone' ? handleKeyDown : undefined}
             readOnly={isReadOnly}
             disabled={isDisabled}
             value={value}
@@ -65,6 +89,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           {label && (
             <label className="form-label" htmlFor={name}>
               {label}
+              {isRequired && <span className="txt-danger">*</span>}
             </label>
           )}
         </div>

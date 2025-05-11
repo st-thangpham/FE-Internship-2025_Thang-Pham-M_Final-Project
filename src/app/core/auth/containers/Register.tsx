@@ -8,53 +8,66 @@ import { z } from 'zod';
 
 import { isValidDDMMYYYY } from '@app/core/helpers/date-format.helper';
 import { registerAccount } from '@app/core/services/auth.service';
-import { Button, Input, Select } from '@app/shared/components/partials';
+import {
+  Button,
+  CalendarInput,
+  Input,
+  Select,
+} from '@app/shared/components/partials';
+import { format, parse } from 'date-fns';
 
-const schema = z.object({
-  email: z
-    .string()
-    .email('Invalid email address')
-    .nonempty('Email is required'),
+const schema = z
+  .object({
+    email: z
+      .string()
+      .email('Invalid email address')
+      .nonempty('Email is required'),
 
-  password: z
-    .string()
-    .min(6, 'Password must be at least 6 characters')
-    .max(20, 'Password must not exceed 20 characters'),
+    password: z
+      .string()
+      .min(6, 'Password must be at least 6 characters')
+      .max(20, 'Password must not exceed 20 characters'),
 
-  firstName: z
-    .string()
-    .nonempty('First name is required')
-    .min(2, 'First name must be at least 2 characters'),
+    confirmPassword: z.string().nonempty('Please confirm your password'),
 
-  lastName: z
-    .string()
-    .nonempty('Last name is required')
-    .min(2, 'Last name must be at least 2 characters'),
+    firstName: z
+      .string()
+      .nonempty('First name is required')
+      .min(2, 'First name must be at least 2 characters'),
 
-  gender: z.enum(['male', 'female'], {
-    errorMap: () => ({ message: 'Gender is required' }),
-  }),
+    lastName: z
+      .string()
+      .nonempty('Last name is required')
+      .min(2, 'Last name must be at least 2 characters'),
 
-  dob: z
-    .string()
-    .nonempty('Date of birth is required')
-    .refine((val) => /^\d{2}\/\d{2}\/\d{4}$/.test(val), {
-      message: 'Date must be in dd/mm/yyyy format',
-    })
-    .refine(isValidDDMMYYYY, {
-      message: 'Invalid date',
+    gender: z.enum(['male', 'female'], {
+      errorMap: () => ({ message: 'Gender is required' }),
     }),
 
-  phone: z
-    .string()
-    .nonempty('Phone number is required')
-    .regex(/^\d{10}$/, 'Phone number must be 10 digits'),
+    dob: z
+      .string()
+      .nonempty('Date of birth is required')
+      .refine((val) => /^\d{2}\/\d{2}\/\d{4}$/.test(val), {
+        message: 'Date must be in dd/mm/yyyy format',
+      })
+      .refine(isValidDDMMYYYY, {
+        message: 'Invalid date',
+      }),
 
-  displayName: z
-    .string()
-    .nonempty('Display name is required')
-    .min(3, 'Display name must be at least 3 characters'),
-});
+    phone: z
+      .string()
+      .nonempty('Phone number is required')
+      .regex(/^\d{10}$/, 'Phone number must be 10 digits'),
+
+    displayName: z
+      .string()
+      .nonempty('Display name is required')
+      .min(3, 'Display name must be at least 3 characters'),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  });
 
 type RegisterFormData = z.infer<typeof schema>;
 
@@ -76,14 +89,14 @@ const Register = () => {
     try {
       setIsLoading(true);
       await registerAccount({
-        email: data.email!,
-        password: data.password!,
-        firstName: data.firstName!,
-        lastName: data.lastName!,
-        gender: data.gender!,
-        dob: data.dob!,
-        phone: data.phone!,
-        displayName: data.displayName!,
+        email: data.email,
+        password: data.password,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        gender: data.gender,
+        dob: data.dob,
+        phone: data.phone,
+        displayName: data.displayName,
       });
       toast.success('Register successful!');
       navigate('/auth/login');
@@ -107,6 +120,7 @@ const Register = () => {
             label="Email"
             register={register('email')}
             errorMsg={errors.email?.message}
+            isRequired
           />
           <Input
             type="password"
@@ -114,9 +128,17 @@ const Register = () => {
             label="Password"
             register={register('password')}
             errorMsg={errors.password?.message}
+            isRequired
+          />
+          <Input
+            type="password"
+            name="confirmPassword"
+            label="Confirm Password"
+            register={register('confirmPassword')}
+            errorMsg={errors.confirmPassword?.message}
+            isRequired
           />
 
-          {/* Row for First Name & Last Name */}
           <div className="row">
             <div className="col-6">
               <Input
@@ -125,6 +147,7 @@ const Register = () => {
                 label="First Name"
                 register={register('firstName')}
                 errorMsg={errors.firstName?.message}
+                isRequired
               />
             </div>
             <div className="col-6">
@@ -134,18 +157,29 @@ const Register = () => {
                 label="Last Name"
                 register={register('lastName')}
                 errorMsg={errors.lastName?.message}
+                isRequired
               />
             </div>
           </div>
 
-          {/* Row for Gender & Date of Birth */}
+          <Input
+            type="text"
+            name="displayName"
+            label="Display Name"
+            register={register('displayName')}
+            errorMsg={errors.displayName?.message}
+            isRequired
+          />
+
           <div className="row">
             <div className="col-6">
               <Controller
                 control={control}
                 name="gender"
+                defaultValue="male"
                 render={({ field }) => (
                   <Select
+                    {...field}
                     name="gender"
                     label="Gender"
                     value={field.value}
@@ -156,6 +190,7 @@ const Register = () => {
                       { label: 'Male', value: 'male' },
                       { label: 'Female', value: 'female' },
                     ]}
+                    isRequired
                   />
                 )}
               />
@@ -164,35 +199,36 @@ const Register = () => {
               <Controller
                 control={control}
                 name="dob"
-                render={({ field }) => (
-                  <Input
-                    type="text"
-                    name="dob"
-                    label="Date of Birth"
-                    placeHolder="dd/mm/yyyy"
-                    value={field.value}
-                    onInputChange={field.onChange}
-                    onInputBlur={field.onBlur}
-                    errorMsg={errors.dob?.message}
-                  />
-                )}
+                render={({ field }) => {
+                  const parsedDate = field.value
+                    ? parse(field.value, 'dd/MM/yyyy', new Date())
+                    : null;
+
+                  return (
+                    <CalendarInput
+                      name="dob"
+                      label="Date of Birth"
+                      value={parsedDate}
+                      onChange={(date) =>
+                        field.onChange(date ? format(date, 'dd/MM/yyyy') : '')
+                      }
+                      onBlur={field.onBlur}
+                      errorMsg={errors.dob?.message}
+                      isRequired
+                    />
+                  );
+                }}
               />
             </div>
           </div>
 
           <Input
-            type="text"
+            type="tel"
             name="phone"
             label="Phone Number"
             register={register('phone')}
             errorMsg={errors.phone?.message}
-          />
-          <Input
-            type="text"
-            name="displayName"
-            label="Display Name"
-            register={register('displayName')}
-            errorMsg={errors.displayName?.message}
+            isRequired
           />
 
           <div className="form-group">

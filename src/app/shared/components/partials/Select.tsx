@@ -10,6 +10,7 @@ interface SelectProps {
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   onBlur?: () => void;
+  isRequired?: boolean;
 }
 
 export const Select: React.FC<SelectProps> = ({
@@ -21,6 +22,7 @@ export const Select: React.FC<SelectProps> = ({
   value,
   onChange,
   onBlur,
+  isRequired = false,
 }) => {
   const isShowError = !!errorMsg;
 
@@ -30,13 +32,14 @@ export const Select: React.FC<SelectProps> = ({
         <select
           id={name}
           name={name}
-          className={`form-control ${isShowError ? 'is-invalid' : ''}`}
+          className={`form-control form-select ${
+            isShowError ? 'is-invalid' : ''
+          }`}
           value={value}
           onChange={onChange}
           onBlur={onBlur}
           {...register}
         >
-          <option value="">Select {label?.toLowerCase()}</option>
           {options.map(({ value, label }) => (
             <option value={value} key={value}>
               {label}
@@ -46,6 +49,7 @@ export const Select: React.FC<SelectProps> = ({
         {label && (
           <label className="form-label" htmlFor={name}>
             {label}
+            {isRequired && <span className="txt-danger">*</span>}
           </label>
         )}
       </div>
