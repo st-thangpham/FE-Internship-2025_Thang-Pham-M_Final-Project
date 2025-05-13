@@ -17,7 +17,6 @@
     display: flex;
     flex-direction: column;
     padding-bottom: 24px;
-    gap: 24px;
     border-bottom: 1px solid map.get(variables.$color, grey-a);
     text-align: left;
     cursor: pointer;
@@ -27,6 +26,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      margin-bottom: 24px;
 
       .author-avatar {
         @include mixins.pxRem(width, 24);
@@ -43,14 +43,12 @@
     .blog-content {
       display: flex;
       justify-content: space-between;
-      min-height: 160px;
 
       .blog-info {
         flex: 1 1 auto;
         display: flex;
         flex-direction: column;
         min-width: 0;
-        padding-bottom: 20px;
 
         .blog-title {
           @include mixins.pxRem(font-size, map.get(variables.$font-size, lg));
@@ -67,18 +65,19 @@
 
         .blog-description {
           @include mixins.pxRem(font-size, map.get(variables.$font-size, sm));
+          min-height: calc(2 * map.get(variables.$font-size, sm) * 1.2);
           color: map.get(variables.$color, slate-grey-a);
           display: -webkit-box;
           -webkit-line-clamp: 2;
           -webkit-box-orient: vertical;
           overflow: hidden;
           line-height: 1.2;
+          margin-bottom: 30px;
         }
 
         .blog-created-at {
           @include mixins.pxRem(font-size, map.get(variables.$font-size, xs));
           color: map.get(variables.$color, state-grey-b);
-          margin-top: auto;
         }
       }
 

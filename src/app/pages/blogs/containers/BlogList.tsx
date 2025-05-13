@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Post } from '@shared/models/post';
 import { getPublicPosts } from '@shared/services/blog.service';
-import BlogListItem from './BlogListItem';
-import BlogListItemSkeleton from './BlogListItemSkeleton';
+import BlogListItem from '../components/BlogListItem';
+import BlogListItemSkeleton from '../components/BlogListItemSkeleton';
 
 const SIZE_PAGE = 5;
 const SIZE_SKELETON = 3;
@@ -53,9 +53,8 @@ const BlogList = ({ filterTag }: BlogListProps) => {
     fetchPosts();
   }, [page, filterTag]);
 
-  // Intersection Observer cho infinite scroll
   const lastPostRef = useCallback(
-    (node: HTMLDivElement | null) => {
+    (node: HTMLLIElement | null) => {
       if (isLoading || isBouncingUp) return;
       if (observer.current) observer.current.disconnect();
 
@@ -85,14 +84,26 @@ const BlogList = ({ filterTag }: BlogListProps) => {
         {posts.map((post, index) => {
           const isLast = index === posts.length - 1;
           return (
-            <div ref={isLast ? lastPostRef : null} key={post.id}>
+            <li
+              className="list-item"
+              key={post.id}
+              ref={isLast ? lastPostRef : null}
+            >
               <BlogListItem post={post} />
-            </div>
+            </li>
           );
         })}
 
         <div className="blog-loading-wrapper">
-          {isLoading && posts.length > 0 && <BlogListItemSkeleton />}
+          {isLoading && posts.length > 0 && (
+            <ul className="list list-blog">
+              {Array.from({ length: 1 }).map((_, i) => (
+                <li className="list-item" key={i}>
+                  <BlogListItemSkeleton />
+                </li>
+              ))}
+            </ul>
+          )}
           {!hasMore && <p className="blog-notification">No more blogs.</p>}
         </div>
       </ul>
@@ -100,7 +111,9 @@ const BlogList = ({ filterTag }: BlogListProps) => {
       {isLoading && posts.length === 0 && (
         <ul className="list list-blog">
           {Array.from({ length: SIZE_SKELETON }).map((_, i) => (
-            <BlogListItemSkeleton key={i} />
+            <li className="list-item" key={i}>
+              <BlogListItemSkeleton />
+            </li>
           ))}
         </ul>
       )}
