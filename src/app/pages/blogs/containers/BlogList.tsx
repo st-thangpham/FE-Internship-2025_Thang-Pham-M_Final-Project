@@ -16,9 +16,9 @@ const BlogList = ({ filterTag }: BlogListProps) => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const [isBouncingUp, setIsBouncingUp] = useState(false);
 
   const observer = useRef<IntersectionObserver | null>(null);
+  const bottomRef = useRef<HTMLLIElement | null>(null);
 
   useEffect(() => {
     setPosts([]);
@@ -30,14 +30,8 @@ const BlogList = ({ filterTag }: BlogListProps) => {
     const fetchPosts = async () => {
       setIsLoading(true);
       try {
-        const res = await getPublicPosts(page, SIZE_PAGE);
-        let fetchedPosts = res.data;
-
-        if (filterTag) {
-          fetchedPosts = fetchedPosts.filter((post) =>
-            post.tags?.includes(filterTag)
-          );
-        }
+        const res = await getPublicPosts(page, SIZE_PAGE, filterTag);
+        const fetchedPosts = res.data;
 
         setPosts((prev) => [...prev, ...fetchedPosts]);
         if (fetchedPosts.length < SIZE_PAGE) {
@@ -55,67 +49,58 @@ const BlogList = ({ filterTag }: BlogListProps) => {
 
   const lastPostRef = useCallback(
     (node: HTMLLIElement | null) => {
-      if (isLoading || isBouncingUp) return;
+      if (isLoading || !hasMore) return;
       if (observer.current) observer.current.disconnect();
 
       observer.current = new IntersectionObserver((entries) => {
         const firstEntry = entries[0];
-        if (firstEntry.isIntersecting && hasMore) {
-          setIsBouncingUp(true);
-          setTimeout(() => {
-            setPage((prev) => prev + 1);
-            setIsBouncingUp(false);
-          }, 500);
+        if (firstEntry.isIntersecting) {
+          setPage((prev) => prev + 1);
         }
       });
 
       if (node) observer.current.observe(node);
     },
-    [isLoading, isBouncingUp, hasMore]
+    [isLoading, hasMore]
   );
+
+  useEffect(() => {
+    if (bottomRef.current) {
+      lastPostRef(bottomRef.current);
+    }
+  }, [posts, lastPostRef]);
+
+  const renderSkeletons = (count: number) =>
+    Array.from({ length: count }).map((_, i) => (
+      <li className="list-item" key={`skeleton-${i}`}>
+        <BlogListItemSkeleton />
+      </li>
+    ));
 
   return (
     <>
-      <ul
-        className={`list list-blog ${isLoading ? 'is-loading' : ''} ${
-          isBouncingUp ? 'bounce-up' : ''
-        }`}
-      >
+      <ul className="list list-blog">
         {posts.map((post, index) => {
           const isLast = index === posts.length - 1;
           return (
             <li
               className="list-item"
               key={post.id}
-              ref={isLast ? lastPostRef : null}
+              ref={isLast ? bottomRef : null}
             >
               <BlogListItem post={post} />
             </li>
           );
         })}
 
-        <div className="blog-loading-wrapper">
-          {isLoading && posts.length > 0 && (
-            <ul className="list list-blog">
-              {Array.from({ length: 1 }).map((_, i) => (
-                <li className="list-item" key={i}>
-                  <BlogListItemSkeleton />
-                </li>
-              ))}
-            </ul>
-          )}
-          {!hasMore && <p className="blog-notification">No more blogs.</p>}
-        </div>
+        {isLoading && posts.length > 0 && renderSkeletons(1)}
+        {!hasMore && posts.length > 0 && (
+          <li className="blog-notification">No more blogs.</li>
+        )}
       </ul>
 
       {isLoading && posts.length === 0 && (
-        <ul className="list list-blog">
-          {Array.from({ length: SIZE_SKELETON }).map((_, i) => (
-            <li className="list-item" key={i}>
-              <BlogListItemSkeleton />
-            </li>
-          ))}
-        </ul>
+        <ul className="list list-blog">{renderSkeletons(SIZE_SKELETON)}</ul>
       )}
     </>
   );

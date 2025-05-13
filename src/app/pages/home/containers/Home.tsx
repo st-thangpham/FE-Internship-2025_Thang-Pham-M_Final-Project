@@ -10,7 +10,9 @@ const Home = () => {
         <div className="page-inner">
           <div className="content-layout">
             <div className="main-content">
-              <BlogList />
+              <section className="section section-blog">
+                <BlogList />
+              </section>
             </div>
             <aside className="sidebar">
               <RecommendedTopics />

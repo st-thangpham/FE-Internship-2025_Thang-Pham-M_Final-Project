@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { formatDate } from '@app/core/helpers/date-format.helper';
 import { Post } from '@shared/models/post';
@@ -12,6 +12,7 @@ const BlogDetail = () => {
   const { id } = useParams<{ id: string }>();
   const [post, setPost] = useState<Post>(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!id) return;
@@ -33,6 +34,10 @@ const BlogDetail = () => {
   const getCoverImage = () => {
     if (!post?.cover || post.cover === 'cover') return defaultCover;
     return post.cover;
+  };
+
+  const handleClick = (tag: string) => {
+    navigate(`/blogs?tag=${encodeURIComponent(tag)}`);
   };
 
   if (loading) {
@@ -58,33 +63,58 @@ const BlogDetail = () => {
 
   return (
     <div className="page page-blog-detail">
-      <h2 className="title">{post.title}</h2>
-      <h3 className="description">{post.description}</h3>
+      <article className="blog">
+        <div className="blog-header">
+          <h2 className="title">{post.title}</h2>
+          <h3 className="description">{post.description}</h3>
 
-      <div className="blog-meta">
-        <div className="author">
-          <img
-            src={post.user.picture || defaultAvatar}
-            alt={post.user.displayName}
-            className="author-avatar"
-          />
-          <span className="author-name txt-link">{post.user.displayName}</span>
+          <div className="blog-author">
+            <div className="author-img">
+              <img
+                src={post.user.picture || defaultAvatar}
+                alt={post.user.displayName}
+                className="author-avatar"
+              />
+              <span className="author-name txt-link">
+                {post.user.displayName}
+              </span>
+            </div>
+            <span className="created-date">{formatDate(post.createdAt)}</span>
+          </div>
         </div>
-        <span className="created-date">{formatDate(post.createdAt)}</span>
-      </div>
 
-      <div className="line"></div>
+        <div className="line"></div>
 
-      {post.cover && (
-        <div className="cover-wrapper">
-          <img src={getCoverImage()} alt="Cover" className="cover-image" />
-        </div>
-      )}
+        {post.cover && (
+          <div className="blog-cover">
+            <div className="cover-wrapper">
+              <img src={getCoverImage()} alt="Cover" className="cover-image" />
+            </div>
+          </div>
+        )}
 
-      <div
-        className="blog-content"
-        dangerouslySetInnerHTML={{ __html: post.content }}
-      />
+        <div
+          className="blog-content"
+          dangerouslySetInnerHTML={{ __html: post.content }}
+        />
+
+        {post.tags?.length > 0 && (
+          <div className="blog-tags">
+            <h4 className="tag-title">Tags</h4>
+            <ul className="tag-grid-list">
+              {post.tags.map((tag, index) => (
+                <li
+                  key={index}
+                  className="tag-item"
+                  onClick={() => handleClick(tag)}
+                >
+                  #{tag}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </article>
     </div>
   );
 };

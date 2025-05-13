@@ -3,8 +3,16 @@ import { Post, PostResponse } from '@shared/models/post';
 
 const api = new ApiService();
 
-export const getPublicPosts = (page, size): Promise<PostResponse> => {
-  return api.get(['posts', 'public'], { page, size });
+export const getPublicPosts = (
+  page: number,
+  size: number,
+  tags?: string
+): Promise<PostResponse> => {
+  const params: Record<string, any> = { page, size };
+  if (tags) {
+    params.tags = tags;
+  }
+  return api.get(['posts', 'public'], params);
 };
 
 export const createPost = (params = {}): Promise<PostResponse> => {

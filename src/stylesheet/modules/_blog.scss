@@ -11,7 +11,6 @@
   margin: 0 auto;
   max-width: 728px;
 
-  // Blog item styles
   .list-item {
     width: 100%;
     display: flex;
@@ -104,14 +103,10 @@
     }
   }
 
-  &.is-loading {
-    scroll-behavior: smooth;
-
-    &::after {
-      content: '';
-      display: block;
-      height: 40px;
-    }
+  &.is-loading::after {
+    content: '';
+    display: block;
+    height: 40px;
   }
 
   &.bounce-trigger .blog-loading-wrapper {
@@ -124,13 +119,13 @@
     align-items: center;
     padding: 20px 0 40px;
     min-height: 60px;
+  }
 
-    .blog-notification {
-      @include mixins.pxRem(font-size, map.get(variables.$font-size, lg));
-      color: map.get(variables.$color, slate-grey-a);
-      opacity: 0.7;
-      transition: opacity 0.3s;
-    }
+  .blog-notification {
+    @include mixins.pxRem(font-size, map.get(variables.$font-size, lg));
+    color: map.get(variables.$color, slate-grey-a);
+    opacity: 0.7;
+    transition: opacity 0.3s;
   }
 
   // Animations

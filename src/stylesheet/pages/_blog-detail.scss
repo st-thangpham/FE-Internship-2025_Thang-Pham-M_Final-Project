@@ -26,7 +26,7 @@
     margin-bottom: 24px;
   }
 
-  .blog-meta {
+  .blog-author {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -34,7 +34,7 @@
     color: map.get(variables.$color, slate-grey-a);
     margin-bottom: 24px;
 
-    .author {
+    .author-img {
       display: flex;
       align-items: center;
       gap: 12px;
@@ -154,6 +154,17 @@
       color: map.get(variables.$color, slate-grey-a);
       font-style: italic;
       padding: 40px 0;
+    }
+  }
+
+  .blog-tags {
+    margin-bottom: 32px;
+
+    .tag-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: map.get(variables.$color, slate-grey-a);
     }
   }
 }
