@@ -1,7 +1,7 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 
-import { Footer } from '@app/shared/components/layout';
+import { FooterBasic } from '@app/shared/components/layout/FooterBasic';
 
 const Auth = () => {
   return (
@@ -9,7 +9,7 @@ const Auth = () => {
       <main className="main">
         <Outlet />
       </main>
-      <Footer />
+      <FooterBasic />
     </div>
   );
 };

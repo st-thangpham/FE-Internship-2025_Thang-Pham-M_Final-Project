@@ -1,4 +1,6 @@
 @use "sass:math";
+@use "sass:map";
+@use "../base/variables";
 @use "../base/mixins";
 
 // Mixins for build grid
@@ -25,23 +27,36 @@ $grid-columns: 12;
 // End mixins for build grid
 $grid-gutter: 12px;
 $container-padding: 24px;
-$container-width: 100vw;
+$container-width: calc(1336px + 48px);
 
 .container {
   padding-left: $container-padding;
   padding-right: $container-padding;
-  margin: 0 auto;
   width: 100%;
   max-width: $container-width;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  align-items: center;
+  min-height: calc(100vh - map.get(variables.$layout, footer-height));
 }
 
 .no-container {
-  margin: 0 -24px;
+  position: relative;
+  padding-left: $container-padding;
+  padding-right: $container-padding;
+  margin: 0 auto;
+  width: 100%;
+}
 
-  @include mixins.respond-below(medium) {
-    margin: 0 -12px;
-  }
+.basic-header-container {
+  position: relative;
+  padding-left: $container-padding;
+  padding-right: $container-padding;
+  margin: 0 auto;
+  width: 100%;
+  max-width: calc($container-width - 240px);
 }
 
 .row {

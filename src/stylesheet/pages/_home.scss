@@ -2,30 +2,63 @@
 @use "../base/mixins";
 @use "../base/variables";
 
-.home-page {
-  .page-inner {
+.page-home {
+  .content-layout {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    margin-top: 20px
+    flex-direction: row;
+    height: auto;
+
+    @include mixins.respond-below(wide) {
+      flex-direction: column;
+    }
   }
 
-  .logo {
-    @include mixins.pxRem(height, 80);
-    @include mixins.pxRem(width, 80);
-    @include mixins.pxRem(margin-bottom, 36);
-    will-change: filter;
-    transition: filter 300ms;
+  .main-content {
+    flex: 1 1 auto;
+    display: flex;
+    justify-content: center;
+
+    .list-blog {
+      max-width: 680px;
+    }
   }
 
-  h1 {
-    @include mixins.pxRem(font-size, 36);
-    @include mixins.pxRem(margin-bottom, 24);
-    font-weight: 600;
-  }
+  .sidebar {
+    flex: 0 0 368px;
+    padding: 0 40px;
+    position: sticky;
+    top: calc(map.get(variables.$layout, header-height) + 20px);
+    height: 100vh;
+    align-self: flex-start;
+    border-left: 1px solid map.get(variables.$color, grey-a);
+    transition: top 0.3s ease;
 
-  .desc {
-    @include mixins.pxRem(font-size, 24);
+    body.header-hidden & {
+      top: 20px;
+    }
+
+    .recommended-topics {
+      .title {
+        font-weight: 600;
+        @include mixins.pxRem(font-size, 18);
+        @include mixins.pxRem(margin-bottom, 16);
+      }
+    }
+
+    @include mixins.respond-below(medium) {
+      display: none;
+    }
+
+    @include mixins.respond-between(wide, largest) {
+      padding: 0 32px;
+    }
+
+    @include mixins.respond-between(medium, wide) {
+      padding: 0 24px;
+    }
+
+    @include mixins.respond-below(medium) {
+      padding: 0 16px;
+    }
   }
 }

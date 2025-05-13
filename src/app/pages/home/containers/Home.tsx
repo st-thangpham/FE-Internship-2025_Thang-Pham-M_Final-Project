@@ -1,12 +1,21 @@
 import React from 'react';
-import BlogList from './BlogList';
+import { Footer } from '@app/shared/components/layout';
+import BlogList from '../../blogs/containers/BlogList';
+import RecommendedTopics from './RecommendedTopics';
 
 const Home = () => {
   return (
-    <div className="home-page">
+    <div className="page page-home">
       <div className="container">
         <div className="page-inner">
-          <BlogList />
+          <div className="content-layout">
+            <div className="main-content">
+              <BlogList />
+            </div>
+            <aside className="sidebar">
+              <RecommendedTopics />
+            </aside>
+          </div>
         </div>
       </div>
     </div>
