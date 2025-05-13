@@ -1,3 +1,7 @@
+@use "sass:map";
+@use "../base/mixins";
+@use "../base/variables";
+
 @import url('https://fonts.googleapis.com/css2?family=Oswald&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
@@ -22,6 +26,16 @@
   .editor-container_classic-editor .editor-container__editor {
     min-width: 728px;
     max-width: 728px;
+
+    .ck-rounded-corners .ck.ck-editor__top .ck-sticky-panel .ck-sticky-panel__content {
+      border-radius: 6px;
+    }
+
+    .ck-editor__main>.ck-editor__editable {
+      min-height: 400px;
+      border-radius: 6px;
+      border-color: map.get(variables.$color, grey-b);
+    }
   }
 
   .ck-content h3.category {

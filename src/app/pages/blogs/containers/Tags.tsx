@@ -17,7 +17,7 @@ const Tags = () => {
   };
 
   const handleClick = (tag: string) => {
-    navigate(`/blog?tag=${encodeURIComponent(tag)}`);
+    navigate(`/blogs?tag=${encodeURIComponent(tag)}`);
   };
 
   const scroll = (direction: 'left' | 'right') => {
