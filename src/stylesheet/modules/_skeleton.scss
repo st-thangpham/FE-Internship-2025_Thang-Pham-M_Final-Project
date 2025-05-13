@@ -1,0 +1,63 @@
+@use "sass:map";
+@use "sass:list";
+@use "sass:meta";
+@use "../base/mixins";
+@use "../base/variables";
+
+.skeleton {
+  background-color: #d9d9d9;
+  border-radius: 4px;
+  animation: skeleton-loading 1.2s infinite ease-in-out;
+  opacity: 1;
+
+  &.skeleton-avatar {
+    @include mixins.pxRem(width, 24);
+    @include mixins.pxRem(height, 24);
+  }
+
+  &.skeleton-author-name {
+    @include mixins.pxRem(width, 100);
+    @include mixins.pxRem(height, 14);
+  }
+
+  &.skeleton-title {
+    @include mixins.pxRem(width, 250);
+    @include mixins.pxRem(height, 24);
+    margin-bottom: 8px;
+  }
+
+  &.skeleton-description {
+    @include mixins.pxRem(width, 250);
+    @include mixins.pxRem(height, 20);
+    margin-bottom: 30px;
+  }
+
+  &.skeleton-date {
+    @include mixins.pxRem(width, 60);
+    @include mixins.pxRem(height, 12);
+  }
+
+  &.skeleton-cover {
+    width: 80px;
+    height: 53px;
+
+    @include mixins.respond-above(medium) {
+      width: 160px;
+      height: 107px;
+    }
+  }
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-color: #d9d9d9;
+  }
+
+  50% {
+    background-color: #ececec;
+  }
+
+  100% {
+    background-color: #d9d9d9;
+  }
+}

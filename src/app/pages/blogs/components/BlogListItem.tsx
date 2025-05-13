@@ -31,7 +31,7 @@ const BlogListItem: React.FC<BlogListItemProps> = ({ post }) => {
   };
 
   return (
-    <li className="list-item">
+    <>
       <div className="blog-author">
         <img
           src={post.user.picture || defaultAvatar}
@@ -59,7 +59,7 @@ const BlogListItem: React.FC<BlogListItemProps> = ({ post }) => {
           </div>
         )}
       </a>
-    </li>
+    </>
   );
 };
 
