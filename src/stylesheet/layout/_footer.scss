@@ -40,4 +40,8 @@
   p {
     text-align: center;
   }
+
+  @include mixins.respond-below(medium) {
+    display: none;
+  }
 }

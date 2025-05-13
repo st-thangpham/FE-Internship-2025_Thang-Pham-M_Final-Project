@@ -1,6 +1,9 @@
 import React from 'react';
 
+import { useNavigate } from 'react-router-dom';
+
 import { Post } from '@shared/models/post';
+import { formatDate } from '@app/core/helpers/date-format.helper';
 
 import defaultAvatar from '/imgs/avatar.jpg';
 import logo from '/imgs/logo.png';
@@ -10,24 +13,12 @@ interface BlogListItemProps {
 }
 
 const BlogListItem: React.FC<BlogListItemProps> = ({ post }) => {
+  const navigate = useNavigate();
+
   const handleImageError = (
     e: React.SyntheticEvent<HTMLImageElement, Event>
   ) => {
     e.currentTarget.src = logo;
-  };
-
-  const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-    const now = new Date();
-
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-
-    if (date.getFullYear() === now.getFullYear()) {
-      return `${day}/${month}`;
-    }
-
-    return `${day}/${month}/${date.getFullYear()}`;
   };
 
   return (
@@ -41,7 +32,7 @@ const BlogListItem: React.FC<BlogListItemProps> = ({ post }) => {
         <span className="author-name txt-link">{post.user.displayName}</span>
       </div>
 
-      <a className="blog-content">
+      <a className="blog-content" onClick={() => navigate(`/blogs/${post.id}`)}>
         <div className="blog-info">
           <h3 className="blog-title">{post.title}</h3>
           <p className="blog-description">{post.description}</p>

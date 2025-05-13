@@ -5,7 +5,7 @@ import { tags } from '@shared/contexts/constant';
 const RecommendedTopics = () => {
   const navigate = useNavigate();
   const handleClick = (tag: string) => {
-    navigate(`/blog?tag=${encodeURIComponent(tag)}`);
+    navigate(`/blogs?tag=${encodeURIComponent(tag)}`);
   };
 
   return (

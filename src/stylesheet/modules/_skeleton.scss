@@ -5,8 +5,8 @@
 @use "../base/variables";
 
 .skeleton {
-  background-color: #d9d9d9;
-  border-radius: 4px;
+  background-color: #f0f0f0;
+  border-radius: 6px;
   animation: skeleton-loading 1.2s infinite ease-in-out;
   opacity: 1;
 
@@ -21,15 +21,15 @@
   }
 
   &.skeleton-title {
-    @include mixins.pxRem(width, 250);
+    @include mixins.pxRem(width, 350);
     @include mixins.pxRem(height, 24);
     margin-bottom: 8px;
   }
 
   &.skeleton-description {
-    @include mixins.pxRem(width, 250);
+    @include mixins.pxRem(width, 350);
     @include mixins.pxRem(height, 20);
-    margin-bottom: 30px;
+    margin-bottom: 20px;
   }
 
   &.skeleton-date {
@@ -50,14 +50,14 @@
 
 @keyframes skeleton-loading {
   0% {
-    background-color: #d9d9d9;
+    background-color: #f0f0f0;
   }
 
   50% {
-    background-color: #ececec;
+    background-color: #e0e0e0;
   }
 
   100% {
-    background-color: #d9d9d9;
+    background-color: #f0f0f0;
   }
 }

@@ -1,0 +1,234 @@
+@use "sass:map";
+@use "../base/mixins";
+@use "../base/variables";
+
+.page-blog-detail {
+  max-width: 728px;
+  margin: 0 auto;
+  padding: 40px 24px;
+  font-family: 'Lato';
+  line-height: 1.6;
+  word-break: break-word;
+  color: map.get(variables.$color, black);
+
+  .title {
+    font-family: 'Oswald';
+    font-size: 42px;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+
+  .description {
+    font-family: 'Oswald';
+    font-size: 20px;
+    font-weight: 500;
+    color: #666;
+    margin-bottom: 24px;
+  }
+
+  .blog-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+    color: map.get(variables.$color, slate-grey-a);
+    margin-bottom: 24px;
+
+    .author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      .author-avatar {
+        width: 32px;
+        height: 32px;
+        object-fit: cover;
+        @include mixins.border-radius(4px);
+      }
+
+      .author-name {
+        font-weight: 500;
+      }
+    }
+
+    .created-date {
+      white-space: nowrap;
+    }
+  }
+
+  .line {
+    margin-bottom: 32px;
+  }
+
+  .cover-wrapper {
+    margin-bottom: 32px;
+
+    .cover-image {
+      width: 100%;
+      height: auto;
+      max-height: 400px;
+      object-fit: cover;
+      border-radius: map.get(variables.$border-radius, default);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+  }
+
+  .blog-content {
+    font-size: map.get(variables.$font-size, normal);
+
+    h1,
+    h2,
+    h3 {
+      font-family: 'Oswald';
+      font-weight: bold;
+      margin-top: 1.5em;
+      margin-bottom: 0.5em;
+    }
+
+    p {
+      margin: 0 0 1.2em;
+
+      strong {
+        font-weight: 600;
+        color: map.get(variables.$color, primary);
+      }
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      margin: 1.5em 0;
+      border-radius: 6px;
+    }
+
+    figure.image {
+      display: flex;
+      justify-content: center;
+      margin: 1.5em 0;
+
+      img {
+        border-radius: 6px;
+      }
+    }
+
+    ul,
+    ol {
+      padding-left: 1.5em;
+      margin-bottom: 1.5em;
+    }
+
+    blockquote {
+      border-left: 4px solid map.get(variables.$color, primary);
+      padding-left: 16px;
+      color: map.get(variables.$color, slate-grey-b);
+      background-color: map.get(variables.$color, grey-a);
+      font-style: italic;
+      margin: 1.5em 0;
+    }
+
+    code {
+      background-color: #f4f4f4;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 90%;
+    }
+
+    pre {
+      background-color: #f4f4f4;
+      padding: 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: monospace;
+      font-size: 90%;
+      margin-bottom: 1.5em;
+    }
+  }
+
+  // Loading and error state
+  p {
+
+    &.loading,
+    &.error {
+      text-align: center;
+      color: map.get(variables.$color, slate-grey-a);
+      font-style: italic;
+      padding: 40px 0;
+    }
+  }
+}
+
+// Skeleton loading styles
+.skeleton-title,
+.skeleton-description,
+.skeleton-meta,
+.skeleton-cover,
+.skeleton-content {
+  background-color: #f0f0f0;
+  border-radius: 6px;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+.skeleton-title {
+  height: 48px;
+  width: 70%;
+  margin-bottom: 16px;
+}
+
+.skeleton-description {
+  height: 24px;
+  width: 50%;
+  margin-bottom: 32px;
+}
+
+.skeleton-meta {
+  height: 24px;
+  width: 100%;
+  margin-bottom: 32px;
+}
+
+.skeleton-cover {
+  height: 300px;
+  width: 100%;
+  margin-bottom: 32px;
+  border-radius: 10px;
+}
+
+.skeleton-content {
+  height: 300px;
+  width: 100%;
+  margin-bottom: 32px;
+}
+
+// Pulse animation
+@keyframes pulse {
+  0% {
+    background-color: #f0f0f0;
+  }
+
+  50% {
+    background-color: #e0e0e0;
+  }
+
+  100% {
+    background-color: #f0f0f0;
+  }
+}
+
+// Not found styling
+.page-blog-detail.not-found {
+  text-align: center;
+  padding: 80px 20px;
+
+  h2 {
+    font-size: 28px;
+    font-family: 'Oswald';
+    margin-bottom: 16px;
+    color: map.get(variables.$color, danger);
+  }
+
+  p {
+    font-size: 16px;
+    color: map.get(variables.$color, slate-grey-a);
+  }
+}

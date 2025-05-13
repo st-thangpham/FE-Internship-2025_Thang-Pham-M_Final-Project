@@ -58,7 +58,7 @@ input:-webkit-autofill:active {
         left: 0;
         bottom: 0;
         width: 0;
-        background-color: map.get(vars.$color, primary);
+        background-color: map.get(vars.$color, grey-b);
         transition: all 0.3s ease-in-out;
       }
 
