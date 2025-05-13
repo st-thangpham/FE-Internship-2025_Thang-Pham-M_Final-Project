@@ -170,4 +170,17 @@ $button-sizes: (
       }
     }
   }
+
+  &.btn-submit {
+    @include mixins.pxRem(width, 70);
+    @include mixins.pxRem(height, 30);
+    @include mixins.border-radius(4px);
+    background-color: map.get(variables.$color, success);
+    color: map.get(variables.$color, white);
+    font-weight: 500;
+    font-size: map.get(variables.$font-size, sm);
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+  }
 }

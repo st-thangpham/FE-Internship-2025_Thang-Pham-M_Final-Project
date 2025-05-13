@@ -50,6 +50,15 @@ $container-width: calc(1336px + 48px);
   width: 100%;
 }
 
+.basic-header-container {
+  position: relative;
+  padding-left: $container-padding;
+  padding-right: $container-padding;
+  margin: 0 auto;
+  width: 100%;
+  max-width: calc($container-width - 240px);
+}
+
 .row {
   display: flex;
   flex-wrap: wrap;

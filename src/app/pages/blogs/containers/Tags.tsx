@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { tags } from '@app/core/constants/utils';
+import { tags } from '@shared/contexts/constant';
 
 const Tags = () => {
   const navigate = useNavigate();

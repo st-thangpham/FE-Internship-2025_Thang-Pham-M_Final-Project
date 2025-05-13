@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
-import { tags } from '@app/core/constants/utils';
+import { tags } from '@shared/contexts/constant';
 
 const RecommendedTopics = () => {
   const navigate = useNavigate();
