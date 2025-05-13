@@ -22,3 +22,8 @@ export const TAG_OPTIONS = tags.map((tag) => ({
   label: tag,
   value: tag,
 }));
+
+export const STATUS_OPTIONS = [
+  { label: 'Public', value: 'public' },
+  { label: 'Private', value: 'private' },
+];

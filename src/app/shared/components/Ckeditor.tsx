@@ -11,10 +11,6 @@ import React from 'react';
 const LICENSE_KEY =
   'eyJhbGciOiJFUzI1NiJ9.eyJleHAiOjE3NDgzMDM5OTksImp0aSI6IjI4YmEyZmMwLTUwNjctNGJlZi05NzM0LTE2Njk3Zjc3MTc1YSIsInVzYWdlRW5kcG9pbnQiOiJodHRwczovL3Byb3h5LWV2ZW50LmNrZWRpdG9yLmNvbSIsImRpc3RyaWJ1dGlvbkNoYW5uZWwiOlsiY2xvdWQiLCJkcnVwYWwiLCJzaCJdLCJ3aGl0ZUxhYmVsIjp0cnVlLCJsaWNlbnNlVHlwZSI6InRyaWFsIiwiZmVhdHVyZXMiOlsiKiJdLCJ2YyI6IjgzOTExODMyIn0.--XLR0j-7KbSk_tHi2d0y38JFM99-B_dfamx_J7-zBEDG65k-NfERXti08ImCNnoTyf1XgC3p1gGWkz8hPSvtw';
 
-const CLOUDINARY_UPLOAD_URL =
-  'https://api.cloudinary.com/v1_1/dhepc7u15/image/upload';
-const CLOUDINARY_UPLOAD_PRESET = 'blog_upload';
-
 type CkeditorProps = {
   onChange?: (data: string) => void;
 };
@@ -322,7 +318,7 @@ export default function Ckeditor({ onChange }: CkeditorProps) {
             editor.plugins.get('FileRepository').createUploadAdapter = (
               loader: any
             ) => {
-              return new CloudinaryUploadAdapter(loader);
+              return new S3UploadAdapter(loader);
             };
           },
         ],
@@ -357,55 +353,56 @@ export default function Ckeditor({ onChange }: CkeditorProps) {
 // Custom Upload Adapter
 // --------------------
 
-class CloudinaryUploadAdapter {
+class S3UploadAdapter {
   loader: any;
-  xhr: XMLHttpRequest;
 
   constructor(loader: any) {
     this.loader = loader;
-    this.xhr = new XMLHttpRequest();
   }
 
-  upload() {
-    return this.loader.file.then((file: File) => {
-      return new Promise((resolve, reject) => {
-        this._initRequest();
-        this._initListeners(resolve, reject, file);
-        this._sendRequest(file);
-      });
-    });
-  }
+  async upload() {
+    const file = await this.loader.file;
+    const fileName = encodeURIComponent(file.name);
+    const fileType = encodeURIComponent(file.type);
+    const token = localStorage.getItem('token');
 
-  abort() {
-    this.xhr?.abort();
-  }
+    if (!token) {
+      throw new Error('Access token not found in localStorage');
+    }
 
-  _initRequest() {
-    this.xhr.open('POST', CLOUDINARY_UPLOAD_URL, true);
-    this.xhr.responseType = 'json';
-  }
-
-  _initListeners(resolve: any, reject: any, file: File) {
-    const genericErrorText = `Couldn't upload file: ${file.name}.`;
-
-    this.xhr.addEventListener('error', () => reject(genericErrorText));
-    this.xhr.addEventListener('abort', () => reject());
-    this.xhr.addEventListener('load', () => {
-      const response = this.xhr.response;
-      if (!response || response.error) {
-        return reject(response?.error?.message || genericErrorText);
+    const res = await fetch(
+      `https://simpcat.online/api/v1/signatures?type_upload=cover-post&file_name=${fileName}&file_type=${fileType}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
+    );
 
-      resolve({
-        default: response.secure_url,
-      });
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.error('Failed to get signed URL:', errorText);
+      throw new Error('Could not get signed URL');
+    }
+
+    const { signedRequest, url } = await res.json();
+
+    const uploadRes = await fetch(signedRequest, {
+      method: 'PUT',
+      body: file,
     });
+
+    if (!uploadRes.ok) {
+      const errorText = await uploadRes.text();
+      console.error('S3 upload failed:', errorText);
+      throw new Error('S3 upload failed');
+    }
+
+    return {
+      default: url,
+    };
   }
 
-  _sendRequest(file: File) {
-    const data = new FormData();
-    data.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-    data.append('file', file);
-    this.xhr.send(data);
-  }
+  abort() {}
 }
