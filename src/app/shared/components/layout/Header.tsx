@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import { AuthContext } from '@app/shared/contexts/auth.context';
@@ -13,6 +13,7 @@ export const Header = () => {
   const { isAuthenticated, user, clearUserSession } = useContext(AuthContext)!;
   const authStorage = new AuthStorageService();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [hidden, setHidden] = useState(false);
   const lastScrollY = useRef(0);
@@ -47,9 +48,11 @@ export const Header = () => {
     };
   }, []);
 
+  const isWritePage = location.pathname === '/write';
+
   return (
     <header className={`header ${hidden ? 'hidden' : ''}`}>
-      <div className="no-container">
+      <div className={isWritePage ? 'basic-header-container' : 'no-container'}>
         <nav className="navbar">
           <h1 className="navbar-brand">
             <NavLink to="/">
@@ -65,13 +68,35 @@ export const Header = () => {
                     Sign In
                   </NavLink>
                 </li>
+              ) : isWritePage ? (
+                <>
+                  <li className="nav-item">
+                    <button
+                      className="btn btn-submit"
+                      onClick={() => {
+                        const event = new Event('submitBlog');
+                        window.dispatchEvent(event);
+                      }}
+                    >
+                      Post
+                    </button>
+                  </li>
+                  <li className="nav-item">
+                    <button className="btn btn-avatar" onClick={handleLogout}>
+                      <img
+                        src={user?.picture || defaultAvatar}
+                        alt="Avatar"
+                        className="img"
+                      />
+                    </button>
+                  </li>
+                </>
               ) : (
                 <>
                   <li className="nav-item">
-                    <span className="nav-link btn btn-icon">
+                    <NavLink to="/write" className="nav-link btn btn-icon">
                       <img src={writeIcon} alt="writeIcon" />
-                      Write
-                    </span>
+                    </NavLink>
                   </li>
                   <li className="nav-item">
                     <button className="btn btn-avatar" onClick={handleLogout}>

@@ -46,7 +46,7 @@
       }
     }
 
-    @include mixins.respond-below(wide) {
+    @include mixins.respond-below(medium) {
       display: none;
     }
 

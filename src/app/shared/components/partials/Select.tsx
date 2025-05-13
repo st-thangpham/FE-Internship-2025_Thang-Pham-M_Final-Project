@@ -1,55 +1,71 @@
 import React from 'react';
-import { UseFormRegisterReturn } from 'react-hook-form';
+import ReactSelect from 'react-select';
+
+interface OptionType {
+  label: string;
+  value: string;
+}
 
 interface SelectProps {
   name: string;
   label?: string;
-  errorMsg?: string;
-  options: { label: string; value: string }[];
-  register?: UseFormRegisterReturn;
-  value?: string;
-  onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  value?: string | string[];
+  options: OptionType[];
+  onChange?: (e: any) => void;
   onBlur?: () => void;
   isRequired?: boolean;
+  isMulti?: boolean;
+  errorMsg?: string;
 }
 
 export const Select: React.FC<SelectProps> = ({
   name,
   label,
-  errorMsg,
-  options,
-  register,
   value,
+  options,
   onChange,
   onBlur,
   isRequired = false,
+  isMulti = false,
+  errorMsg,
 }) => {
   const isShowError = !!errorMsg;
+
+  const selectedValue = isMulti
+    ? options.filter((option) => (value as string[])?.includes(option.value))
+    : options.find((option) => option.value === value);
 
   return (
     <div className="form-group">
       <div className="input-group">
-        <select
-          id={name}
-          name={name}
-          className={`form-control form-select ${
-            isShowError ? 'is-invalid' : ''
-          }`}
-          value={value}
-          onChange={onChange}
+        <ReactSelect
+          inputId={name}
+          options={options}
+          isMulti={isMulti}
+          value={selectedValue}
+          onChange={(selected) => {
+            if (isMulti) {
+              onChange?.({
+                target: {
+                  name,
+                  value: (selected as OptionType[]).map((opt) => opt.value),
+                },
+              });
+            } else {
+              onChange?.({
+                target: {
+                  name,
+                  value: (selected as OptionType)?.value || '',
+                },
+              });
+            }
+          }}
           onBlur={onBlur}
-          {...register}
-        >
-          {options.map(({ value, label }) => (
-            <option value={value} key={value}>
-              {label}
-            </option>
-          ))}
-        </select>
+          classNamePrefix="form-control"
+        />
         {label && (
-          <label className="form-label" htmlFor={name}>
-            {label}
-            {isRequired && <span className="txt-danger">*</span>}
+          <label htmlFor={name} className="form-label">
+            {label} {isRequired && <span className="txt-danger">*</span>}
           </label>
         )}
       </div>

@@ -6,6 +6,7 @@
   @include mixins.pxRem(height, map.get(variables.$layout, header-height));
   display: flex;
   align-items: center;
+  justify-content: space-between;
   background-color: map.get(variables.$color, white);
   position: fixed;
   width: 100%;
@@ -42,7 +43,7 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    @include mixins.pxRem(gap, 44);
+    @include mixins.pxRem(gap, 16px);
 
     .nav-item {
       @include mixins.pxRem(margin-left, 12);

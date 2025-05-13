@@ -16,6 +16,20 @@ const BlogListItem: React.FC<BlogListItemProps> = ({ post }) => {
     e.currentTarget.src = logo;
   };
 
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+    const now = new Date();
+
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+
+    if (date.getFullYear() === now.getFullYear()) {
+      return `${day}/${month}`;
+    }
+
+    return `${day}/${month}/${date.getFullYear()}`;
+  };
+
   return (
     <li className="list-item">
       <div className="blog-author">
@@ -31,6 +45,7 @@ const BlogListItem: React.FC<BlogListItemProps> = ({ post }) => {
         <div className="blog-info">
           <h3 className="blog-title">{post.title}</h3>
           <p className="blog-description">{post.description}</p>
+          <p className="blog-created-at">{formatDate(post.createdAt)}</p>
         </div>
 
         {post.cover && (
