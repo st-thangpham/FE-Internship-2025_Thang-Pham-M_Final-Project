@@ -39,7 +39,6 @@ $border-light: #e0e0e0;
 
     .ck.ck-editor__main>.ck-editor__editable {
       min-height: 500px;
-      padding: 1.5rem;
       border-radius: 10px;
       border: 1px solid $border-light;
       background-color: #fff;
@@ -47,10 +46,8 @@ $border-light: #e0e0e0;
       font-family: 'Lato', sans-serif;
     }
 
-    .ck-toolbar {
-      border-radius: 8px 8px 0 0;
-      border: 1px solid $border-light;
-      border-bottom: none;
+    .ck-rounded-corners .ck.ck-editor__top .ck-sticky-panel .ck-sticky-panel__content {
+      border: none;
     }
   }
 }
@@ -126,17 +123,8 @@ $border-light: #e0e0e0;
 
 // Responsive
 @media (max-width: 768px) {
-  .page-write {
-    padding: 2rem 1rem;
-
-    .page-content {
-      padding: 1.5rem;
-    }
-  }
-
   .editor-container_classic-editor .editor-container__editor {
     .ck.ck-editor__main>.ck-editor__editable {
-      min-height: 350px;
       padding: 1rem;
     }
   }

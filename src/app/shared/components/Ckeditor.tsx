@@ -362,49 +362,56 @@ class S3UploadAdapter {
   }
 
   async upload() {
-    const file = await this.loader.file;
-    const fileName = encodeURIComponent(file.name);
-    const fileType = encodeURIComponent(file.type);
+    try {
+      const file = await this.loader.file;
+      const fileName = encodeURIComponent(file.name);
+      const fileType = encodeURIComponent(file.type);
 
-    const token = localStorage.getItem('token');
-    if (!token) {
-      throw new Error('Access token not found in localStorage');
-    }
-
-    const response = await fetch(
-      `https://simpc-fe-api.monoinfinity.net/api/upload/cover-post?fileName=${fileName}&fileType=${fileType}`,
-      {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('Access token not found in localStorage');
       }
-    );
 
-    if (!response.ok) {
-      throw new Error('Failed to get signed URL');
+      const response = await fetch(
+        `https://simpcat.online/api/v1/signatures?type_upload=cover-post&file_name=${fileName}&file_type=${fileType}`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const error = await response.text();
+        throw new Error('Failed to get signed URL');
+      }
+
+      const { signedRequest: signedUrl, url: accessUrl } =
+        await response.json();
+
+      const uploadRes = await fetch(signedUrl, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': file.type,
+        },
+        body: file,
+      });
+
+      if (!uploadRes.ok) {
+        const errText = await uploadRes.text();
+        console.error('Upload to S3 failed:', errText);
+        throw new Error('Upload to S3 failed');
+      }
+
+      return {
+        default: accessUrl,
+      };
+    } catch (error) {
+      console.error('Upload error:', error);
+      throw error;
     }
-
-    const { signedRequest, url } = await response.json();
-
-    const uploadRes = await fetch(signedRequest, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': file.type,
-      },
-      body: file,
-    });
-
-    if (!uploadRes.ok) {
-      throw new Error('Upload to S3 failed');
-    }
-
-    return {
-      default: url,
-    };
   }
 
-  abort() {
-    // Optional: handle abort
-  }
+  abort() {}
 }
