@@ -1,5 +1,4 @@
 import React from 'react';
-import { Footer } from '@app/shared/components/layout';
 import BlogList from '../../blogs/containers/BlogList';
 import RecommendedTopics from './RecommendedTopics';
 

@@ -76,7 +76,10 @@ const BlogDetail = () => {
                 alt={post.user.displayName}
                 className="author-avatar"
               />
-              <span className="author-name txt-link">
+              <span
+                className="author-name txt-link"
+                onClick={() => navigate(`/profile/${post.user.id}`)}
+              >
                 {post.user.displayName}
               </span>
             </div>
