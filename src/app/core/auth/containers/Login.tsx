@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { z } from 'zod';
 
-import { loginAccount } from '@app/core/services/auth.service';
+import { AuthService } from '@app/core/services/auth.service';
 import { Button, Input } from '@app/shared/components/partials';
 import { AuthContext } from '@app/shared/contexts/auth.context';
 
@@ -22,6 +22,8 @@ const schema = z.object({
 });
 
 type LoginFormData = z.infer<typeof schema>;
+
+const authService = new AuthService();
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -40,7 +42,7 @@ const Login = () => {
   const onSubmit = async (data: LoginFormData) => {
     try {
       setIsLoading(true);
-      const res = await loginAccount({
+      const res = await authService.signIn({
         email: data.email,
         password: data.password,
       });
