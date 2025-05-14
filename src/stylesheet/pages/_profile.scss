@@ -1,0 +1,90 @@
+@use "sass:map";
+@use "../base/mixins";
+@use "../base/variables";
+
+.page-profile {
+  .main-content {
+    flex-direction: column;
+    max-width: 680px;
+    margin: 0 auto;
+    justify-content: unset;
+  }
+
+  .profile-header {
+    @include mixins.pxRem(margin, 20px 0);
+
+    .display-name {
+      font-size: 2rem;
+      color: map.get(variables.$color, primary);
+      line-height: 1.2;
+    }
+  }
+
+  .profile-tabs {
+    @include mixins.pxRem(margin-bottom, 44px);
+    display: flex;
+    gap: 1rem;
+    border-bottom: 1px solid map.get(variables.$color, grey-a);
+
+    .tab {
+      padding: 0.75rem 1.25rem;
+      font-size: 1rem;
+      font-weight: 500;
+      color: map.get(variables.$color, grey-b);
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover {
+        color: map.get(variables.$color, primary);
+      }
+
+      &.active {
+        color: map.get(variables.$color, primary);
+        border-color: map.get(variables.$color, primary);
+        font-weight: 600;
+      }
+    }
+  }
+
+  .sidebar {
+    .profile-info {
+      display: flex;
+      flex-direction: column;
+      padding-top: 2rem;
+
+      .profile-avatar {
+        width: 96px;
+        height: 96px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 1rem;
+      }
+
+      .profile-name {
+        font-size: 1.25rem;
+        color: map.get(variables.$color, text-heading);
+        margin-bottom: 0.25rem;
+      }
+
+      .profile-email {
+        font-size: 0.875rem;
+        color: map.get(variables.$color, text-secondary);
+        margin-bottom: 1rem;
+      }
+
+      .edit-profile-link {
+        font-size: 0.875rem;
+        color: map.get(variables.$color, success);
+        cursor: pointer;
+        text-decoration: none;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}

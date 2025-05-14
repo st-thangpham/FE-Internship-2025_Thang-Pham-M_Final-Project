@@ -10,10 +10,18 @@ const SIZE_SKELETON = 3;
 
 type BlogListProps = {
   filterTag?: string;
+  userId?: string;
+  posts?: Post[];
+  hideAuthor?: boolean;
 };
 
-const BlogList = ({ filterTag }: BlogListProps) => {
-  const [posts, setPosts] = useState<Post[]>([]);
+const BlogList = ({
+  filterTag,
+  userId,
+  posts: propPosts,
+  hideAuthor = false,
+}: BlogListProps) => {
+  const [posts, setPosts] = useState<Post[]>(propPosts || []);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -23,12 +31,12 @@ const BlogList = ({ filterTag }: BlogListProps) => {
   const bottomRef = useRef<HTMLLIElement | null>(null);
 
   useEffect(() => {
-    setPosts([]);
-    setPage(1);
-    setHasMore(true);
-  }, [filterTag]);
+    if (propPosts) {
+      setPosts(propPosts);
+      setHasMore(false);
+      return;
+    }
 
-  useEffect(() => {
     const fetchPosts = async () => {
       setIsLoading(true);
       try {
@@ -38,11 +46,8 @@ const BlogList = ({ filterTag }: BlogListProps) => {
           filterTag
         );
         const fetchedPosts = res.data;
-
         setPosts((prev) => [...prev, ...fetchedPosts]);
-        if (fetchedPosts.length < SIZE_PAGE) {
-          setHasMore(false);
-        }
+        if (fetchedPosts.length < SIZE_PAGE) setHasMore(false);
       } catch (error) {
         console.error('Error fetching posts:', error);
       } finally {
@@ -50,31 +55,23 @@ const BlogList = ({ filterTag }: BlogListProps) => {
       }
     };
 
-    fetchPosts();
-  }, [page, filterTag]);
+    if (!propPosts && !userId) fetchPosts();
+  }, [page, filterTag, userId, propPosts]);
 
-  const lastPostRef = useCallback(
-    (node: HTMLLIElement | null) => {
-      if (isLoading || !hasMore) return;
-      if (observer.current) observer.current.disconnect();
-
-      observer.current = new IntersectionObserver((entries) => {
-        const firstEntry = entries[0];
-        if (firstEntry.isIntersecting) {
+  useEffect(() => {
+    if (!propPosts && bottomRef.current) {
+      const observerInstance = new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting && hasMore && !isLoading) {
           setPage((prev) => prev + 1);
         }
       });
 
-      if (node) observer.current.observe(node);
-    },
-    [isLoading, hasMore]
-  );
-
-  useEffect(() => {
-    if (bottomRef.current) {
-      lastPostRef(bottomRef.current);
+      observerInstance.observe(bottomRef.current);
+      return () => observerInstance.disconnect();
     }
-  }, [posts, lastPostRef]);
+
+    window.scrollTo(0, 0);
+  }, [posts, hasMore, isLoading, propPosts]);
 
   const renderSkeletons = (count: number) =>
     Array.from({ length: count }).map((_, i) => (
@@ -84,31 +81,25 @@ const BlogList = ({ filterTag }: BlogListProps) => {
     ));
 
   return (
-    <>
-      <ul className="list list-blog">
-        {posts.map((post, index) => {
-          const isLast = index === posts.length - 1;
-          return (
-            <li
-              className="list-item"
-              key={post.id}
-              ref={isLast ? bottomRef : null}
-            >
-              <BlogListItem post={post} />
-            </li>
-          );
-        })}
-
-        {isLoading && posts.length > 0 && renderSkeletons(1)}
-        {!hasMore && posts.length > 0 && (
-          <li className="blog-notification">No more blogs.</li>
-        )}
-      </ul>
-
-      {isLoading && posts.length === 0 && (
-        <ul className="list list-blog">{renderSkeletons(SIZE_SKELETON)}</ul>
+    <ul className="list list-blog">
+      {posts.map((post, index) => {
+        const isLast = index === posts.length - 1;
+        return (
+          <li
+            className="list-item"
+            key={post.id}
+            ref={!propPosts && isLast ? bottomRef : null}
+          >
+            <BlogListItem post={post} hideAuthor={hideAuthor} />
+          </li>
+        );
+      })}
+      {isLoading && posts.length > 0 && renderSkeletons(1)}
+      {!hasMore && posts.length > 0 && (
+        <li className="blog-notification">No more blogs.</li>
       )}
-    </>
+      {isLoading && posts.length === 0 && renderSkeletons(SIZE_SKELETON)}
+    </ul>
   );
 };
 

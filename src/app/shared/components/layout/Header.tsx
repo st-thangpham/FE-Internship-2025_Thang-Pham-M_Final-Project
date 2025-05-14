@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { NavLink, useNavigate, useLocation } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import { AuthContext } from '@app/shared/contexts/auth.context';
@@ -12,7 +12,6 @@ import writeIcon from '/icons/write.svg';
 export const Header = () => {
   const { isAuthenticated, user, clearUserSession } = useContext(AuthContext)!;
   const authStorage = new AuthStorageService();
-  const navigate = useNavigate();
   const location = useLocation();
 
   const [hidden, setHidden] = useState(false);
@@ -25,8 +24,6 @@ export const Header = () => {
     clearUserSession();
     authStorage.removeToken();
     toast.success('Logout successful!');
-    window.location.reload();
-    navigate('/');
   };
 
   useEffect(() => {

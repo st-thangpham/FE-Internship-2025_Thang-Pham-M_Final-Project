@@ -70,7 +70,7 @@ const BlogDetail = () => {
           <h3 className="description">{post.description}</h3>
 
           <div className="blog-author">
-            <div className="author-img">
+            <div className="author-info">
               <img
                 src={post.user.picture || defaultAvatar}
                 alt={post.user.displayName}
