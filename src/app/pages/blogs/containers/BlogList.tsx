@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+
 import { Post } from '@shared/models/post';
-import { getPublicPosts } from '@shared/services/blog.service';
+import { PostService } from '@shared/services/blog.service';
 import BlogListItem from '../components/BlogListItem';
 import BlogListItemSkeleton from '../components/BlogListItemSkeleton';
 
@@ -16,6 +17,7 @@ const BlogList = ({ filterTag }: BlogListProps) => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const postService = new PostService();
 
   const observer = useRef<IntersectionObserver | null>(null);
   const bottomRef = useRef<HTMLLIElement | null>(null);
@@ -30,7 +32,11 @@ const BlogList = ({ filterTag }: BlogListProps) => {
     const fetchPosts = async () => {
       setIsLoading(true);
       try {
-        const res = await getPublicPosts(page, SIZE_PAGE, filterTag);
+        const res = await postService.getPublicPosts(
+          page,
+          SIZE_PAGE,
+          filterTag
+        );
         const fetchedPosts = res.data;
 
         setPosts((prev) => [...prev, ...fetchedPosts]);

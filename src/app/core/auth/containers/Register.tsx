@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import { z } from 'zod';
 
 import { isValidDDMMYYYY } from '@app/core/helpers/date-format.helper';
-import { registerAccount } from '@app/core/services/auth.service';
+import { AuthService } from '@app/core/services/auth.service';
 import {
   Button,
   CalendarInput,
@@ -71,6 +71,8 @@ const schema = z
 
 type RegisterFormData = z.infer<typeof schema>;
 
+const authService = new AuthService();
+
 const Register = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -88,7 +90,7 @@ const Register = () => {
   const onSubmit = async (data: RegisterFormData) => {
     try {
       setIsLoading(true);
-      await registerAccount({
+      await authService.register({
         email: data.email,
         password: data.password,
         firstName: data.firstName,

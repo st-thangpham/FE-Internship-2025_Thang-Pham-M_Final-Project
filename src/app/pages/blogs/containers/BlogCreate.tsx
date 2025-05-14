@@ -7,16 +7,17 @@ import { toast } from 'react-toastify';
 import Ckeditor from '@app/shared/components/Ckeditor';
 import { Select } from '@shared/components/partials/Select';
 import { STATUS_OPTIONS, TAG_OPTIONS } from '@shared/contexts/constant';
-import { createPost } from '@shared/services/blog.service';
+import { PostService } from '@shared/services/blog.service';
 
 type FormValues = {
   tags: string[];
   status: string;
 };
 
-const WriteBlog = () => {
+const BlogCreate = () => {
   const [rawContent, setRawContent] = useState('');
   const navigate = useNavigate();
+  const postService = new PostService();
 
   const {
     control,
@@ -58,7 +59,7 @@ const WriteBlog = () => {
       return toast.error('Title must be at least 20 characters.');
     }
 
-    if (!description || description.length < 10) {
+    if (!description || description.length < 20) {
       return toast.error('Description must be at least 10 characters.');
     }
 
@@ -76,11 +77,11 @@ const WriteBlog = () => {
       content,
       cover,
       tags,
-      status,
+      status: status as 'public' | 'private',
     };
 
     try {
-      await createPost(payload);
+      await postService.createPost(payload);
       toast.success('Post created successfully!');
       navigate('/');
     } catch (err: any) {
@@ -149,4 +150,4 @@ const WriteBlog = () => {
   );
 };
 
-export default WriteBlog;
+export default BlogCreate;
