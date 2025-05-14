@@ -3,10 +3,11 @@
  * https://ckeditor.com/ckeditor-5/builder/#installation/NoJgNARCB0Cs0AYKQIwICwgBxYOy9gQDYUBmEAThQpuyJFNhthS1NKI9yPQS2QgBTAHbIEYYCjDjxUqQgC6kLCyIBDAEawICoA==
  */
 
-import { useState, useEffect, useRef, useMemo } from 'react';
-import { CKEditor, useCKEditorCloud } from '@ckeditor/ckeditor5-react';
-
 import React from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
+
+import { CKEditor, useCKEditorCloud } from '@ckeditor/ckeditor5-react';
+import { HeadingOption } from '@ckeditor/ckeditor5-heading';
 
 const LICENSE_KEY =
   'eyJhbGciOiJFUzI1NiJ9.eyJleHAiOjE3NDgzMDM5OTksImp0aSI6IjI4YmEyZmMwLTUwNjctNGJlZi05NzM0LTE2Njk3Zjc3MTc1YSIsInVzYWdlRW5kcG9pbnQiOiJodHRwczovL3Byb3h5LWV2ZW50LmNrZWRpdG9yLmNvbSIsImRpc3RyaWJ1dGlvbkNoYW5uZWwiOlsiY2xvdWQiLCJkcnVwYWwiLCJzaCJdLCJ3aGl0ZUxhYmVsIjp0cnVlLCJsaWNlbnNlVHlwZSI6InRyaWFsIiwiZmVhdHVyZXMiOlsiKiJdLCJ2YyI6IjgzOTExODMyIn0.--XLR0j-7KbSk_tHi2d0y38JFM99-B_dfamx_J7-zBEDG65k-NfERXti08ImCNnoTyf1XgC3p1gGWkz8hPSvtw';
@@ -296,7 +297,7 @@ export default function Ckeditor({ onChange }: CkeditorProps) {
               title: 'Heading 4',
               class: 'ck-heading_heading4',
             },
-          ],
+          ] as HeadingOption[],
         },
         link: {
           addTargetToExternalLinks: true,
@@ -364,14 +365,14 @@ class S3UploadAdapter {
     const file = await this.loader.file;
     const fileName = encodeURIComponent(file.name);
     const fileType = encodeURIComponent(file.type);
-    const token = localStorage.getItem('token');
 
+    const token = localStorage.getItem('token');
     if (!token) {
       throw new Error('Access token not found in localStorage');
     }
 
-    const res = await fetch(
-      `https://simpcat.online/api/v1/signatures?type_upload=cover-post&file_name=${fileName}&file_type=${fileType}`,
+    const response = await fetch(
+      `https://simpc-fe-api.monoinfinity.net/api/upload/cover-post?fileName=${fileName}&fileType=${fileType}`,
       {
         method: 'GET',
         headers: {
@@ -380,23 +381,22 @@ class S3UploadAdapter {
       }
     );
 
-    if (!res.ok) {
-      const errorText = await res.text();
-      console.error('Failed to get signed URL:', errorText);
-      throw new Error('Could not get signed URL');
+    if (!response.ok) {
+      throw new Error('Failed to get signed URL');
     }
 
-    const { signedRequest, url } = await res.json();
+    const { signedRequest, url } = await response.json();
 
     const uploadRes = await fetch(signedRequest, {
       method: 'PUT',
+      headers: {
+        'Content-Type': file.type,
+      },
       body: file,
     });
 
     if (!uploadRes.ok) {
-      const errorText = await uploadRes.text();
-      console.error('S3 upload failed:', errorText);
-      throw new Error('S3 upload failed');
+      throw new Error('Upload to S3 failed');
     }
 
     return {
@@ -404,5 +404,7 @@ class S3UploadAdapter {
     };
   }
 
-  abort() {}
+  abort() {
+    // Optional: handle abort
+  }
 }
