@@ -102,11 +102,32 @@
     }
 
     figure.image {
-      display: flex;
-      justify-content: center;
-      margin: 1.5em 0;
+      display: block;
+      margin: 1.5em auto;
+      text-align: center;
+
+      &.image-style-align-left {
+        float: left;
+        margin-right: 1.5em;
+        text-align: left;
+      }
+
+      &.image-style-align-right {
+        float: right;
+        margin-left: 1.5em;
+        text-align: right;
+      }
+
+      &.image-style-align-center {
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+      }
 
       img {
+        display: inline-block;
+        max-width: 100%;
+        height: auto;
         border-radius: 6px;
       }
     }
