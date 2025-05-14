@@ -18,6 +18,9 @@ export const Header = () => {
   const [hidden, setHidden] = useState(false);
   const lastScrollY = useRef(0);
 
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef<HTMLLIElement>(null);
+
   const handleLogout = () => {
     clearUserSession();
     authStorage.removeToken();
@@ -29,7 +32,6 @@ export const Header = () => {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-
       if (currentScrollY > lastScrollY.current && currentScrollY > 80) {
         setHidden(true);
         document.body.classList.add('header-hidden');
@@ -37,7 +39,6 @@ export const Header = () => {
         setHidden(false);
         document.body.classList.remove('header-hidden');
       }
-
       lastScrollY.current = currentScrollY;
     };
 
@@ -48,7 +49,45 @@ export const Header = () => {
     };
   }, []);
 
-  const isWritePage = location.pathname === '/write';
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const isWritePage = location.pathname === '/blogs/create';
+
+  const renderDropdown = () => (
+    <div className="dropdown-menu show">
+      <div className="dropdown-section">
+        <NavLink
+          to={`/profile/${user?.id}`}
+          className="dropdown-item"
+          onClick={() => setShowDropdown(false)}
+        >
+          Profile
+        </NavLink>
+        <button className="dropdown-item" disabled>
+          Change Password
+        </button>
+      </div>
+      <div className="dropdown-section">
+        <button className="dropdown-item" onClick={handleLogout}>
+          Sign out
+        </button>
+        <div className="dropdown-email">{user?.email}</div>
+      </div>
+    </div>
+  );
 
   return (
     <header className={`header ${hidden ? 'hidden' : ''}`}>
@@ -68,44 +107,41 @@ export const Header = () => {
                     Sign In
                   </NavLink>
                 </li>
-              ) : isWritePage ? (
-                <>
-                  <li className="nav-item">
-                    <button
-                      className="btn btn-submit"
-                      onClick={() => {
-                        const event = new Event('submitBlog');
-                        window.dispatchEvent(event);
-                      }}
-                    >
-                      Post
-                    </button>
-                  </li>
-                  <li className="nav-item">
-                    <button className="btn btn-avatar" onClick={handleLogout}>
-                      <img
-                        src={user?.picture || defaultAvatar}
-                        alt="Avatar"
-                        className="img"
-                      />
-                    </button>
-                  </li>
-                </>
               ) : (
                 <>
-                  <li className="nav-item">
-                    <NavLink to="/write" className="nav-link btn btn-icon">
-                      <img src={writeIcon} alt="writeIcon" />
-                    </NavLink>
-                  </li>
-                  <li className="nav-item">
-                    <button className="btn btn-avatar" onClick={handleLogout}>
+                  {isWritePage ? (
+                    <li className="nav-item">
+                      <button
+                        className="btn btn-submit"
+                        onClick={() =>
+                          window.dispatchEvent(new Event('submitBlog'))
+                        }
+                      >
+                        Post
+                      </button>
+                    </li>
+                  ) : (
+                    <li className="nav-item">
+                      <NavLink
+                        to="/blogs/create"
+                        className="nav-link btn btn-icon"
+                      >
+                        <img src={writeIcon} alt="writeIcon" />
+                      </NavLink>
+                    </li>
+                  )}
+                  <li className="nav-item" ref={dropdownRef}>
+                    <button
+                      className={`btn btn-avatar ${showDropdown ? 'open' : ''}`}
+                      onClick={() => setShowDropdown(!showDropdown)}
+                    >
                       <img
                         src={user?.picture || defaultAvatar}
                         alt="Avatar"
                         className="img"
                       />
                     </button>
+                    {showDropdown && renderDropdown()}
                   </li>
                 </>
               )}
