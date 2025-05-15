@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Navigate, useNavigate, NavLink, useLocation } from 'react-router-dom';
+import { useNavigate, NavLink, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import { AuthContext } from '@app/shared/contexts/auth.context';
@@ -107,7 +107,13 @@ export const Header = () => {
 
           <div className="navbar-collapse">
             <ul className="navbar-nav d-flex align-items-center">
-              {isAuthenticated && (
+              {!isAuthenticated ? (
+                <li className="nav-item">
+                  <NavLink to="/auth/login" className="btn btn-auth">
+                    Sign In
+                  </NavLink>
+                </li>
+              ) : (
                 <>
                   {isWritePage || isUpdatePage ? (
                     <li className="nav-item">
