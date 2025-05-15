@@ -115,7 +115,7 @@ const BlogCreate = () => {
                     {...field}
                     className="form-control form-title"
                     placeholder="Title"
-                    rows={1}
+                    rows={2}
                   />
                 )}
               />

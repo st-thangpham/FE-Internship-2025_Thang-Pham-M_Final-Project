@@ -17,6 +17,7 @@ interface SelectProps {
   isMulti?: boolean;
   errorMsg?: string;
   maxSelect?: number;
+  isDisabled?: boolean;
 }
 
 export const Select: React.FC<SelectProps> = ({
@@ -30,6 +31,7 @@ export const Select: React.FC<SelectProps> = ({
   isMulti = false,
   errorMsg,
   maxSelect,
+  isDisabled = false,
 }) => {
   const [warning, setWarning] = useState('');
 
@@ -74,6 +76,7 @@ export const Select: React.FC<SelectProps> = ({
           value={selectedValue}
           onChange={handleChange}
           onBlur={onBlur}
+          isDisabled={isDisabled}
           className="form-control"
           classNamePrefix="form-control"
         />
