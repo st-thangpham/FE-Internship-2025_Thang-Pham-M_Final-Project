@@ -10,9 +10,13 @@ import logo from '/imgs/logo.png';
 
 interface BlogListItemProps {
   post: Post;
+  hideAuthor?: boolean;
 }
 
-const BlogListItem: React.FC<BlogListItemProps> = ({ post }) => {
+const BlogListItem: React.FC<BlogListItemProps> = ({
+  post,
+  hideAuthor = false,
+}) => {
   const navigate = useNavigate();
 
   const handleImageError = (
@@ -23,14 +27,21 @@ const BlogListItem: React.FC<BlogListItemProps> = ({ post }) => {
 
   return (
     <>
-      <div className="blog-author">
-        <img
-          src={post.user.picture || defaultAvatar}
-          alt={post.user.displayName}
-          className="author-avatar"
-        />
-        <span className="author-name txt-link">{post.user.displayName}</span>
-      </div>
+      {!hideAuthor && (
+        <div className="blog-author">
+          <img
+            src={post?.user?.picture || defaultAvatar}
+            alt={post.user.displayName}
+            className="author-avatar"
+          />
+          <span
+            className="author-name txt-link"
+            onClick={() => navigate(`/profile/${post.user.id}`)}
+          >
+            {post.user.displayName}
+          </span>
+        </div>
+      )}
 
       <a className="blog-content" onClick={() => navigate(`/blogs/${post.id}`)}>
         <div className="blog-info">

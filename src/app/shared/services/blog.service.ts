@@ -1,24 +1,33 @@
 import { ApiService } from '@core/services/api.service';
 import { Post, PostResponse } from '@shared/models/post';
+import { UserWithPosts } from '../models/user';
+import { ENDPOINT } from '@config/endpoint';
 
-const api = new ApiService();
+export class PostService {
+  private http = new ApiService();
 
-export const getPublicPosts = (
-  page: number,
-  size: number,
-  tags?: string
-): Promise<PostResponse> => {
-  const params: Record<string, any> = { page, size };
-  if (tags) {
-    params.tags = tags;
+  getPublicPosts(
+    page: number,
+    size: number,
+    tags?: string
+  ): Promise<PostResponse> {
+    const params: Record<string, any> = { page, size };
+    if (tags) {
+      params.tags = tags;
+    }
+
+    return this.http.get([ENDPOINT.blogs.blogsList, 'public'], params);
   }
-  return api.get(['posts', 'public'], params);
-};
 
-export const createPost = (params = {}): Promise<PostResponse> => {
-  return api.post(['posts'], params);
-};
+  createPost(params: Partial<Post> = {}): Promise<PostResponse> {
+    return this.http.post([ENDPOINT.blogs.blogsList], params);
+  }
 
-export const getPostById = (id: string): Promise<Post> => {
-  return api.get(['posts', id]);
-};
+  getPostById(id: string): Promise<Post> {
+    return this.http.get([ENDPOINT.blogs.blogsList, id]);
+  }
+
+  getUserWithPosts(userId: string | number): Promise<UserWithPosts> {
+    return this.http.get([ENDPOINT.auth.index, String(userId), 'posts']);
+  }
+}
