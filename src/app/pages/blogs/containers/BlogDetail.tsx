@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import React, { useEffect, useState, useContext } from 'react';
+import { Link, useParams } from 'react-router-dom';
 
 import { formatDate } from '@app/core/helpers/date-format.helper';
 import { Post } from '@shared/models/post';
@@ -7,12 +7,13 @@ import { PostService } from '@shared/services/blog.service';
 
 import defaultAvatar from '/imgs/avatar.jpg';
 import defaultCover from '/imgs/logo.png';
+import BlogActionMenu from '../components/BlogActionMenu';
 
 const BlogDetail = () => {
   const { id } = useParams<{ id: string }>();
   const [post, setPost] = useState<Post>(null);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+
   const postService = new PostService();
 
   useEffect(() => {
@@ -35,10 +36,6 @@ const BlogDetail = () => {
   const getCoverImage = () => {
     if (!post?.cover || post.cover === 'cover') return defaultCover;
     return post.cover;
-  };
-
-  const handleClick = (tag: string) => {
-    navigate(`/blogs?tag=${encodeURIComponent(tag)}`);
   };
 
   if (loading) {
@@ -64,61 +61,74 @@ const BlogDetail = () => {
 
   return (
     <div className="page page-blog-detail">
-      <article className="blog">
-        <div className="blog-header">
-          <h2 className="title">{post.title}</h2>
-          <h3 className="description">{post.description}</h3>
+      <div className="container">
+        <article className="blog">
+          <div className="blog-header">
+            <h2 className="title">{post.title}</h2>
+            <h3 className="description">{post.description}</h3>
 
-          <div className="blog-author">
-            <div className="author-info">
-              <img
-                src={post.user.picture || defaultAvatar}
-                alt={post.user.displayName}
-                className="author-avatar"
-              />
-              <span
-                className="author-name txt-link"
-                onClick={() => navigate(`/profile/${post.user.id}`)}
-              >
-                {post.user.displayName}
-              </span>
-            </div>
-            <span className="created-date">{formatDate(post.createdAt)}</span>
-          </div>
-        </div>
-
-        <div className="line"></div>
-
-        {post.cover && (
-          <div className="blog-cover">
-            <div className="cover-wrapper">
-              <img src={getCoverImage()} alt="Cover" className="cover-image" />
-            </div>
-          </div>
-        )}
-
-        <div
-          className="blog-content"
-          dangerouslySetInnerHTML={{ __html: post.content }}
-        />
-
-        {post.tags?.length > 0 && (
-          <div className="blog-tags">
-            <h4 className="tag-title">Tags</h4>
-            <ul className="tag-grid-list">
-              {post.tags.map((tag, index) => (
-                <li
-                  key={index}
-                  className="tag-item"
-                  onClick={() => handleClick(tag)}
+            <div className="blog-author">
+              <div className="author-info">
+                <img
+                  src={post.user.picture || defaultAvatar}
+                  alt={post.user.displayName}
+                  className="author-avatar"
+                />
+                <Link
+                  className="author-name txt-link"
+                  to={`/profile/${post.user.id}`}
                 >
-                  #{tag}
-                </li>
-              ))}
-            </ul>
+                  {post.user.displayName}
+                </Link>
+              </div>
+              <div className="blog-actions">
+                <span className="blog-created-at">
+                  {formatDate(post.createdAt)}
+                </span>
+                <BlogActionMenu
+                  postId={post.id}
+                  authorId={post.userId}
+                  showAction={true}
+                />
+              </div>
+            </div>
           </div>
-        )}
-      </article>
+
+          <div className="line"></div>
+
+          {post.cover && (
+            <div className="blog-cover">
+              <div className="cover-wrapper">
+                <img
+                  src={getCoverImage()}
+                  alt="Cover"
+                  className="cover-image"
+                />
+              </div>
+            </div>
+          )}
+
+          <div
+            className="blog-content"
+            dangerouslySetInnerHTML={{ __html: post.content }}
+          />
+
+          {post.tags?.length > 0 && (
+            <div className="blog-tags">
+              <h4 className="tag-title">Tags</h4>
+              <ul className="tag-grid-list">
+                {post.tags.map((tag, index) => (
+                  <li key={index} className="tag-item">
+                    <Link to={`/blogs?tag=${encodeURIComponent(tag)}`}>
+                      #{tag}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </article>
+      </div>
     </div>
   );
 };

@@ -9,7 +9,7 @@ export interface UpdatePostPayload {
   status: string;
 }
 
-export interface CreatePostPayload extends Partial<Post> {}
+export interface PostPayload extends Partial<Post> {}
 
 export class PostService {
   private http = new ApiService();
@@ -28,7 +28,7 @@ export class PostService {
     return this.http.get([ENDPOINT.blogs.blogsList, 'public'], params);
   }
 
-  createPost(data: CreatePostPayload): Promise<PostResponse> {
+  createPost(data: PostPayload): Promise<PostResponse> {
     return this.http.post([ENDPOINT.blogs.blogsList], data);
   }
 
@@ -36,7 +36,7 @@ export class PostService {
     return this.http.get([ENDPOINT.blogs.blogsList, id]);
   }
 
-  updatePostById(id: string, data: UpdatePostPayload): Promise<Post> {
+  updatePostById(id: string, data: PostPayload): Promise<Post> {
     return this.http.put([ENDPOINT.blogs.blogsList, id], data);
   }
 
