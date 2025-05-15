@@ -14,9 +14,10 @@ const LICENSE_KEY =
 
 type CkeditorProps = {
   onChange?: (data: string) => void;
+  value?: string;
 };
 
-export default function Ckeditor({ onChange }: CkeditorProps) {
+export default function Ckeditor({ onChange, value }: CkeditorProps) {
   const editorContainerRef = useRef<HTMLDivElement | null>(null);
   const editorRef = useRef(null);
   const [isLayoutReady, setIsLayoutReady] = useState(false);
@@ -312,7 +313,9 @@ export default function Ckeditor({ onChange }: CkeditorProps) {
             'tableCellProperties',
           ],
         },
-        initialData: '<p>Upload cover photo here.</p>\n<p>Share with us!</p>',
+        initialData:
+          value || '<p>Upload cover photo here.</p>\n<p>Share with us!</p>',
+
         extraPlugins: [
           function CustomUploadAdapterPlugin(editor: any) {
             editor.plugins.get('FileRepository').createUploadAdapter = (
@@ -337,6 +340,7 @@ export default function Ckeditor({ onChange }: CkeditorProps) {
             <CKEditor
               editor={ClassicEditor}
               config={editorConfig}
+              data={value}
               onChange={(_, editor) => {
                 const data = editor.getData();
                 onChange?.(data);

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Navigate, useNavigate, NavLink, useLocation } from 'react-router-dom';
+import { useNavigate, NavLink, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import { AuthContext } from '@app/shared/contexts/auth.context';
@@ -64,6 +64,7 @@ export const Header = () => {
   }, []);
 
   const isWritePage = location.pathname === '/blogs/create';
+  const isUpdatePage = location.pathname.startsWith('/blogs/update/');
 
   const renderDropdown = () => (
     <div className="dropdown-menu show">
@@ -90,7 +91,13 @@ export const Header = () => {
 
   return (
     <header className={`header ${hidden ? 'hidden' : ''}`}>
-      <div className={isWritePage ? 'basic-header-container' : 'no-container'}>
+      <div
+        className={
+          isWritePage || isUpdatePage
+            ? 'basic-header-container'
+            : 'no-container'
+        }
+      >
         <nav className="navbar">
           <h1 className="navbar-brand">
             <NavLink to="/">
@@ -108,7 +115,7 @@ export const Header = () => {
                 </li>
               ) : (
                 <>
-                  {isWritePage ? (
+                  {isWritePage || isUpdatePage ? (
                     <li className="nav-item">
                       <button
                         className="btn btn-submit"
@@ -116,7 +123,7 @@ export const Header = () => {
                           window.dispatchEvent(new Event('submitBlog'))
                         }
                       >
-                        Post
+                        {isWritePage ? 'Post' : 'Update'}
                       </button>
                     </li>
                   ) : (
