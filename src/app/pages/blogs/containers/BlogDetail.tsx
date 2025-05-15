@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { formatDate } from '@app/core/helpers/date-format.helper';
 import { Post } from '@shared/models/post';
-import { getPostById } from '@shared/services/blog.service';
+import { PostService } from '@shared/services/blog.service';
 
 import defaultAvatar from '/imgs/avatar.jpg';
 import defaultCover from '/imgs/logo.png';
@@ -13,13 +13,14 @@ const BlogDetail = () => {
   const [post, setPost] = useState<Post>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const postService = new PostService();
 
   useEffect(() => {
     if (!id) return;
 
     const fetchPost = async () => {
       try {
-        const response = await getPostById(id);
+        const response = await postService.getPostById(id);
         setPost(response);
       } catch (error) {
         console.error('Failed to load post:', error);
@@ -69,13 +70,16 @@ const BlogDetail = () => {
           <h3 className="description">{post.description}</h3>
 
           <div className="blog-author">
-            <div className="author-img">
+            <div className="author-info">
               <img
                 src={post.user.picture || defaultAvatar}
                 alt={post.user.displayName}
                 className="author-avatar"
               />
-              <span className="author-name txt-link">
+              <span
+                className="author-name txt-link"
+                onClick={() => navigate(`/profile/${post.user.id}`)}
+              >
                 {post.user.displayName}
               </span>
             </div>

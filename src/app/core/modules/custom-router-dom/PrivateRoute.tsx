@@ -1,5 +1,5 @@
-import React from 'react';
-import { Navigate } from 'react-router-dom';
+import React, { JSX } from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
 import { ACCESS_TOKEN_KEY } from '@app/core/constants/constant';
 
 const isAuthenticated = (): boolean => {
@@ -7,6 +7,12 @@ const isAuthenticated = (): boolean => {
   return !!token;
 };
 
-export const PrivateRoute = ({ component: Wrapped }) => {
-  return isAuthenticated() ? <Wrapped /> : <Navigate to="/auth/login" />;
+export const PrivateRoute = ({ children }: { children: JSX.Element }) => {
+  const location = useLocation();
+
+  return isAuthenticated() ? (
+    children
+  ) : (
+    <Navigate to="/auth/login" replace state={{ from: location }} />
+  );
 };

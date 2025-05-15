@@ -3,12 +3,16 @@ import { PrivateRoute } from './PrivateRoute';
 
 export const renderChildren = (routes) => {
   return routes.map((route) => {
+    const Element = route.element;
+
     return {
       ...route,
       element: route.isProtected ? (
-        <PrivateRoute component={route.element} />
+        <PrivateRoute>
+          <Element />
+        </PrivateRoute>
       ) : (
-        <route.element />
+        <Element />
       ),
       children: route.children ? renderChildren(route.children) : [],
     };

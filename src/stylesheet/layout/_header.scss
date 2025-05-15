@@ -2,16 +2,25 @@
 @use "../base/mixins";
 @use "../base/variables";
 
+$white: map.get(variables.$color, white);
+$greyA: map.get(variables.$color, grey-a);
+$greyB: map.get(variables.$color, grey-b);
+$black: map.get(variables.$color, black);
+$slateGreyA: map.get(variables.$color, slate-grey-a);
+$greyE: map.get(variables.$color, grey-e);
+$smFontSize: map.get(variables.$font-size, sm);
+$xsFontSize: map.get(variables.$font-size, xs);
+
 .header {
   @include mixins.pxRem(height, map.get(variables.$layout, header-height));
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: map.get(variables.$color, white);
+  background-color: $white;
   position: fixed;
   width: 100%;
   z-index: 1000;
-  border-bottom: solid 1px map.get(variables.$color, grey-a);
+  border-bottom: solid 1px $greyA;
   transition: transform 0.3s ease;
 
   &.hidden {
@@ -50,22 +59,79 @@
     }
 
     .nav-link {
-      @include mixins.pxRem(font-size, map.get(variables.$font-size, sm));
+      @include mixins.pxRem(font-size, $smFontSize);
       gap: 8px;
       font-weight: 400;
-      color: map.get(variables.$color, grey-b);
+      color: $greyB;
 
       &:hover {
-        color: map.get(variables.$color, black);
+        color: $black;
       }
 
       &.nav-link-active {
-        color: map.get(variables.$color, slate-grey-a);
+        color: $slateGreyA;
       }
 
       &.btn-primary:hover {
-        background-color: map.get(variables.$color, slate-grey-a);
-        color: map.get(variables.$color, white);
+        background-color: $slateGreyA;
+        color: $white;
+      }
+    }
+  }
+
+  .dropdown-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 16px;
+    background-color: $white;
+    border: 1px solid $greyA;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    z-index: 1000;
+    min-width: 160px;
+    display: none;
+    flex-direction: column;
+
+    &.show {
+      display: flex;
+    }
+
+    .dropdown-section {
+      border-bottom: 1px solid $greyE;
+      padding: 4px 0;
+
+      &:last-of-type {
+        border-bottom: none;
+      }
+    }
+
+    .dropdown-email {
+      @include mixins.pxRem(padding, 10 16);
+      font-size: $xsFontSize;
+      color: map.get(variables.$color, grey-c);
+    }
+
+    .dropdown-item {
+      @include mixins.pxRem(padding, 10 16);
+      background: none;
+      border: none;
+      width: 100%;
+      text-align: left;
+      color: $greyB;
+      font-size: $smFontSize;
+      cursor: pointer;
+
+      &:hover {
+        background-color: $greyE;
+        color: $black;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+        display: block;
+        width: 100%;
+        height: 100%;
       }
     }
   }

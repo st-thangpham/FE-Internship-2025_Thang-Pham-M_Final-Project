@@ -33,8 +33,9 @@
     font-size: 14px;
     color: map.get(variables.$color, slate-grey-a);
     margin-bottom: 24px;
+    cursor: pointer;
 
-    .author-img {
+    .author-info {
       display: flex;
       align-items: center;
       gap: 12px;
@@ -94,13 +95,6 @@
       }
     }
 
-    img {
-      max-width: 100%;
-      height: auto;
-      margin: 1.5em 0;
-      border-radius: 6px;
-    }
-
     figure.image {
       display: block;
       margin: 1.5em auto;
@@ -128,7 +122,6 @@
         display: inline-block;
         max-width: 100%;
         height: auto;
-        border-radius: 6px;
       }
     }
 

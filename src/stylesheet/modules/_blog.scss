@@ -10,6 +10,11 @@
   gap: 24px;
   margin: 0 auto;
   max-width: 728px;
+  padding: 0;
+
+  @include mixins.respond-above(wide) {
+    padding: 0 24px;
+  }
 
   .list-item {
     width: 100%;
@@ -82,15 +87,15 @@
 
       .blog-cover {
         flex: 0 0 auto;
-        width: 80px;
-        height: 53px;
-        margin-left: 16px;
+        width: 160px;
+        height: 107px;
+        margin-left: 56px;
         overflow: hidden;
 
-        @include mixins.respond-above(medium) {
-          width: 160px;
-          height: 107px;
-          margin-left: 56px;
+        @include mixins.respond-below(medium) {
+          width: 80px;
+          height: 53px;
+          margin-left: 16px;
         }
 
         .cover-image {
