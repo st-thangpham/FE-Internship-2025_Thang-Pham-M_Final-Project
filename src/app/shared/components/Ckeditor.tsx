@@ -338,7 +338,6 @@ export default function Ckeditor({ onChange, value }: CkeditorProps) {
         <div ref={editorRef}>
           {ClassicEditor && editorConfig && (
             <CKEditor
-              key={value} // buộc remount khi value thay đổi
               editor={ClassicEditor}
               config={editorConfig}
               data={value}

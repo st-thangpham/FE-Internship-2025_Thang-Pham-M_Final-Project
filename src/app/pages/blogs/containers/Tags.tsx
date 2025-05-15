@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router-dom';
 import { tags } from '@shared/contexts/constant';
 
 const Tags = () => {
@@ -14,10 +14,6 @@ const Tags = () => {
       setAtStart(scrollLeft <= 0);
       setAtEnd(scrollLeft + clientWidth >= scrollWidth - 1);
     }
-  };
-
-  const handleClick = (tag: string) => {
-    navigate(`/blogs?tag=${encodeURIComponent(tag)}`);
   };
 
   const scroll = (direction: 'left' | 'right') => {
@@ -39,19 +35,27 @@ const Tags = () => {
     }
   }, []);
 
+  const handleTagClick = (tag: string) => {
+    navigate(`/blogs?tag=${encodeURIComponent(tag)}`);
+  };
+
   return (
     <div className="tags-wrapper">
       {!atStart && (
         <button
           className="btn btn-scroll left"
           onClick={() => scroll('left')}
-        ></button>
+        />
       )}
 
       <div className="tag-slider-container">
         <ul className="tag-slider-list" ref={listRef}>
           {tags.map((tag) => (
-            <li key={tag} className="tag-item" onClick={() => handleClick(tag)}>
+            <li
+              key={tag}
+              className="tag-item"
+              onClick={() => handleTagClick(tag)}
+            >
               {tag}
             </li>
           ))}
@@ -62,7 +66,7 @@ const Tags = () => {
         <button
           className="btn btn-scroll right"
           onClick={() => scroll('right')}
-        ></button>
+        />
       )}
     </div>
   );

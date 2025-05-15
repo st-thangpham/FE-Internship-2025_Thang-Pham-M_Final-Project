@@ -21,7 +21,6 @@ const BlogUpdate = () => {
   const [loading, setLoading] = useState(true);
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-
   const postService = React.useMemo(() => new PostService(), []);
 
   const {
@@ -38,6 +37,18 @@ const BlogUpdate = () => {
       cover: null,
     },
   });
+
+  const parseEditorContent = (html: string) => {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+
+    const cover = doc.querySelector('img')?.getAttribute('src') || '';
+    const firstImg = doc.querySelector('img');
+    if (firstImg) firstImg.remove();
+
+    const content = doc.body.innerHTML.trim();
+    return { cover, content };
+  };
 
   useEffect(() => {
     if (!id) return;
@@ -57,7 +68,11 @@ const BlogUpdate = () => {
         setValue('tags', mappedTags);
         setValue('cover', post.cover);
 
-        setRawContent(post.content || '');
+        const contentWithCover = post.cover
+          ? `<img src="${post.cover}" alt="Cover Image" />${post.content || ''}`
+          : post.content || '';
+
+        setRawContent(contentWithCover);
       } catch (error) {
         toast.error('Failed to load post data.');
         navigate('/');
@@ -67,39 +82,48 @@ const BlogUpdate = () => {
     })();
   }, [id, navigate, postService, setValue]);
 
+  const handleUpdate = useCallback(async () => {
+    const { title, description, tags, status } = getValues();
+    const { cover, content } = parseEditorContent(rawContent);
+
+    if (!title || title.length < 20) {
+      return toast.error('Title must be at least 20 characters.');
+    }
+
+    if (!description || description.length < 20) {
+      return toast.error('Description must be at least 20 characters.');
+    }
+
+    if (!content || content.length < 100) {
+      return toast.error('Content must be at least 100 characters.');
+    }
+
+    if (!tags || tags.length === 0) {
+      return toast.error('Please select at least one tag.');
+    }
+
+    try {
+      await postService.updatePostById(id!, {
+        title,
+        description,
+        content,
+        tags: tags.map((t) => t.value),
+        status: status as 'public' | 'private',
+        cover,
+      });
+
+      toast.success('Post updated successfully!');
+      navigate(`/blogs/${id}`);
+    } catch (error) {
+      toast.error('Failed to update post.');
+    }
+  }, [getValues, rawContent, id, navigate, postService]);
+
   useEffect(() => {
-    const handleSubmit = async () => {
-      try {
-        const { title, status } = getValues();
-
-        if (!title || title.length < 20) {
-          toast.error('Title must be at least 20 characters');
-          return;
-        }
-
-        if (!rawContent || rawContent.trim() === '') {
-          toast.error('Content is required');
-          return;
-        }
-
-        await postService.updatePostById(id!, {
-          title,
-          content: rawContent,
-          status,
-        });
-
-        toast.success('Post updated successfully!');
-        navigate(`/blogs/${id}`);
-      } catch (error) {
-        console.error(error);
-        toast.error('Failed to update post.');
-      }
-    };
-
-    const handleEvent = () => handleSubmit();
+    const handleEvent = () => handleUpdate();
     window.addEventListener('submitBlog', handleEvent);
     return () => window.removeEventListener('submitBlog', handleEvent);
-  }, [getValues, rawContent, postService, id, navigate]);
+  }, [handleUpdate]);
 
   return (
     <div className="page-write">
@@ -136,27 +160,25 @@ const BlogUpdate = () => {
               <Controller
                 control={control}
                 name="description"
+                rules={{
+                  required: 'Description is required',
+                  minLength: {
+                    value: 20,
+                    message: 'Description must be at least 20 characters',
+                  },
+                }}
                 render={({ field }) => (
                   <textarea
                     {...field}
                     className="form-control form-description"
                     placeholder="Description..."
                     rows={2}
-                    disabled
+                    disabled={loading}
                   />
                 )}
               />
-            </div>
-
-            <div className="form-group">
-              {getValues('cover') ? (
-                <img
-                  src={getValues('cover') as string}
-                  alt="Cover"
-                  className="form-image"
-                />
-              ) : (
-                <p>No cover image</p>
+              {errors.description && (
+                <p className="text-danger">{errors.description.message}</p>
               )}
             </div>
 
@@ -165,6 +187,7 @@ const BlogUpdate = () => {
                 <Controller
                   control={control}
                   name="tags"
+                  rules={{ required: 'Tags are required' }}
                   render={({ field }) => (
                     <Select
                       name="tags"
@@ -172,9 +195,10 @@ const BlogUpdate = () => {
                       options={TAG_OPTIONS}
                       value={field.value?.map((tag) => tag.value)}
                       onChange={field.onChange}
+                      errorMsg={errors.tags?.message}
                       isMulti
                       maxSelect={3}
-                      isDisabled
+                      isDisabled={loading}
                     />
                   )}
                 />
@@ -184,6 +208,7 @@ const BlogUpdate = () => {
                 <Controller
                   control={control}
                   name="status"
+                  rules={{ required: 'Status is required' }}
                   render={({ field }) => (
                     <Select
                       name="status"
@@ -191,18 +216,22 @@ const BlogUpdate = () => {
                       options={STATUS_OPTIONS}
                       value={field.value}
                       onChange={field.onChange}
+                      errorMsg={errors.status?.message}
+                      isDisabled={loading}
                     />
                   )}
                 />
               </div>
             </div>
 
-            <div className="form-group">
-              <Ckeditor
-                onChange={(data) => setRawContent(data)}
-                value={rawContent}
-              />
-            </div>
+            {!loading && (
+              <div className="form-group">
+                <Ckeditor
+                  value={rawContent}
+                  onChange={(data) => setRawContent(data)}
+                />
+              </div>
+            )}
           </form>
         </div>
       </div>

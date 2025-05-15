@@ -31,6 +31,14 @@ const BlogList = ({
   const bottomRef = useRef<HTMLLIElement | null>(null);
 
   useEffect(() => {
+    if (!propPosts && !userId) {
+      setPosts([]);
+      setPage(1);
+      setHasMore(true);
+    }
+  }, [filterTag]);
+
+  useEffect(() => {
     if (propPosts) {
       setPosts(propPosts);
       setHasMore(false);
@@ -94,11 +102,18 @@ const BlogList = ({
           </li>
         );
       })}
+
       {isLoading && posts.length > 0 && renderSkeletons(1)}
+
       {!hasMore && posts.length > 0 && (
         <li className="blog-notification">No more blogs.</li>
       )}
+
       {isLoading && posts.length === 0 && renderSkeletons(SIZE_SKELETON)}
+
+      {!isLoading && posts.length === 0 && (
+        <li className="blog-notification">No blog posts found for this tag.</li>
+      )}
     </ul>
   );
 };
