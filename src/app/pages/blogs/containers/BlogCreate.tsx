@@ -10,6 +10,8 @@ import { STATUS_OPTIONS, TAG_OPTIONS } from '@shared/contexts/constant';
 import { PostService } from '@shared/services/blog.service';
 
 type FormValues = {
+  title: string;
+  description: string;
   tags: string[];
   status: string;
 };
@@ -26,6 +28,8 @@ const BlogCreate = () => {
     formState: { errors },
   } = useForm<FormValues>({
     defaultValues: {
+      title: '',
+      description: '',
       status: 'public',
       tags: [],
     },
@@ -35,35 +39,27 @@ const BlogCreate = () => {
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, 'text/html');
 
-    const title =
-      (doc.querySelector('h2.document-title') as HTMLElement)?.innerText || '';
-    const subtitle =
-      (doc.querySelector('h3.document-subtitle') as HTMLElement)?.innerText ||
-      '';
     const cover = doc.querySelector('img')?.getAttribute('src') || '';
 
-    doc.querySelector('h2.document-title')?.remove();
-    doc.querySelector('h3.document-subtitle')?.remove();
     doc.querySelector('img')?.remove();
 
     const content = doc.body.innerHTML.trim();
-    return { title, subtitle, cover, content };
+    return { cover, content };
   };
 
   const submitBlog = useCallback(async () => {
-    const { tags, status } = getValues();
-    const { title, subtitle, cover, content } = parseEditorContent(rawContent);
-    const description = subtitle;
+    const { tags, status, title, description } = getValues();
+    const { cover, content } = parseEditorContent(rawContent);
 
     if (!title || title.length < 20) {
       return toast.error('Title must be at least 20 characters.');
     }
 
     if (!description || description.length < 20) {
-      return toast.error('Description must be at least 10 characters.');
+      return toast.error('Description must be at least 20 characters.');
     }
 
-    if (!content || content.length < 100) {
+    if (!content || content.length < 20) {
       return toast.error('Content must be at least 100 characters.');
     }
 
@@ -100,51 +96,103 @@ const BlogCreate = () => {
 
   return (
     <div className="page-write">
-      <div className="page-content">
-        <form className="form" onSubmit={(e) => e.preventDefault()}>
-          <div className="form-group">
-            <Ckeditor onChange={(data) => setRawContent(data)} />
-          </div>
-          <div className="row">
-            <div className="col-9">
+      <div className="container">
+        <div className="page-content">
+          <form className="form" onSubmit={(e) => e.preventDefault()}>
+            <div className="form-group">
               <Controller
                 control={control}
-                name="tags"
-                rules={{ required: 'Tags are required' }}
+                name="title"
+                rules={{
+                  required: 'Title is required',
+                  minLength: {
+                    value: 20,
+                    message: 'Title must be at least 20 characters',
+                  },
+                }}
                 render={({ field }) => (
-                  <Select
-                    name="tags"
-                    label="Tags"
-                    options={TAG_OPTIONS}
-                    value={field.value}
-                    onChange={field.onChange}
-                    errorMsg={errors.tags?.message}
-                    isRequired
-                    isMulti
+                  <textarea
+                    {...field}
+                    className="form-control form-title"
+                    placeholder="Title"
+                    rows={1}
                   />
                 )}
               />
+              {errors.title && (
+                <p className="text-danger">{errors.title.message}</p>
+              )}
             </div>
-            <div className="col-3">
+
+            <div className="form-group">
               <Controller
                 control={control}
-                name="status"
-                rules={{ required: 'Status is required' }}
+                name="description"
+                rules={{
+                  required: 'Description is required',
+                  minLength: {
+                    value: 20,
+                    message: 'Description must be at least 20 characters',
+                  },
+                }}
                 render={({ field }) => (
-                  <Select
-                    name="status"
-                    label="Status"
-                    options={STATUS_OPTIONS}
-                    value={field.value}
-                    onChange={field.onChange}
-                    errorMsg={errors.status?.message}
-                    isRequired
+                  <textarea
+                    {...field}
+                    className="form-control form-description"
+                    placeholder="Description..."
+                    rows={2}
                   />
                 )}
               />
+              {errors.description && (
+                <p className="text-danger">{errors.description.message}</p>
+              )}
             </div>
-          </div>
-        </form>
+
+            <div className="row">
+              <div className="col-9">
+                <Controller
+                  control={control}
+                  name="tags"
+                  rules={{ required: 'Tags are required' }}
+                  render={({ field }) => (
+                    <Select
+                      name="tags"
+                      label="Tags"
+                      options={TAG_OPTIONS}
+                      value={field.value}
+                      onChange={field.onChange}
+                      errorMsg={errors.tags?.message}
+                      isRequired
+                      isMulti
+                      maxSelect={3}
+                    />
+                  )}
+                />
+              </div>
+              <div className="col-3">
+                <Controller
+                  control={control}
+                  name="status"
+                  rules={{ required: 'Status is required' }}
+                  render={({ field }) => (
+                    <Select
+                      name="status"
+                      label="Status"
+                      options={STATUS_OPTIONS}
+                      value={field.value}
+                      onChange={field.onChange}
+                      errorMsg={errors.status?.message}
+                    />
+                  )}
+                />
+              </div>
+            </div>
+            <div className="form-group">
+              <Ckeditor onChange={(data) => setRawContent(data)} />
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );
