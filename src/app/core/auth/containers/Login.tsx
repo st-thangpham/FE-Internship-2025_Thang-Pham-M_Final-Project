@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -23,12 +23,12 @@ const schema = z.object({
 
 type LoginFormData = z.infer<typeof schema>;
 
-const authService = new AuthService();
-
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const { setUserSession } = useContext(AuthContext)!;
+  const { setUserSession } = useContext(AuthContext);
+  const authService = new AuthService();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const {
     register,
@@ -55,7 +55,7 @@ const Login = () => {
 
       setUserSession(userInfo, accessToken);
       toast.success('Login successful!');
-      navigate('/');
+      navigate(location.state?.from?.pathname || '/', { replace: true });
     } catch (error: any) {
       toast.error(
         error?.response?.data?.errors[0] || 'Invalid email or password.'

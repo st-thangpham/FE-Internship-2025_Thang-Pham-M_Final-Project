@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { Navigate, useNavigate, NavLink, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import { AuthContext } from '@app/shared/contexts/auth.context';
@@ -13,6 +13,7 @@ export const Header = () => {
   const { isAuthenticated, user, clearUserSession } = useContext(AuthContext)!;
   const authStorage = new AuthStorageService();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const [hidden, setHidden] = useState(false);
   const lastScrollY = useRef(0);
@@ -24,6 +25,7 @@ export const Header = () => {
     clearUserSession();
     authStorage.removeToken();
     toast.success('Logout successful!');
+    navigate('/');
   };
 
   useEffect(() => {
