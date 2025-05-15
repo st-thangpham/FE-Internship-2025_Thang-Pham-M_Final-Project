@@ -39,7 +39,6 @@ $container-width: calc(1336px + 48px);
   flex-direction: column;
   margin: auto;
   align-items: center;
-  min-height: calc(100vh - map.get(variables.$layout, footer-height));
 }
 
 .no-container {

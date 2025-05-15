@@ -312,8 +312,7 @@ export default function Ckeditor({ onChange }: CkeditorProps) {
             'tableCellProperties',
           ],
         },
-        initialData:
-          '<h2 class="document-title">Title</h2>\n<h3 class="document-subtitle">Subtitle</h3>\n<p>Upload cover photo here</p>',
+        initialData: '<p>Upload cover photo here.</p>\n<p>Share with us!</p>',
         extraPlugins: [
           function CustomUploadAdapterPlugin(editor: any) {
             editor.plugins.get('FileRepository').createUploadAdapter = (
