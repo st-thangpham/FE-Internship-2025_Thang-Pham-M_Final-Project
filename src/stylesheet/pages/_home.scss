@@ -8,19 +8,12 @@
     flex-direction: row;
     height: auto;
 
-    @include mixins.respond-below(wide) {
-      flex-direction: column;
-    }
   }
 
   .main-content {
     flex: 1 1 auto;
     display: flex;
     justify-content: center;
-
-    .list-blog {
-      max-width: 680px;
-    }
   }
 
   .sidebar {
@@ -45,7 +38,7 @@
       }
     }
 
-    @include mixins.respond-below(medium) {
+    @include mixins.respond-below(large) {
       display: none;
     }
 
