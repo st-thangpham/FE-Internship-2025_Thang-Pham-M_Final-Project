@@ -56,6 +56,9 @@
         .blog-title {
           @include mixins.pxRem(font-size, map.get(variables.$font-size, lg));
           max-height: calc(2 * map.get(variables.$font-size, xl) * 1.3);
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
           overflow: hidden;
           font-weight: 700;
           line-height: 1.3;
