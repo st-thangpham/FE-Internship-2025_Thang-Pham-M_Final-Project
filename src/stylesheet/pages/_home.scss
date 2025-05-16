@@ -21,7 +21,7 @@
     padding: 0 40px;
     position: sticky;
     top: calc(map.get(variables.$layout, header-height) + 20px);
-    height: 100vh;
+    height: calc(100vh - map.get(variables.$layout, footer-height));
     align-self: flex-start;
     border-left: 1px solid map.get(variables.$color, grey-a);
     transition: top 0.3s ease;
