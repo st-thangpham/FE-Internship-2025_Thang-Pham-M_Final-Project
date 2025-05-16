@@ -150,7 +150,7 @@ const BlogCreate = () => {
             </div>
 
             <div className="row">
-              <div className="col-9">
+              <div className="col-12 col-wide-9">
                 <Controller
                   control={control}
                   name="tags"
@@ -165,12 +165,12 @@ const BlogCreate = () => {
                       errorMsg={errors.tags?.message}
                       isRequired
                       isMulti
-                      maxSelect={3}
+                      maxSelect={4}
                     />
                   )}
                 />
               </div>
-              <div className="col-3">
+              <div className="col-12 col-wide-3">
                 <Controller
                   control={control}
                   name="status"

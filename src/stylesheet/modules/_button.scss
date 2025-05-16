@@ -113,10 +113,15 @@ $button-sizes: (
   }
 
   &.btn-icon {
-    @include mixins.pxRem(width, 20);
-    @include mixins.pxRem(height, 20);
+    @include mixins.pxRem(width, 26);
+    @include mixins.pxRem(height, 26);
     padding: 0;
     line-height: 0;
+    opacity: 0.6;
+
+    &:hover {
+      opacity: 1;
+    }
   }
 
   &.btn-scroll {

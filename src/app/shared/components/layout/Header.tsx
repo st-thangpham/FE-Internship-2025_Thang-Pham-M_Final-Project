@@ -70,7 +70,7 @@ export const Header = () => {
     <div className="dropdown-menu show">
       <div className="dropdown-section">
         <NavLink
-          to={`/profile/${user?.id}`}
+          to={`/profile/me`}
           className="dropdown-item"
           onClick={() => setShowDropdown(false)}
         >
