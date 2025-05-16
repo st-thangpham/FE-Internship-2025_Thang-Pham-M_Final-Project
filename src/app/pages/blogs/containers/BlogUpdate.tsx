@@ -92,8 +92,8 @@ const BlogUpdate = () => {
       return toast.error('Title must be at least 20 characters.');
     }
 
-    if (!description || description.length < 20) {
-      return toast.error('Description must be at least 20 characters.');
+    if (!description || description.length < 50) {
+      return toast.error('Description must be at least 50 characters.');
     }
 
     if (!content || content.length < 100) {
@@ -170,8 +170,8 @@ const BlogUpdate = () => {
                 rules={{
                   required: 'Description is required',
                   minLength: {
-                    value: 20,
-                    message: 'Description must be at least 20 characters',
+                    value: 50,
+                    message: 'Description must be at least 50 characters',
                   },
                 }}
                 render={({ field }) => (
