@@ -183,7 +183,7 @@ const BlogUpdate = () => {
             </div>
 
             <div className="row">
-              <div className="col-9">
+              <div className="col-12 col-wide-9">
                 <Controller
                   control={control}
                   name="tags"
@@ -193,18 +193,24 @@ const BlogUpdate = () => {
                       name="tags"
                       label="Tags"
                       options={TAG_OPTIONS}
-                      value={field.value?.map((tag) => tag.value)}
-                      onChange={field.onChange}
+                      value={field.value.map((t) => t.value)}
+                      onChange={(e) => {
+                        const selected = e.target.value as string[];
+                        const selectedOptions = TAG_OPTIONS.filter((opt) =>
+                          selected.includes(opt.value)
+                        );
+                        field.onChange(selectedOptions);
+                      }}
                       errorMsg={errors.tags?.message}
                       isMulti
-                      maxSelect={3}
+                      maxSelect={4}
                       isDisabled={loading}
                     />
                   )}
                 />
               </div>
 
-              <div className="col-3">
+              <div className="col-12 col-wide-3">
                 <Controller
                   control={control}
                   name="status"
