@@ -1,0 +1,56 @@
+@use "sass:map";
+@use "../base/variables";
+@use "../base/mixins" as mixins;
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(247, 247, 247, 0.938);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+
+  .modal-container {
+    display: flex;
+    min-width: 600px;
+    min-height: 400px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    margin: 0 24px;
+    border-radius: 4px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    background-color: white;
+  }
+
+  .modal-title {
+    @include mixins.pxRem(font-size, map.get(variables.$font-size, xl));
+    font-weight: bold;
+    color: map.get(variables.$color, primary);
+  }
+
+  .modal-message {
+    font-size: 14px;
+    color: map.get(variables.$color, grey-b);
+  }
+
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 24px;
+    gap: 12px;
+  }
+
+  .modal-button {
+    padding: 8px 16px;
+    font-size: 14px;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+}
+
+body.overflow-hidden {
+  overflow: hidden;
+}

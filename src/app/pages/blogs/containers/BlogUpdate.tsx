@@ -7,6 +7,7 @@ import Ckeditor from '@app/shared/components/Ckeditor';
 import { Select } from '@shared/components/partials/Select';
 import { STATUS_OPTIONS, TAG_OPTIONS } from '@shared/contexts/constant';
 import { PostService } from '@shared/services/blog.service';
+import ConfirmModal from '@app/shared/components/ConfirmModal';
 
 type FormValues = {
   title: string;
@@ -22,6 +23,7 @@ const BlogUpdate = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const postService = React.useMemo(() => new PostService(), []);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const {
     control,
@@ -90,8 +92,8 @@ const BlogUpdate = () => {
       return toast.error('Title must be at least 20 characters.');
     }
 
-    if (!description || description.length < 20) {
-      return toast.error('Description must be at least 20 characters.');
+    if (!description || description.length < 50) {
+      return toast.error('Description must be at least 50 characters.');
     }
 
     if (!content || content.length < 100) {
@@ -119,11 +121,16 @@ const BlogUpdate = () => {
     }
   }, [getValues, rawContent, id, navigate, postService]);
 
+  const handleConfirmUpdate = async () => {
+    setShowConfirm(false);
+    await handleUpdate();
+  };
+
   useEffect(() => {
-    const handleEvent = () => handleUpdate();
+    const handleEvent = () => setShowConfirm(true);
     window.addEventListener('submitBlog', handleEvent);
     return () => window.removeEventListener('submitBlog', handleEvent);
-  }, [handleUpdate]);
+  }, []);
 
   return (
     <div className="page-write">
@@ -163,8 +170,8 @@ const BlogUpdate = () => {
                 rules={{
                   required: 'Description is required',
                   minLength: {
-                    value: 20,
-                    message: 'Description must be at least 20 characters',
+                    value: 50,
+                    message: 'Description must be at least 50 characters',
                   },
                 }}
                 render={({ field }) => (
@@ -241,6 +248,17 @@ const BlogUpdate = () => {
           </form>
         </div>
       </div>
+      {showConfirm && (
+        <ConfirmModal
+          isOpen={showConfirm}
+          title="Update Post"
+          message="Are you sure you want to update this post?"
+          cancelLabel="Cancel"
+          confirmLabel="Update"
+          onCancel={() => setShowConfirm(false)}
+          onConfirm={handleConfirmUpdate}
+        />
+      )}
     </div>
   );
 };

@@ -111,8 +111,8 @@ const BlogList = ({
 
       {isLoading && posts.length === 0 && renderSkeletons(SIZE_SKELETON)}
 
-      {!isLoading && posts.length === 0 && (
-        <li className="blog-notification">No blog posts found for this tag.</li>
+      {posts.length === 0 && (
+        <li className="blog-notification">No blog posts found.</li>
       )}
     </ul>
   );

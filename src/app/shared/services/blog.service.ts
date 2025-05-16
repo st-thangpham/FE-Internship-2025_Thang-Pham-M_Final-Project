@@ -32,6 +32,10 @@ export class PostService {
     return this.http.post([ENDPOINT.blogs.blogsList], data);
   }
 
+  deletePost(id: string): Promise<Post> {
+    return this.http.delete([ENDPOINT.blogs.blogsList, id]) as Promise<Post>;
+  }
+
   getPostById(id: string): Promise<Post> {
     return this.http.get([ENDPOINT.blogs.blogsList, id]);
   }

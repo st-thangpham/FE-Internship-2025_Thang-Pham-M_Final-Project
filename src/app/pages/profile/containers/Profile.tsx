@@ -12,6 +12,7 @@ const Profile = () => {
   const { id } = useParams<{ id: string }>();
   const [user, setUser] = useState<UserWithPosts | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const { user: authUser } = useContext(AuthContext)!;
   const loggedInUserId = authUser?.id;
@@ -19,12 +20,15 @@ const Profile = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
+        setLoading(true);
         const postService = new PostService();
         const res = await postService.getUserWithPosts(id!);
         setUser(res);
         setPosts(res.Posts || []);
       } catch (error) {
         console.error('Failed to fetch user with posts:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -45,7 +49,11 @@ const Profile = () => {
                 <button className="tab active">Blogs</button>
               </div>
               <section className="section section-blog">
-                <BlogList posts={posts} hideAuthor />
+                {loading ? (
+                  <div className="loading">Loading blogs...</div>
+                ) : (
+                  <BlogList posts={posts} hideAuthor />
+                )}
               </section>
             </div>
             <aside className="sidebar">

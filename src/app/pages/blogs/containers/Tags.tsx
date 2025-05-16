@@ -1,12 +1,15 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'; // thêm useSearchParams
 import { tags } from '@shared/contexts/constant';
 
 const Tags = () => {
   const navigate = useNavigate();
   const listRef = useRef<HTMLUListElement>(null);
+  const [searchParams] = useSearchParams();
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(false);
+
+  const activeTag = searchParams.get('tag');
 
   const checkScroll = () => {
     if (listRef.current) {
@@ -53,7 +56,7 @@ const Tags = () => {
           {tags.map((tag) => (
             <li
               key={tag}
-              className="tag-item"
+              className={`tag-item ${activeTag === tag ? 'is-active' : ''}`}
               onClick={() => handleTagClick(tag)}
             >
               {tag}
