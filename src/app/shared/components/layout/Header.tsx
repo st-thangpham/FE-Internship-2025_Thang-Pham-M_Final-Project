@@ -8,12 +8,15 @@ import { AuthStorageService } from '@core/services/auth-storage.service';
 import logo from '/imgs/logo.png';
 import defaultAvatar from '/imgs/avatar.jpg';
 import writeIcon from '/icons/write.svg';
+import ConfirmModal from '../ConfirmModal';
 
 export const Header = () => {
   const { isAuthenticated, user, clearUserSession } = useContext(AuthContext)!;
   const authStorage = new AuthStorageService();
   const location = useLocation();
   const navigate = useNavigate();
+
+  const [confirmLogout, setConfirmLogout] = useState(false);
 
   const [hidden, setHidden] = useState(false);
   const lastScrollY = useRef(0);
@@ -22,6 +25,7 @@ export const Header = () => {
   const dropdownRef = useRef<HTMLLIElement>(null);
 
   const handleLogout = () => {
+    setConfirmLogout(false);
     clearUserSession();
     authStorage.removeToken();
     toast.success('Logout successful!');
@@ -81,7 +85,10 @@ export const Header = () => {
         </button>
       </div>
       <div className="dropdown-section">
-        <button className="dropdown-item" onClick={handleLogout}>
+        <button
+          className="dropdown-item"
+          onClick={() => setConfirmLogout(true)}
+        >
           Sign out
         </button>
         <div className="dropdown-email">{user?.email}</div>
@@ -155,6 +162,17 @@ export const Header = () => {
           </div>
         </nav>
       </div>
+      {confirmLogout && (
+        <ConfirmModal
+          isOpen={confirmLogout}
+          title="Sign out"
+          message="Are you sure you want to log out?"
+          cancelLabel="Cancel"
+          confirmLabel="Sign out"
+          onCancel={() => setConfirmLogout(false)}
+          onConfirm={handleLogout}
+        />
+      )}
     </header>
   );
 };

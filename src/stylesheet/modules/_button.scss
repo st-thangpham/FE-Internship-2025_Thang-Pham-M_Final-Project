@@ -195,4 +195,23 @@ $button-sizes: (
     border-radius: 999px;
     cursor: pointer;
   }
+
+  &.btn-cancel {
+    background-color: transparent;
+    border: 1px solid map.get(variables.$color, grey-b);
+    color: map.get(variables.$color, black);
+
+    &:hover {
+      background-color: map.get(variables.$color, grey-a);
+    }
+  }
+
+  &.btn-confirm {
+    background-color: map.get(variables.$color, danger);
+    color: map.get(variables.$color, white);
+
+    &:hover {
+      background-color: map.get(variables.$color, danger-msg);
+    }
+  }
 }

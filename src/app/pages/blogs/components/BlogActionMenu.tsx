@@ -46,6 +46,7 @@ const BlogActionMenu: React.FC<BlogActionMenuProps> = ({
           <li className="list-item">
             <Link to={`/blogs/update/${postId}`}>Update</Link>
           </li>
+          <li className="list-item">Delete</li>
         </ul>
       )}
     </div>
