@@ -23,7 +23,6 @@
     padding-bottom: 24px;
     border-bottom: 1px solid map.get(variables.$color, grey-a);
     text-align: left;
-    cursor: pointer;
 
     .blog-author {
       @include mixins.pxRem(font-size, 13);
@@ -183,42 +182,53 @@
   justify-content: space-between;
   gap: 16px;
 
-  .btn-action {
-    background: transparent;
-    border: none;
-    width: 24px;
-    height: 24px;
-    cursor: pointer;
-    padding: 4px;
-    border-radius: 999px;
-    transition: color 0.2s;
+  .blog-action-menu {
+    display: flex;
+    gap: 24px;
 
-    &:hover {
-      background-color: map.get(variables.$color, grey-a);
+    .blog-status {
+      width: 20px;
+      height: 20px;
+      opacity: 0.8;
     }
-  }
 
-  .dropdown-menu {
-    position: absolute;
-    top: 28px;
-    right: 0;
-    background-color: map.get(variables.$color, white);
-    border: 1px solid map.get(variables.$color, grey-a);
-    border-radius: 6px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    min-width: 120px;
-    z-index: 10;
-    overflow: hidden;
-
-    li {
-      padding: 10px 16px;
-      font-size: 14px;
+    .btn-action {
+      background: transparent;
+      border: none;
+      width: 24px;
+      height: 24px;
       cursor: pointer;
-      color: map.get(variables.$color, black);
-      transition: background 0.2s;
+      padding: 4px;
+      border-radius: 999px;
+      transition: color 0.2s;
 
       &:hover {
         background-color: map.get(variables.$color, grey-a);
+      }
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: 28px;
+      right: 0;
+      background-color: map.get(variables.$color, white);
+      border: 1px solid map.get(variables.$color, grey-a);
+      border-radius: 6px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      min-width: 120px;
+      z-index: 10;
+      overflow: hidden;
+
+      li {
+        padding: 10px 16px;
+        font-size: 14px;
+        cursor: pointer;
+        color: map.get(variables.$color, black);
+        transition: background 0.2s;
+
+        &:hover {
+          background-color: map.get(variables.$color, grey-a);
+        }
       }
     }
   }
