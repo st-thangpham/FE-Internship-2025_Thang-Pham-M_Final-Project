@@ -4,17 +4,21 @@ import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '@app/shared/contexts/auth.context';
 
 import moreIcon from '/icons/more.svg';
+import lockIcon from '/icons/lock.svg';
+import { isPrivate } from '@babel/types';
 
 interface BlogActionMenuProps {
   postId: number;
   authorId: number;
   showAction?: boolean;
+  status: 'public' | 'private';
 }
 
 const BlogActionMenu: React.FC<BlogActionMenuProps> = ({
   postId,
   authorId,
   showAction = false,
+  status,
 }) => {
   const { user: authUser } = useContext(AuthContext)!;
   const [showDropdown, setShowDropdown] = useState(false);
@@ -25,6 +29,11 @@ const BlogActionMenu: React.FC<BlogActionMenuProps> = ({
 
   return (
     <div className="blog-action-menu">
+      {status === 'private' && (
+        <div className="blog-status">
+          <img src={lockIcon} alt="Lock Icon" />
+        </div>
+      )}
       <button
         className="btn btn-action"
         onClick={() => setShowDropdown((prev) => !prev)}

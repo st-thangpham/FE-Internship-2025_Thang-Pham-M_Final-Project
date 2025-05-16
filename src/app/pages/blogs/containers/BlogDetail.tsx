@@ -89,6 +89,7 @@ const BlogDetail = () => {
                   postId={post.id}
                   authorId={post.userId}
                   showAction={true}
+                  status={post.status}
                 />
               </div>
             </div>

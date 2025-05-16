@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { Link } from 'react-router';
 
 import { Post } from '@shared/models/post';
 import { formatDate } from '@app/core/helpers/date-format.helper';
+import { AuthContext } from '@app/shared/contexts/auth.context';
+import BlogActionMenu from './BlogActionMenu';
 
 import defaultAvatar from '/imgs/avatar.jpg';
 import logo from '/imgs/logo.png';
-import BlogActionMenu from './BlogActionMenu';
-import { Link } from 'react-router';
 
 interface BlogListItemProps {
   post: Post;
@@ -17,6 +18,9 @@ const BlogListItem: React.FC<BlogListItemProps> = ({
   post,
   hideAuthor = false,
 }) => {
+  const { user: authUser } = useContext(AuthContext)!;
+  const isAuthor = authUser?.id === post.userId;
+
   const handleImageError = (
     e: React.SyntheticEvent<HTMLImageElement, Event>
   ) => {
@@ -34,7 +38,7 @@ const BlogListItem: React.FC<BlogListItemProps> = ({
           />
           <Link
             className="author-name txt-link"
-            to={`/profile/${post.user.id}`}
+            to={isAuthor ? `/profile/me` : `/profile/${post.user.id}`}
           >
             {post.user.displayName}
           </Link>
@@ -55,6 +59,7 @@ const BlogListItem: React.FC<BlogListItemProps> = ({
               postId={post.id}
               authorId={post.userId}
               showAction={true}
+              status={post.status}
             />
           </div>
         </div>
