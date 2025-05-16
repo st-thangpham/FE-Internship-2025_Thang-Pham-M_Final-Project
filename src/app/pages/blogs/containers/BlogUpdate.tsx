@@ -7,6 +7,7 @@ import Ckeditor from '@app/shared/components/Ckeditor';
 import { Select } from '@shared/components/partials/Select';
 import { STATUS_OPTIONS, TAG_OPTIONS } from '@shared/contexts/constant';
 import { PostService } from '@shared/services/blog.service';
+import ConfirmModal from '@app/shared/components/ConfirmModal';
 
 type FormValues = {
   title: string;
@@ -22,6 +23,7 @@ const BlogUpdate = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const postService = React.useMemo(() => new PostService(), []);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const {
     control,
@@ -119,11 +121,16 @@ const BlogUpdate = () => {
     }
   }, [getValues, rawContent, id, navigate, postService]);
 
+  const handleConfirmUpdate = async () => {
+    setShowConfirm(false);
+    await handleUpdate();
+  };
+
   useEffect(() => {
-    const handleEvent = () => handleUpdate();
+    const handleEvent = () => setShowConfirm(true);
     window.addEventListener('submitBlog', handleEvent);
     return () => window.removeEventListener('submitBlog', handleEvent);
-  }, [handleUpdate]);
+  }, []);
 
   return (
     <div className="page-write">
@@ -241,6 +248,17 @@ const BlogUpdate = () => {
           </form>
         </div>
       </div>
+      {showConfirm && (
+        <ConfirmModal
+          isOpen={showConfirm}
+          title="Update Post"
+          message="Are you sure you want to update this post?"
+          cancelLabel="Cancel"
+          confirmLabel="Update"
+          onCancel={() => setShowConfirm(false)}
+          onConfirm={handleConfirmUpdate}
+        />
+      )}
     </div>
   );
 };

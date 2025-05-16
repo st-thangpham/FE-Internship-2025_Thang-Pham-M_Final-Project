@@ -207,11 +207,11 @@ $button-sizes: (
   }
 
   &.btn-confirm {
-    background-color: map.get(variables.$color, danger);
+    background-color: map.get(variables.$color, grey-b);
     color: map.get(variables.$color, white);
 
     &:hover {
-      background-color: map.get(variables.$color, danger-msg);
+      background-color: map.get(variables.$color, primary);
     }
   }
 }
