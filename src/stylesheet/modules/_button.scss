@@ -214,4 +214,42 @@ $button-sizes: (
       background-color: map.get(variables.$color, primary);
     }
   }
+
+  &.btn-action {
+    position: relative;
+    width: 24px;
+    height: 24px;
+    border: none;
+    padding: 4px;
+    background: transparent;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: color 0.2s;
+
+    &:hover {
+      background-color: map.get(variables.$color, grey-a);
+    }
+
+    &::after {
+      content: 'More';
+      position: absolute;
+      left: 50%;
+      top: -40px;
+      transform: translateX(-50%);
+      background-color: map.get(variables.$color, black);
+      color: map.get(variables.$color, white);
+      padding: 8px 16px;
+      font-size: 12px;
+      border-radius: 4px;
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.2s;
+      pointer-events: none;
+      z-index: 99;
+    }
+
+    &:hover::after {
+      opacity: 1;
+    }
+  }
 }
