@@ -1,36 +1,31 @@
 import React from 'react';
-import defaultAvatar from '/imgs/avatar.jpg';
+
+import { useAppSelector } from '@store/hooks';
+import { User } from '@app/shared/models/user';
 
 interface ProfileInfoProps {
-  userId: number;
-  loggedInUserId: number;
-  picture?: string;
-  displayName: string;
-  email: string;
-  firstName?: string;
-  lastName?: string;
-  gender?: string;
-  dob?: string;
+  user: User;
 }
 
-const ProfileInfo: React.FC<ProfileInfoProps> = ({
-  userId,
-  loggedInUserId,
-  picture,
-  displayName,
-  email,
-}) => {
+const ProfileInfo: React.FC<ProfileInfoProps> = ({ user }) => {
+  const loggedInUserId = useAppSelector((state) => state.auth.user?.id);
+
   return (
     <div className="profile-info">
       <img
-        src={picture || defaultAvatar}
-        alt={displayName}
+        src={user.avatar}
+        alt={user.displayName}
         className="profile-avatar"
       />
-      <h2 className="profile-name">{displayName}</h2>
-      <p className="profile-email">{email}</p>
+      <h2 className="profile-name">{user.displayName}</h2>
+      <div className="profile-details">
+        <p className="profile-detail">{user.fullName}</p>
+        <p className="profile-detail">{user.dob}</p>
+        <p className="profile-detail">{user.phone}</p>
+        <p className="profile-detail">{user.email}</p>
+      </div>
 
-      {userId === loggedInUserId && (
+      {user.id === loggedInUserId && (
         <a className="edit-profile-link">Edit profile</a>
       )}
     </div>

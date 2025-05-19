@@ -1,12 +1,14 @@
 import { Post } from './post';
 
+import defaultAvatar from '/imgs/avatar.jpg';
+
 export class User {
   picture: string;
   email: string;
   firstName: string;
   gender: string;
   id: number;
-  image: string;
+  phone: string;
   lastName: string;
   displayName: string;
   dob: string;
@@ -16,7 +18,7 @@ export class User {
   }
 
   get avatar(): string {
-    return this.image || this.picture || '/default-avatar.png';
+    return this.picture || defaultAvatar;
   }
 
   get isMale(): boolean {

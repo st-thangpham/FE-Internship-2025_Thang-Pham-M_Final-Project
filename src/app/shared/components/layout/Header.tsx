@@ -6,7 +6,6 @@ import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { logout } from '@store/auth/auth.slice';
 
 import logo from '/imgs/logo.png';
-import defaultAvatar from '/imgs/avatar.jpg';
 import writeIcon from '/icons/write.svg';
 import ConfirmModal from '../ConfirmModal';
 
@@ -146,11 +145,7 @@ export const Header = () => {
                       className={`btn btn-avatar ${showDropdown ? 'open' : ''}`}
                       onClick={() => setShowDropdown(!showDropdown)}
                     >
-                      <img
-                        src={user?.picture || defaultAvatar}
-                        alt="Avatar"
-                        className="img"
-                      />
+                      <img src={user?.avatar} alt="Avatar" className="img" />
                     </button>
                     {showDropdown && renderDropdown()}
                   </li>

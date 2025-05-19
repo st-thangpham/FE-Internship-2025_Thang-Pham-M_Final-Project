@@ -27,7 +27,6 @@ const BlogList = ({
   const [isLoading, setIsLoading] = useState(false);
   const postService = new PostService();
 
-  const observer = useRef<IntersectionObserver | null>(null);
   const bottomRef = useRef<HTMLLIElement | null>(null);
 
   useEffect(() => {

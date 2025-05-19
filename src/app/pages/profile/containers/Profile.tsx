@@ -7,7 +7,6 @@ import ProfileInfo from './ProfileInfo';
 
 import { Post } from '@shared/models/post';
 import { UserWithPosts } from '@app/shared/models/user';
-import { useAppSelector } from '@store/hooks';
 
 const Profile = () => {
   const { id } = useParams<{ id: string }>();
@@ -15,7 +14,6 @@ const Profile = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const loggedInUserId = useAppSelector((state) => state.auth.user?.id);
   const postService = new PostService();
 
   useEffect(() => {
@@ -23,7 +21,7 @@ const Profile = () => {
       try {
         setLoading(true);
         const res = await postService.getUserWithPosts(userId);
-        setUser(res);
+        setUser(new UserWithPosts(res));
         setPosts(res.Posts || []);
       } catch (error) {
         console.error('Failed to fetch user with posts:', error);
@@ -33,7 +31,7 @@ const Profile = () => {
     };
 
     if (id) fetchUserData(id);
-  }, [id, postService]);
+  }, [id]);
 
   return (
     <div className="page page-profile">
@@ -59,15 +57,7 @@ const Profile = () => {
             </div>
 
             <aside className="sidebar">
-              {user && (
-                <ProfileInfo
-                  userId={user.id}
-                  loggedInUserId={loggedInUserId}
-                  picture={user.picture}
-                  displayName={user.displayName}
-                  email={user.email}
-                />
-              )}
+              {user && <ProfileInfo user={user} />}
             </aside>
           </div>
         </div>

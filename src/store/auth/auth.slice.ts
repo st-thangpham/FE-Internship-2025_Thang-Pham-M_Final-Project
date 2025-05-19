@@ -16,7 +16,7 @@ interface AuthState {
 }
 
 const initialState: AuthState = {
-  user: authStorage.getUserInfo(),
+  user: authStorage.getUserInfo() ? new User(authStorage.getUserInfo()) : null,
   token: authStorage.getToken(),
   isAuthenticated: !!authStorage.getToken(),
   loading: false,
@@ -85,7 +85,7 @@ const authSlice = createSlice({
       })
       .addCase(login.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload.user;
+        state.user = new User(action.payload.user);
         state.token = action.payload.token;
         state.isAuthenticated = true;
       })
