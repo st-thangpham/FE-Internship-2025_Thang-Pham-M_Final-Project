@@ -55,6 +55,7 @@ const Login = () => {
 
       setUserSession(userInfo, accessToken);
       toast.success('Login successful!');
+      // Add comment
       navigate(location.state?.from?.pathname || '/', { replace: true });
     } catch (error: any) {
       toast.error(

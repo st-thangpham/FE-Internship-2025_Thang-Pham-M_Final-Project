@@ -10,6 +10,7 @@ const authRoutes: PageRoute[] = [
   {
     path: 'auth',
     element: Auth,
+    isAuth: true,
     children: [
       {
         path: '',
