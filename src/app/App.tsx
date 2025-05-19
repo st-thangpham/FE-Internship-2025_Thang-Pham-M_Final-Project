@@ -3,16 +3,17 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { Outlet, RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { ErrorBoundary } from 'react-error-boundary';
-import { Bounce, ToastContainer } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 
 import '@stylesheet/_style.scss';
 
 import appRoutes from './app.routes';
 import AppSuspense from './AppSuspense';
 
-import { AuthProvider } from './shared/contexts/auth.context';
 import { renderChildren } from './core/modules/custom-router-dom/RouterOutlet';
 import AppErrorBoundaryFallback from './AppErrorBoundaryFallback';
+import { Provider } from 'react-redux';
+import { store } from '@store/store';
 
 export const Root = () => {
   return (
@@ -33,7 +34,7 @@ const router = createBrowserRouter([
 
 const root = createRoot(document.getElementById('root'));
 root.render(
-  <AuthProvider>
+  <Provider store={store}>
     <RouterProvider router={router} />
-  </AuthProvider>
+  </Provider>
 );

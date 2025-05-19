@@ -1,9 +1,9 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, NavLink, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { AuthContext } from '@app/shared/contexts/auth.context';
-import { AuthStorageService } from '@core/services/auth-storage.service';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { logout } from '@store/auth/auth.slice';
 
 import logo from '/imgs/logo.png';
 import defaultAvatar from '/imgs/avatar.jpg';
@@ -11,23 +11,21 @@ import writeIcon from '/icons/write.svg';
 import ConfirmModal from '../ConfirmModal';
 
 export const Header = () => {
-  const { isAuthenticated, user, clearUserSession } = useContext(AuthContext)!;
-  const authStorage = new AuthStorageService();
-  const location = useLocation();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const { isAuthenticated, user } = useAppSelector((state) => state.auth);
 
   const [confirmLogout, setConfirmLogout] = useState(false);
-
   const [hidden, setHidden] = useState(false);
   const lastScrollY = useRef(0);
-
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLLIElement>(null);
 
   const handleLogout = () => {
     setConfirmLogout(false);
-    clearUserSession();
-    authStorage.removeToken();
+    dispatch(logout());
     toast.success('Logout successful!');
     navigate('/');
   };
@@ -162,6 +160,7 @@ export const Header = () => {
           </div>
         </nav>
       </div>
+
       {confirmLogout && (
         <ConfirmModal
           isOpen={confirmLogout}

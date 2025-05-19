@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -7,7 +7,6 @@ import { toast } from 'react-toastify';
 import { z } from 'zod';
 
 import { isValidDDMMYYYY } from '@app/core/helpers/date-format.helper';
-import { AuthService } from '@app/core/services/auth.service';
 import {
   Button,
   CalendarInput,
@@ -15,6 +14,7 @@ import {
   Select,
 } from '@app/shared/components/partials';
 import { format, parse } from 'date-fns';
+import { useAuth } from '@app/shared/hooks/useAuth';
 
 const schema = z
   .object({
@@ -22,13 +22,6 @@ const schema = z
       .string()
       .email('Invalid email address')
       .nonempty('Email is required'),
-
-    password: z
-      .string()
-      .min(6, 'Password must be at least 6 characters')
-      .max(20, 'Password must not exceed 20 characters'),
-
-    confirmPassword: z.string().nonempty('Please confirm your password'),
 
     firstName: z
       .string()
@@ -64,6 +57,13 @@ const schema = z
       .nonempty('Display name is required')
       .min(3, 'Display name must be at least 3 characters'),
   })
+  .extend({
+    password: z
+      .string()
+      .min(6, 'Password must be at least 6 characters')
+      .max(20, 'Password must not exceed 20 characters'),
+    confirmPassword: z.string().nonempty('Please confirm your password'),
+  })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Passwords do not match',
     path: ['confirmPassword'],
@@ -71,11 +71,10 @@ const schema = z
 
 type RegisterFormData = z.infer<typeof schema>;
 
-const authService = new AuthService();
-
 const Register = () => {
-  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { handleRegister, loading } = useAuth();
+  const todayStr = format(new Date(), 'dd/MM/yyyy');
 
   const {
     register,
@@ -89,8 +88,7 @@ const Register = () => {
 
   const onSubmit = async (data: RegisterFormData) => {
     try {
-      setIsLoading(true);
-      await authService.register({
+      await handleRegister({
         email: data.email,
         password: data.password,
         firstName: data.firstName,
@@ -100,12 +98,11 @@ const Register = () => {
         phone: data.phone,
         displayName: data.displayName,
       });
+
       toast.success('Register successful!');
       navigate('/auth/login');
-    } catch (error) {
-      toast.error(error?.response?.data?.errors[0] || 'Registration failed!');
-    } finally {
-      setIsLoading(false);
+    } catch (err: any) {
+      toast.error(err || 'Registration failed!');
     }
   };
 
@@ -132,6 +129,7 @@ const Register = () => {
             errorMsg={errors.password?.message}
             isRequired
           />
+
           <Input
             type="password"
             name="confirmPassword"
@@ -201,6 +199,7 @@ const Register = () => {
               <Controller
                 control={control}
                 name="dob"
+                defaultValue={todayStr}
                 render={({ field }) => {
                   const parsedDate = field.value
                     ? parse(field.value, 'dd/MM/yyyy', new Date())
@@ -237,8 +236,8 @@ const Register = () => {
             <Button
               type="submit"
               className="btn btn-primary btn-block"
-              isLoading={isLoading}
-              isDisabled={isLoading || !isValid}
+              isLoading={loading}
+              isDisabled={loading || !isValid}
               title="Register"
             />
           </div>
