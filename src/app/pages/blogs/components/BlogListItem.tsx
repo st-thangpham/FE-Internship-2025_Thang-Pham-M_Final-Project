@@ -1,13 +1,13 @@
-import React, { useContext } from 'react';
-import { Link } from 'react-router';
+import React from 'react';
+import { Link } from 'react-router-dom';
 
 import { Post } from '@shared/models/post';
 import { formatDate } from '@app/core/helpers/date-format.helper';
-import { AuthContext } from '@app/shared/contexts/auth.context';
 import BlogActionMenu from './BlogActionMenu';
 
 import defaultAvatar from '/imgs/avatar.jpg';
 import logo from '/imgs/logo.png';
+import { useAppSelector } from '@store/hooks';
 
 interface BlogListItemProps {
   post: Post;
@@ -18,8 +18,8 @@ const BlogListItem: React.FC<BlogListItemProps> = ({
   post,
   hideAuthor = false,
 }) => {
-  const { user: authUser } = useContext(AuthContext)!;
-  const isAuthor = authUser?.id === post.userId;
+  const currentUserId = useAppSelector((state) => state.auth.user?.id);
+  const isAuthor = currentUserId === post.userId;
 
   const handleImageError = (
     e: React.SyntheticEvent<HTMLImageElement, Event>

@@ -14,9 +14,7 @@ export interface PostPayload extends Partial<Post> {}
 export class PostService {
   private http = new ApiService();
 
-  constructor() {}
-
-  getPublicPosts(
+  async getPublicPosts(
     page: number,
     size: number,
     tags?: string
@@ -25,26 +23,40 @@ export class PostService {
     if (tags) {
       params.tags = tags;
     }
-    return this.http.get([ENDPOINT.blogs.blogsList, 'public'], params);
+
+    const res = await this.http.get(
+      [ENDPOINT.blogs.blogsList, 'public'],
+      params
+    );
+    return new PostResponse(res);
   }
 
-  createPost(data: PostPayload): Promise<PostResponse> {
-    return this.http.post([ENDPOINT.blogs.blogsList], data);
+  async createPost(data: PostPayload): Promise<Post> {
+    const res = await this.http.post([ENDPOINT.blogs.blogsList], data);
+    return new Post(res);
   }
 
-  deletePost(id: string): Promise<Post> {
-    return this.http.delete([ENDPOINT.blogs.blogsList, id]) as Promise<Post>;
+  async deletePost(id: string): Promise<Post> {
+    const res = await this.http.delete([ENDPOINT.blogs.blogsList, id]);
+    return new Post(res);
   }
 
-  getPostById(id: string): Promise<Post> {
-    return this.http.get([ENDPOINT.blogs.blogsList, id]);
+  async getPostById(id: string): Promise<Post> {
+    const res = await this.http.get([ENDPOINT.blogs.blogsList, id]);
+    return new Post(res);
   }
 
-  updatePostById(id: string, data: PostPayload): Promise<Post> {
-    return this.http.put([ENDPOINT.blogs.blogsList, id], data);
+  async updatePostById(id: string, data: PostPayload): Promise<Post> {
+    const res = await this.http.put([ENDPOINT.blogs.blogsList, id], data);
+    return new Post(res);
   }
 
-  getUserWithPosts(userId: string | number): Promise<UserWithPosts> {
-    return this.http.get([ENDPOINT.auth.index, String(userId), 'posts']);
+  async getUserWithPosts(userId: string | number): Promise<UserWithPosts> {
+    const res = await this.http.get([
+      ENDPOINT.auth.index,
+      String(userId),
+      'posts',
+    ]);
+    return new UserWithPosts(res);
   }
 }

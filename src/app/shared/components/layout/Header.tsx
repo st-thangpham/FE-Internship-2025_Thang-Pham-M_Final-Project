@@ -1,33 +1,27 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, NavLink, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { AuthContext } from '@app/shared/contexts/auth.context';
-import { AuthStorageService } from '@core/services/auth-storage.service';
+import { useAuth } from '@shared/hooks/useAuth';
 
 import logo from '/imgs/logo.png';
-import defaultAvatar from '/imgs/avatar.jpg';
 import writeIcon from '/icons/write.svg';
 import ConfirmModal from '../ConfirmModal';
 
 export const Header = () => {
-  const { isAuthenticated, user, clearUserSession } = useContext(AuthContext)!;
-  const authStorage = new AuthStorageService();
-  const location = useLocation();
+  const { isAuthenticated, user, handleLogout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [confirmLogout, setConfirmLogout] = useState(false);
-
   const [hidden, setHidden] = useState(false);
   const lastScrollY = useRef(0);
-
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLLIElement>(null);
 
-  const handleLogout = () => {
+  const handleLogoutSubmit = () => {
     setConfirmLogout(false);
-    clearUserSession();
-    authStorage.removeToken();
+    handleLogout();
     toast.success('Logout successful!');
     navigate('/');
   };
@@ -148,11 +142,7 @@ export const Header = () => {
                       className={`btn btn-avatar ${showDropdown ? 'open' : ''}`}
                       onClick={() => setShowDropdown(!showDropdown)}
                     >
-                      <img
-                        src={user?.picture || defaultAvatar}
-                        alt="Avatar"
-                        className="img"
-                      />
+                      <img src={user?.avatar} alt="Avatar" className="img" />
                     </button>
                     {showDropdown && renderDropdown()}
                   </li>
@@ -162,6 +152,7 @@ export const Header = () => {
           </div>
         </nav>
       </div>
+
       {confirmLogout && (
         <ConfirmModal
           isOpen={confirmLogout}
@@ -170,7 +161,7 @@ export const Header = () => {
           cancelLabel="Cancel"
           confirmLabel="Sign out"
           onCancel={() => setConfirmLogout(false)}
-          onConfirm={handleLogout}
+          onConfirm={handleLogoutSubmit}
         />
       )}
     </header>

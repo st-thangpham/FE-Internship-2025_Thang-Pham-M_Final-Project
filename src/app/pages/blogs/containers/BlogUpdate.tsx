@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -6,8 +6,8 @@ import { toast } from 'react-toastify';
 import Ckeditor from '@app/shared/components/Ckeditor';
 import { Select } from '@shared/components/partials/Select';
 import { STATUS_OPTIONS, TAG_OPTIONS } from '@shared/contexts/constant';
-import { PostService } from '@shared/services/blog.service';
-import ConfirmModal from '@app/shared/components/ConfirmModal';
+import ConfirmModal from '@shared/components/ConfirmModal';
+import { usePosts } from '@shared/hooks/userPosts';
 
 type FormValues = {
   title: string;
@@ -19,11 +19,11 @@ type FormValues = {
 
 const BlogUpdate = () => {
   const [rawContent, setRawContent] = useState('');
-  const [loading, setLoading] = useState(true);
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const postService = React.useMemo(() => new PostService(), []);
   const [showConfirm, setShowConfirm] = useState(false);
+  const { post, fetchDetail, loadingDetail, resetDetail, submitUpdatePost } =
+    usePosts();
 
   const {
     control,
@@ -43,48 +43,39 @@ const BlogUpdate = () => {
   const parseEditorContent = (html: string) => {
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, 'text/html');
-
     const cover = doc.querySelector('img')?.getAttribute('src') || '';
-    const firstImg = doc.querySelector('img');
-    if (firstImg) firstImg.remove();
-
+    doc.querySelector('img')?.remove();
     const content = doc.body.innerHTML.trim();
     return { cover, content };
   };
 
   useEffect(() => {
     if (!id) return;
-    setLoading(true);
+    fetchDetail(id);
+    return () => resetDetail();
+  }, [id, fetchDetail, resetDetail]);
 
-    (async () => {
-      try {
-        const post = await postService.getPostById(id);
+  useEffect(() => {
+    if (!post || !post.title) return;
 
-        const mappedTags = (post.tags || [])
-          .map((tag: string) => TAG_OPTIONS.find((opt) => opt.value === tag))
-          .filter(Boolean) as { label: string; value: string }[];
+    const mappedTags = (post.tags || [])
+      .map((tag: string) => TAG_OPTIONS.find((opt) => opt.value === tag))
+      .filter(Boolean) as { label: string; value: string }[];
 
-        setValue('title', post.title);
-        setValue('description', post.description || '');
-        setValue('status', post.status);
-        setValue('tags', mappedTags);
-        setValue('cover', post.cover);
+    setValue('title', post.title);
+    setValue('description', post.description || '');
+    setValue('status', post.status);
+    setValue('tags', mappedTags);
+    setValue('cover', post.cover);
 
-        const contentWithCover = post.cover
-          ? `<img src="${post.cover}" alt="Cover Image" />${post.content || ''}`
-          : post.content || '';
+    const contentWithCover = post.cover
+      ? `<img src="${post.cover}" alt="Cover Image" />${post.content || ''}`
+      : post.content || '';
 
-        setRawContent(contentWithCover);
-      } catch (error) {
-        toast.error('Failed to load post data.');
-        navigate('/');
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [id, navigate, postService, setValue]);
+    setRawContent(contentWithCover);
+  }, [post, setValue]);
 
-  const handleUpdate = useCallback(async () => {
+  const handleUpdate = async () => {
     const { title, description, tags, status } = getValues();
     const { cover, content } = parseEditorContent(rawContent);
 
@@ -104,22 +95,20 @@ const BlogUpdate = () => {
       return toast.error('Please select at least one tag.');
     }
 
-    try {
-      await postService.updatePostById(id!, {
-        title,
-        description,
-        content,
-        tags: tags.map((t) => t.value),
-        status: status as 'public' | 'private',
-        cover,
-      });
+    const payload = {
+      title,
+      description,
+      content,
+      tags: tags.map((t) => t.value),
+      status: status as 'public' | 'private',
+      cover,
+    };
 
-      toast.success('Post updated successfully!');
+    const success = await submitUpdatePost(id!, payload);
+    if (success) {
       navigate(`/blogs/${id}`);
-    } catch (error) {
-      toast.error('Failed to update post.');
     }
-  }, [getValues, rawContent, id, navigate, postService]);
+  };
 
   const handleConfirmUpdate = async () => {
     setShowConfirm(false);
@@ -141,52 +130,32 @@ const BlogUpdate = () => {
               <Controller
                 control={control}
                 name="title"
-                rules={{
-                  required: 'Title is required',
-                  minLength: {
-                    value: 20,
-                    message: 'Title must be at least 20 characters',
-                  },
-                }}
                 render={({ field }) => (
                   <textarea
                     {...field}
                     className="form-control form-title"
                     placeholder="Title"
                     rows={2}
-                    disabled={loading}
+                    disabled={loadingDetail}
                   />
                 )}
               />
-              {errors.title && (
-                <p className="text-danger">{errors.title.message}</p>
-              )}
             </div>
 
             <div className="form-group">
               <Controller
                 control={control}
                 name="description"
-                rules={{
-                  required: 'Description is required',
-                  minLength: {
-                    value: 50,
-                    message: 'Description must be at least 50 characters',
-                  },
-                }}
                 render={({ field }) => (
                   <textarea
                     {...field}
                     className="form-control form-description"
                     placeholder="Description..."
                     rows={2}
-                    disabled={loading}
+                    disabled={loadingDetail}
                   />
                 )}
               />
-              {errors.description && (
-                <p className="text-danger">{errors.description.message}</p>
-              )}
             </div>
 
             <div className="row">
@@ -194,7 +163,6 @@ const BlogUpdate = () => {
                 <Controller
                   control={control}
                   name="tags"
-                  rules={{ required: 'Tags are required' }}
                   render={({ field }) => (
                     <Select
                       name="tags"
@@ -211,7 +179,7 @@ const BlogUpdate = () => {
                       errorMsg={errors.tags?.message}
                       isMulti
                       maxSelect={4}
-                      isDisabled={loading}
+                      isDisabled={loadingDetail}
                     />
                   )}
                 />
@@ -230,18 +198,18 @@ const BlogUpdate = () => {
                       value={field.value}
                       onChange={field.onChange}
                       errorMsg={errors.status?.message}
-                      isDisabled={loading}
+                      isDisabled={loadingDetail}
                     />
                   )}
                 />
               </div>
             </div>
 
-            {!loading && (
+            {!loadingDetail && (
               <div className="form-group">
                 <Ckeditor
                   value={rawContent}
-                  onChange={(data) => setRawContent(data)}
+                  onChange={(val) => setRawContent(val)}
                 />
               </div>
             )}

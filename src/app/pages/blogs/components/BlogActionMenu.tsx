@@ -1,10 +1,9 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
 
-import { AuthContext } from '@app/shared/contexts/auth.context';
 import ConfirmModal from '@shared/components/ConfirmModal';
-import { PostService } from '@shared/services/blog.service';
+import { useAppSelector } from '@store/hooks';
+import { usePosts } from '@shared/hooks/userPosts';
 
 import moreIcon from '/icons/more.svg';
 import lockIcon from '/icons/lock.svg';
@@ -24,35 +23,27 @@ const BlogActionMenu: React.FC<BlogActionMenuProps> = ({
   status,
   isDetailPage = false,
 }) => {
-  const { user: authUser } = useContext(AuthContext)!;
+  const currentUserId = useAppSelector((state) => state.auth.user?.id);
   const [showDropdown, setShowDropdown] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const navigate = useNavigate();
 
-  const isAuthor = authUser?.id === authorId;
-  const postService = new PostService();
+  const isAuthor = currentUserId === authorId;
+
+  const { removePost } = usePosts();
 
   if (!showAction || !isAuthor) return null;
 
-  const handleDelete = async () => {
-    try {
-      await postService.deletePost(String(postId));
-      toast.success('Post deleted successfully!');
-
+  const handleConfirmDelete = async () => {
+    setShowConfirm(false);
+    const success = await removePost(String(postId));
+    if (success) {
       if (isDetailPage) {
         navigate(-1);
       } else {
         window.location.reload();
       }
-    } catch (error) {
-      console.error('Delete post failed:', error);
-      toast.error('Failed to delete post. Please try again.');
     }
-  };
-
-  const handleConfirmDelete = async () => {
-    setShowConfirm(false);
-    await handleDelete();
   };
 
   return (

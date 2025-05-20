@@ -1,5 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
-
+import React, { useCallback, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -7,24 +6,24 @@ import { toast } from 'react-toastify';
 import Ckeditor from '@app/shared/components/Ckeditor';
 import { Select } from '@shared/components/partials/Select';
 import { STATUS_OPTIONS, TAG_OPTIONS } from '@shared/contexts/constant';
-import { PostService } from '@shared/services/blog.service';
+import { PostPayload } from '@shared/services/blog.service';
+import { usePosts } from '@shared/hooks/userPosts';
 
 type FormValues = {
   title: string;
   description: string;
   tags: string[];
   status: string;
+  rawContent: string;
 };
 
 const BlogCreate = () => {
-  const [rawContent, setRawContent] = useState('');
   const navigate = useNavigate();
-  const postService = new PostService();
+  const { submitPost } = usePosts();
 
   const {
     control,
     getValues,
-    handleSubmit,
     formState: { errors },
   } = useForm<FormValues>({
     defaultValues: {
@@ -32,23 +31,21 @@ const BlogCreate = () => {
       description: '',
       status: 'public',
       tags: [],
+      rawContent: '',
     },
   });
 
   const parseEditorContent = (html: string) => {
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, 'text/html');
-
     const cover = doc.querySelector('img')?.getAttribute('src') || '';
-
     doc.querySelector('img')?.remove();
-
     const content = doc.body.innerHTML.trim();
     return { cover, content };
   };
 
-  const submitBlog = useCallback(async () => {
-    const { tags, status, title, description } = getValues();
+  const submitBlog = async () => {
+    const { tags, status, title, description, rawContent } = getValues();
     const { cover, content } = parseEditorContent(rawContent);
 
     if (!title || title.length < 20) {
@@ -59,7 +56,7 @@ const BlogCreate = () => {
       return toast.error('Description must be at least 50 characters.');
     }
 
-    if (!content || content.length < 20) {
+    if (!content || content.length < 100) {
       return toast.error('Content must be at least 100 characters.');
     }
 
@@ -67,7 +64,7 @@ const BlogCreate = () => {
       return toast.error('Please select at least one tag.');
     }
 
-    const payload = {
+    const payload: PostPayload = {
       title,
       description,
       content,
@@ -76,14 +73,11 @@ const BlogCreate = () => {
       status: status as 'public' | 'private',
     };
 
-    try {
-      await postService.createPost(payload);
-      toast.success('Post created successfully!');
+    const success = await submitPost(payload);
+    if (success) {
       navigate('/');
-    } catch (err: any) {
-      toast.error(err?.message || 'Failed to create post.');
     }
-  }, [rawContent, getValues]);
+  };
 
   useEffect(() => {
     const handlePublish = () => {
@@ -103,13 +97,6 @@ const BlogCreate = () => {
               <Controller
                 control={control}
                 name="title"
-                rules={{
-                  required: 'Title is required',
-                  minLength: {
-                    value: 20,
-                    message: 'Title must be at least 20 characters',
-                  },
-                }}
                 render={({ field }) => (
                   <textarea
                     {...field}
@@ -119,22 +106,12 @@ const BlogCreate = () => {
                   />
                 )}
               />
-              {errors.title && (
-                <p className="text-danger">{errors.title.message}</p>
-              )}
             </div>
 
             <div className="form-group">
               <Controller
                 control={control}
                 name="description"
-                rules={{
-                  required: 'Description is required',
-                  minLength: {
-                    value: 50,
-                    message: 'Description must be at least 50 characters',
-                  },
-                }}
                 render={({ field }) => (
                   <textarea
                     {...field}
@@ -144,9 +121,6 @@ const BlogCreate = () => {
                   />
                 )}
               />
-              {errors.description && (
-                <p className="text-danger">{errors.description.message}</p>
-              )}
             </div>
 
             <div className="row">
@@ -188,8 +162,15 @@ const BlogCreate = () => {
                 />
               </div>
             </div>
+
             <div className="form-group">
-              <Ckeditor onChange={(data) => setRawContent(data)} />
+              <Controller
+                control={control}
+                name="rawContent"
+                render={({ field }) => (
+                  <Ckeditor value={field.value} onChange={field.onChange} />
+                )}
+              />
             </div>
           </form>
         </div>

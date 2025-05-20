@@ -1,14 +1,13 @@
-import React, { useContext, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-
+import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import { z } from 'zod';
 
-import { AuthService } from '@app/core/services/auth.service';
 import { Button, Input } from '@app/shared/components/partials';
-import { AuthContext } from '@app/shared/contexts/auth.context';
+import { useAuth } from '@app/shared/hooks/useAuth';
+import { login } from '@store/auth/auth.slice';
 
 const schema = z.object({
   email: z
@@ -24,11 +23,10 @@ const schema = z.object({
 type LoginFormData = z.infer<typeof schema>;
 
 const Login = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const { setUserSession } = useContext(AuthContext);
-  const authService = new AuthService();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const { handleLogin, loading, error } = useAuth();
 
   const {
     register,
@@ -40,31 +38,18 @@ const Login = () => {
   });
 
   const onSubmit = async (data: LoginFormData) => {
-    try {
-      setIsLoading(true);
-      const res = await authService.signIn({
-        email: data.email,
-        password: data.password,
-      });
-
-      const { accessToken, userInfo } = res;
-
-      if (!accessToken || !userInfo) {
-        throw new Error('Invalid login response');
-      }
-
-      setUserSession(userInfo, accessToken);
+    const resultAction = await handleLogin(data.email, data.password);
+    if (login.fulfilled.match(resultAction)) {
       toast.success('Login successful!');
-      // Add comment
       navigate(location.state?.from?.pathname || '/', { replace: true });
-    } catch (error: any) {
-      toast.error(
-        error?.response?.data?.errors[0] || 'Invalid email or password.'
-      );
-    } finally {
-      setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
 
   return (
     <>
@@ -91,8 +76,8 @@ const Login = () => {
             <Button
               type="submit"
               className="btn btn-primary btn-block"
-              isLoading={isLoading}
-              isDisabled={isLoading || !isValid}
+              isLoading={loading}
+              isDisabled={loading || !isValid}
               title="Login"
             />
           </div>
