@@ -26,7 +26,7 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { handleLogin, isAuthenticated, loading, error } = useAuth();
+  const { handleLogin, loading, error } = useAuth();
 
   const {
     register,

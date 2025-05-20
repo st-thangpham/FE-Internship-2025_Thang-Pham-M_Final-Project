@@ -2,43 +2,29 @@ import React, { useEffect, useState, useContext } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 import { formatDate } from '@app/core/helpers/date-format.helper';
-import { Post } from '@shared/models/post';
-import { PostService } from '@shared/services/blog.service';
+import BlogActionMenu from '../components/BlogActionMenu';
+import { usePosts } from '@app/shared/hooks/userPosts';
 
 import defaultAvatar from '/imgs/avatar.jpg';
 import defaultCover from '/imgs/logo.png';
-import BlogActionMenu from '../components/BlogActionMenu';
 
 const BlogDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const [post, setPost] = useState<Post>(null);
-  const [loading, setLoading] = useState(true);
-
-  const postService = new PostService();
+  const { post, loadingDetail, fetchDetail, resetDetail } = usePosts();
 
   useEffect(() => {
-    if (!id) return;
-
-    const fetchPost = async () => {
-      try {
-        const response = await postService.getPostById(id);
-        setPost(response);
-      } catch (error) {
-        console.error('Failed to load post:', error);
-      } finally {
-        setLoading(false);
-      }
+    fetchDetail(id);
+    return () => {
+      resetDetail();
     };
-
-    fetchPost();
-  }, [id]);
+  }, [fetchDetail, resetDetail]);
 
   const getCoverImage = () => {
     if (!post?.cover || post.cover === 'cover') return defaultCover;
     return post.cover;
   };
 
-  if (loading) {
+  if (loadingDetail) {
     return (
       <div className="page page-blog-detail">
         <div className="skeleton skeleton-title" />
@@ -50,7 +36,7 @@ const BlogDetail = () => {
     );
   }
 
-  if (!post) {
+  if (!loadingDetail && !post) {
     return (
       <div className="page page-blog-detail not-found">
         <h2>Blog Post Not Found</h2>

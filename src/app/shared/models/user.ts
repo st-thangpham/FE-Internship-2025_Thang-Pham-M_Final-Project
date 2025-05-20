@@ -1,5 +1,4 @@
 import { Post } from './post';
-
 import defaultAvatar from '/imgs/avatar.jpg';
 
 export class User {
@@ -21,10 +20,6 @@ export class User {
     return this.picture || defaultAvatar;
   }
 
-  get isMale(): boolean {
-    return this.gender?.toLowerCase() === 'male';
-  }
-
   constructor(data: Partial<User>) {
     Object.assign(this, data);
   }
@@ -35,6 +30,6 @@ export class UserWithPosts extends User {
 
   constructor(data: Partial<UserWithPosts>) {
     super(data);
-    this.Posts = data.Posts || [];
+    this.Posts = (data.Posts ?? []).map((p) => new Post(p));
   }
 }

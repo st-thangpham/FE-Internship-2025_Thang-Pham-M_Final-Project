@@ -1,37 +1,33 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { PostService } from '@shared/services/blog.service';
 import BlogList from '@app/pages/blogs/containers/BlogList';
 import ProfileInfo from './ProfileInfo';
 
-import { Post } from '@shared/models/post';
-import { UserWithPosts } from '@app/shared/models/user';
+import { usePosts } from '@shared/hooks/userPosts';
 
 const Profile = () => {
   const { id } = useParams<{ id: string }>();
-  const [user, setUser] = useState<UserWithPosts | null>(null);
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  const postService = new PostService();
+  const {
+    userWithPosts,
+    loadingUser,
+    errorUser,
+    fetchUserPosts,
+    clearUserPosts,
+  } = usePosts();
 
   useEffect(() => {
-    const fetchUserData = async (userId: string) => {
-      try {
-        setLoading(true);
-        const res = await postService.getUserWithPosts(userId);
-        setUser(new UserWithPosts(res));
-        setPosts(res.Posts || []);
-      } catch (error) {
-        console.error('Failed to fetch user with posts:', error);
-      } finally {
-        setLoading(false);
-      }
+    if (id) {
+      fetchUserPosts(id);
+    }
+    return () => {
+      clearUserPosts();
     };
+  }, [id, fetchUserPosts, clearUserPosts]);
 
-    if (id) fetchUserData(id);
-  }, [id]);
+  if (errorUser) {
+    return <div>Error loading user: {errorUser}</div>;
+  }
 
   return (
     <div className="page page-profile">
@@ -40,7 +36,7 @@ const Profile = () => {
           <div className="content-layout">
             <div className="main-content">
               <div className="profile-header">
-                <h1 className="display-name">{user?.displayName}</h1>
+                <h1 className="display-name">{userWithPosts?.displayName}</h1>
               </div>
 
               <div className="profile-tabs">
@@ -48,16 +44,16 @@ const Profile = () => {
               </div>
 
               <section className="section section-blog">
-                {loading ? (
+                {loadingUser ? (
                   <div className="loading">Loading blogs...</div>
                 ) : (
-                  <BlogList posts={posts} hideAuthor />
+                  <BlogList posts={userWithPosts?.Posts || []} hideAuthor />
                 )}
               </section>
             </div>
 
             <aside className="sidebar">
-              {user && <ProfileInfo user={user} />}
+              {userWithPosts && <ProfileInfo user={userWithPosts} />}
             </aside>
           </div>
         </div>

@@ -2,19 +2,16 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, NavLink, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { logout } from '@store/auth/auth.slice';
+import { useAuth } from '@shared/hooks/useAuth';
 
 import logo from '/imgs/logo.png';
 import writeIcon from '/icons/write.svg';
 import ConfirmModal from '../ConfirmModal';
 
 export const Header = () => {
-  const dispatch = useAppDispatch();
+  const { isAuthenticated, user, handleLogout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-
-  const { isAuthenticated, user } = useAppSelector((state) => state.auth);
 
   const [confirmLogout, setConfirmLogout] = useState(false);
   const [hidden, setHidden] = useState(false);
@@ -22,9 +19,9 @@ export const Header = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLLIElement>(null);
 
-  const handleLogout = () => {
+  const handleLogoutSubmit = () => {
     setConfirmLogout(false);
-    dispatch(logout());
+    handleLogout();
     toast.success('Logout successful!');
     navigate('/');
   };
@@ -164,7 +161,7 @@ export const Header = () => {
           cancelLabel="Cancel"
           confirmLabel="Sign out"
           onCancel={() => setConfirmLogout(false)}
-          onConfirm={handleLogout}
+          onConfirm={handleLogoutSubmit}
         />
       )}
     </header>

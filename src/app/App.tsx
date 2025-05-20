@@ -1,7 +1,12 @@
 import React from 'react';
 
 import { createRoot } from 'react-dom/client';
-import { Outlet, RouterProvider, createBrowserRouter } from 'react-router-dom';
+import {
+  Outlet,
+  RouterProvider,
+  ScrollRestoration,
+  createBrowserRouter,
+} from 'react-router-dom';
 import { ErrorBoundary } from 'react-error-boundary';
 import { ToastContainer } from 'react-toastify';
 
@@ -21,6 +26,7 @@ export const Root = () => {
       <ErrorBoundary FallbackComponent={AppErrorBoundaryFallback}>
         <AppSuspense fallback={<></>}>
           <Outlet />
+          <ScrollRestoration />
           <ToastContainer position="top-center" autoClose={1500} />
         </AppSuspense>
       </ErrorBoundary>
