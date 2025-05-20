@@ -14,6 +14,7 @@ interface BlogActionMenuProps {
   showAction?: boolean;
   status: 'public' | 'private';
   isDetailPage?: boolean;
+  isProfilePage?: boolean;
 }
 
 const BlogActionMenu: React.FC<BlogActionMenuProps> = ({

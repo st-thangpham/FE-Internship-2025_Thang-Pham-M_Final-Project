@@ -10,7 +10,6 @@ const Profile = () => {
   const { id } = useParams<{ id: string }>();
   const {
     userWithPosts,
-    posts,
     loadingUser,
     errorUser,
     fetchUserPosts,
@@ -48,7 +47,7 @@ const Profile = () => {
                 {loadingUser ? (
                   <div className="loading">Loading blogs...</div>
                 ) : (
-                  <BlogList posts={posts || []} hideAuthor />
+                  <BlogList posts={userWithPosts?.Posts || []} isProfilePage />
                 )}
               </section>
             </div>

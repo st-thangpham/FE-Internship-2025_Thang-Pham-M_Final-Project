@@ -96,7 +96,6 @@ export const deletePost = createAsyncThunk<
   string,
   { rejectValue: string }
 >('post/deletePost', async (id, thunkAPI) => {
-  console.log('deletePost thunk called with id:', id);
   try {
     await postService.deletePost(id);
     return id;
@@ -217,11 +216,13 @@ const postSlice = createSlice({
         state.posts = state.posts.filter(
           (post) => post.id !== Number(deletedId)
         );
-        if (state.post?.id === Number(deletedId)) {
-          state.post = null;
-          state.loadingDetail = false;
-          state.errorDetail = null;
+        if (state.userWithPosts?.Posts) {
+          state.userWithPosts.Posts = state.userWithPosts.Posts.filter(
+            (post) => post.id !== Number(deletedId)
+          );
         }
+        state.loading = false;
+        state.error = null;
       })
       .addCase(deletePost.rejected, (state, action) => {
         state.loading = false;
@@ -234,8 +235,13 @@ const postSlice = createSlice({
       })
       .addCase(fetchUserWithPosts.fulfilled, (state, action) => {
         state.loadingUser = false;
-        state.userWithPosts = action.payload;
-        state.posts = action.payload.Posts;
+        state.userWithPosts = new UserWithPosts({
+          ...action.payload,
+          Posts: [...action.payload.Posts].sort(
+            (a, b) =>
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          ),
+        });
       })
       .addCase(fetchUserWithPosts.rejected, (state, action) => {
         state.loadingUser = false;

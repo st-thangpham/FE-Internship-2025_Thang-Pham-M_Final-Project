@@ -11,12 +11,12 @@ import logo from '/imgs/logo.png';
 
 interface BlogListItemProps {
   post: Post;
-  hideAuthor?: boolean;
+  isProfilePage?: boolean;
 }
 
 const BlogListItem: React.FC<BlogListItemProps> = ({
   post,
-  hideAuthor = false,
+  isProfilePage = false,
 }) => {
   const { user } = useContext(AuthContext)!;
   const isAuthor = user?.id === post.userId;
@@ -29,7 +29,7 @@ const BlogListItem: React.FC<BlogListItemProps> = ({
 
   return (
     <>
-      {!hideAuthor && (
+      {!isProfilePage && (
         <div className="blog-author">
           <img
             src={post?.user?.picture || defaultAvatar}
