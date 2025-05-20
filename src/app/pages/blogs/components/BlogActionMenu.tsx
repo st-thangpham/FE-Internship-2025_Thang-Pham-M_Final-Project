@@ -40,8 +40,6 @@ const BlogActionMenu: React.FC<BlogActionMenuProps> = ({
     if (success) {
       if (isDetailPage) {
         navigate(-1);
-      } else {
-        window.location.reload();
       }
     }
   };

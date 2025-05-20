@@ -235,6 +235,7 @@ const postSlice = createSlice({
       .addCase(fetchUserWithPosts.fulfilled, (state, action) => {
         state.loadingUser = false;
         state.userWithPosts = action.payload;
+        state.posts = action.payload.Posts;
       })
       .addCase(fetchUserWithPosts.rejected, (state, action) => {
         state.loadingUser = false;
