@@ -1,27 +1,34 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useNavigate, NavLink, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { useAuth } from '@shared/hooks/useAuth';
+import ConfirmModal from '../ConfirmModal';
+import { AuthContext } from '@app/shared/contexts/auth.context';
+import { AuthStorageService } from '@app/core/services/auth-storage.service';
 
 import logo from '/imgs/logo.png';
 import writeIcon from '/icons/write.svg';
-import ConfirmModal from '../ConfirmModal';
+import defaultAvatar from '/imgs/avatar.jpg';
 
 export const Header = () => {
-  const { isAuthenticated, user, handleLogout } = useAuth();
+  const { isAuthenticated, user, clearUserSession } = useContext(AuthContext)!;
+  const authStorage = new AuthStorageService();
+
   const navigate = useNavigate();
   const location = useLocation();
 
   const [confirmLogout, setConfirmLogout] = useState(false);
+
   const [hidden, setHidden] = useState(false);
   const lastScrollY = useRef(0);
+
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLLIElement>(null);
 
-  const handleLogoutSubmit = () => {
+  const handleLogout = () => {
     setConfirmLogout(false);
-    handleLogout();
+    clearUserSession();
+    authStorage.removeToken();
     toast.success('Logout successful!');
     navigate('/');
   };
@@ -142,7 +149,11 @@ export const Header = () => {
                       className={`btn btn-avatar ${showDropdown ? 'open' : ''}`}
                       onClick={() => setShowDropdown(!showDropdown)}
                     >
-                      <img src={user?.avatar} alt="Avatar" className="img" />
+                      <img
+                        src={user?.picture || defaultAvatar}
+                        alt="Avatar"
+                        className="img"
+                      />
                     </button>
                     {showDropdown && renderDropdown()}
                   </li>
@@ -161,7 +172,7 @@ export const Header = () => {
           cancelLabel="Cancel"
           confirmLabel="Sign out"
           onCancel={() => setConfirmLogout(false)}
-          onConfirm={handleLogoutSubmit}
+          onConfirm={handleLogout}
         />
       )}
     </header>

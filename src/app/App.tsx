@@ -19,6 +19,7 @@ import { renderChildren } from './core/modules/custom-router-dom/RouterOutlet';
 import AppErrorBoundaryFallback from './AppErrorBoundaryFallback';
 import { Provider } from 'react-redux';
 import { store } from '@store/store';
+import { AuthProvider } from './shared/contexts/auth.context';
 
 export const Root = () => {
   return (
@@ -40,7 +41,9 @@ const router = createBrowserRouter([
 
 const root = createRoot(document.getElementById('root'));
 root.render(
-  <Provider store={store}>
-    <RouterProvider router={router} />
-  </Provider>
+  <AuthProvider>
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
+  </AuthProvider>
 );

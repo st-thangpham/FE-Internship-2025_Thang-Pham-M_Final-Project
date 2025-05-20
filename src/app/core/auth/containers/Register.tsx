@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -14,7 +14,7 @@ import {
   Select,
 } from '@app/shared/components/partials';
 import { format, parse } from 'date-fns';
-import { useAuth } from '@app/shared/hooks/useAuth';
+import { AuthService } from '@app/core/services/auth.service';
 
 const schema = z
   .object({
@@ -72,8 +72,9 @@ const schema = z
 type RegisterFormData = z.infer<typeof schema>;
 
 const Register = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { handleRegister, loading } = useAuth();
+  const authService = new AuthService();
   const todayStr = format(new Date(), 'dd/MM/yyyy');
 
   const {
@@ -88,7 +89,8 @@ const Register = () => {
 
   const onSubmit = async (data: RegisterFormData) => {
     try {
-      await handleRegister({
+      setIsLoading(true);
+      await authService.register({
         email: data.email,
         password: data.password,
         firstName: data.firstName,
@@ -98,11 +100,12 @@ const Register = () => {
         phone: data.phone,
         displayName: data.displayName,
       });
-
       toast.success('Register successful!');
       navigate('/auth/login');
-    } catch (err: any) {
-      toast.error(err || 'Registration failed!');
+    } catch (error) {
+      toast.error(error?.response?.data?.errors[0] || 'Registration failed!');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -236,8 +239,8 @@ const Register = () => {
             <Button
               type="submit"
               className="btn btn-primary btn-block"
-              isLoading={loading}
-              isDisabled={loading || !isValid}
+              isLoading={isLoading}
+              isDisabled={isLoading || !isValid}
               title="Register"
             />
           </div>

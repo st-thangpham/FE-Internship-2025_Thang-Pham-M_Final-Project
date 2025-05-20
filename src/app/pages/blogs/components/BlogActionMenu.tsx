@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import ConfirmModal from '@shared/components/ConfirmModal';
-import { useAppSelector } from '@store/hooks';
 import { usePosts } from '@shared/hooks/userPosts';
+import { AuthContext } from '@app/shared/contexts/auth.context';
 
 import moreIcon from '/icons/more.svg';
 import lockIcon from '/icons/lock.svg';
@@ -23,12 +23,12 @@ const BlogActionMenu: React.FC<BlogActionMenuProps> = ({
   status,
   isDetailPage = false,
 }) => {
-  const currentUserId = useAppSelector((state) => state.auth.user?.id);
+  const { user } = useContext(AuthContext)!;
   const [showDropdown, setShowDropdown] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const navigate = useNavigate();
 
-  const isAuthor = currentUserId === authorId;
+  const isAuthor = user?.id === authorId;
 
   const { removePost } = usePosts();
 

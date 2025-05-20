@@ -53,7 +53,7 @@ const Profile = () => {
             </div>
 
             <aside className="sidebar">
-              {userWithPosts && <ProfileInfo user={userWithPosts} />}
+              {userWithPosts && <ProfileInfo userProfile={userWithPosts} />}
             </aside>
           </div>
         </div>

@@ -1,31 +1,31 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
-import { useAppSelector } from '@store/hooks';
 import { User } from '@app/shared/models/user';
+import { AuthContext } from '@app/shared/contexts/auth.context';
 
 interface ProfileInfoProps {
-  user: User;
+  userProfile: User;
 }
 
-const ProfileInfo: React.FC<ProfileInfoProps> = ({ user }) => {
-  const loggedInUserId = useAppSelector((state) => state.auth.user?.id);
+const ProfileInfo: React.FC<ProfileInfoProps> = ({ userProfile }) => {
+  const { user } = useContext(AuthContext)!;
 
   return (
     <div className="profile-info">
       <img
-        src={user.avatar}
-        alt={user.displayName}
+        src={userProfile.avatar}
+        alt={userProfile.displayName}
         className="profile-avatar"
       />
-      <h2 className="profile-name">{user.displayName}</h2>
+      <h2 className="profile-name">{userProfile.displayName}</h2>
       <div className="profile-details">
-        <p className="profile-detail">{user.fullName}</p>
-        <p className="profile-detail">{user.dob}</p>
-        <p className="profile-detail">{user.phone}</p>
-        <p className="profile-detail">{user.email}</p>
+        <p className="profile-detail">{userProfile.fullName}</p>
+        <p className="profile-detail">{userProfile.dob}</p>
+        <p className="profile-detail">{userProfile.phone}</p>
+        <p className="profile-detail">{userProfile.email}</p>
       </div>
 
-      {user.id === loggedInUserId && (
+      {user?.id === userProfile.id && (
         <a className="edit-profile-link">Edit profile</a>
       )}
     </div>

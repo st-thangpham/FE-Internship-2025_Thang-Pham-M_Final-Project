@@ -43,6 +43,10 @@ export class AuthService extends AuthHelper {
     return response;
   }
 
+  async getCurrentUser(): Promise<User> {
+    return await this.http.get<User>([ENDPOINT.auth.userInfo]);
+  }
+
   signOut() {
     this.removeToken();
   }
