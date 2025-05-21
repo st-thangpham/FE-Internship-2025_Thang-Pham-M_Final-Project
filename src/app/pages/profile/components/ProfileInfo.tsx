@@ -1,15 +1,18 @@
-import React, { useContext } from 'react';
+import React from 'react';
 
 import { User } from '@app/shared/models/user';
-import { AuthContext } from '@app/shared/contexts/auth.context';
 
 interface ProfileInfoProps {
   userProfile: User;
+  isMyProfile: boolean;
+  onEdit?: () => void;
 }
 
-const ProfileInfo: React.FC<ProfileInfoProps> = ({ userProfile }) => {
-  const { user } = useContext(AuthContext)!;
-
+const ProfileInfo: React.FC<ProfileInfoProps> = ({
+  userProfile,
+  isMyProfile,
+  onEdit,
+}) => {
   return (
     <div className="profile-info">
       <img
@@ -25,8 +28,10 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({ userProfile }) => {
         <p className="profile-detail">{userProfile.email}</p>
       </div>
 
-      {user?.id === userProfile.id && (
-        <a className="edit-profile-link">Edit profile</a>
+      {isMyProfile && (
+        <a className="edit-profile-link" onClick={onEdit}>
+          Edit profile
+        </a>
       )}
     </div>
   );
