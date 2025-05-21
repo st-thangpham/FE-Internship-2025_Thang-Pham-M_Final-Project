@@ -18,19 +18,17 @@ import { toast } from 'react-toastify';
 export const usePosts = () => {
   const dispatch = useAppDispatch();
   const {
-    posts,
-    post,
-    loading,
-    error,
-    loadingDetail,
-    errorDetail,
-    currentPage,
-    totalPages,
-    loadMore,
-    tagFilter,
-    userWithPosts,
-    loadingUser,
-    errorUser,
+    postList: {
+      data: postList,
+      loading,
+      error,
+      currentPage,
+      totalPages,
+      loadMore,
+      tagFilter,
+    },
+    post: { data: post, loadingDetail, errorDetail },
+    userWithPosts: { data: userWithPosts, loadingUser, errorUser },
   } = useAppSelector((state) => state.posts);
 
   // Posts list + pagination
@@ -122,7 +120,7 @@ export const usePosts = () => {
   );
 
   return {
-    posts,
+    postList,
     post,
     loading,
     error,

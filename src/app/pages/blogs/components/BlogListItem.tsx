@@ -1,25 +1,25 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 
 import { Post } from '@shared/models/post';
 import { formatDate } from '@app/core/helpers/date-format.helper';
 import BlogActionMenu from './BlogActionMenu';
+import { AuthContext } from '@app/shared/contexts/auth.context';
 
 import defaultAvatar from '/imgs/avatar.jpg';
 import logo from '/imgs/logo.png';
-import { useAppSelector } from '@store/hooks';
 
 interface BlogListItemProps {
   post: Post;
-  hideAuthor?: boolean;
+  isProfilePage?: boolean;
 }
 
 const BlogListItem: React.FC<BlogListItemProps> = ({
   post,
-  hideAuthor = false,
+  isProfilePage = false,
 }) => {
-  const currentUserId = useAppSelector((state) => state.auth.user?.id);
-  const isAuthor = currentUserId === post.userId;
+  const { user } = useContext(AuthContext)!;
+  const isAuthor = user?.id === post.userId;
 
   const handleImageError = (
     e: React.SyntheticEvent<HTMLImageElement, Event>
@@ -29,7 +29,7 @@ const BlogListItem: React.FC<BlogListItemProps> = ({
 
   return (
     <>
-      {!hideAuthor && (
+      {!isProfilePage && (
         <div className="blog-author">
           <img
             src={post?.user?.picture || defaultAvatar}

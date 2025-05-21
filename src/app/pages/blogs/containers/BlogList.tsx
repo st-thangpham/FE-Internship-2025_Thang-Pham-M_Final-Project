@@ -10,16 +10,16 @@ const SIZE_SKELETON = 3;
 type BlogListProps = {
   filterTag?: string;
   posts?: Post[];
-  hideAuthor?: boolean;
+  isProfilePage?: boolean;
 };
 
 const BlogList = ({
   filterTag,
   posts: propPosts,
-  hideAuthor = false,
+  isProfilePage = false,
 }: BlogListProps) => {
   const {
-    posts,
+    postList,
     currentPage,
     loadMore,
     loading,
@@ -37,7 +37,7 @@ const BlogList = ({
     if (!usingPropPosts && filterTag !== tagFilter) {
       reset();
       filterByTag(filterTag || '');
-      getPosts(1, SIZE_PAGE, filterTag);
+      getPosts(1, SIZE_PAGE, filterTag || '');
     }
   }, [filterTag, usingPropPosts, tagFilter, getPosts, reset, filterByTag]);
 
@@ -53,15 +53,7 @@ const BlogList = ({
       observer.observe(bottomRef.current);
       return () => observer.disconnect();
     }
-  }, [
-    bottomRef.current,
-    loadMore,
-    loading,
-    currentPage,
-    tagFilter,
-    usingPropPosts,
-    getPosts,
-  ]);
+  }, [loadMore, loading, currentPage, tagFilter, usingPropPosts, getPosts]);
 
   const renderSkeletons = (count: number) =>
     Array.from({ length: count }).map((_, i) => (
@@ -70,10 +62,15 @@ const BlogList = ({
       </li>
     ));
 
-  const data = usingPropPosts ? propPosts! : posts;
+  const data = usingPropPosts ? propPosts! : postList;
 
   return (
     <ul className="list list-blog">
+      {!usingPropPosts &&
+        loading &&
+        postList.length === 0 &&
+        renderSkeletons(SIZE_SKELETON)}
+
       {data.map((post, index) => {
         const isLast = index === data.length - 1;
         return (
@@ -82,17 +79,12 @@ const BlogList = ({
             key={post.id}
             ref={!usingPropPosts && isLast ? bottomRef : null}
           >
-            <BlogListItem post={post} hideAuthor={hideAuthor} />
+            <BlogListItem post={post} isProfilePage={isProfilePage} />
           </li>
         );
       })}
 
-      {!usingPropPosts && loading && posts.length > 0 && renderSkeletons(1)}
-
-      {!usingPropPosts &&
-        loading &&
-        posts.length === 0 &&
-        renderSkeletons(SIZE_SKELETON)}
+      {!usingPropPosts && loading && postList.length > 0 && renderSkeletons(1)}
 
       {data.length === 0 && !loading && (
         <li className="blog-notification">No blog posts found.</li>

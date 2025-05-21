@@ -83,6 +83,10 @@ $border-light: #e0e0e0;
     .ck-rounded-corners .ck.ck-editor__top .ck-sticky-panel .ck-sticky-panel__content {
       border: none;
     }
+
+    .ck-sticky-panel__content {
+      z-index: 100;
+    }
   }
 
 
@@ -146,6 +150,14 @@ $border-light: #e0e0e0;
       background-color: #f6f6f6;
       font-weight: 600;
     }
+  }
+
+  strong {
+    font-weight: bold;
+  }
+
+  i {
+    font-style: italic;
   }
 
   img {
