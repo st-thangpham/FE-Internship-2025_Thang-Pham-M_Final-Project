@@ -10,7 +10,7 @@ import UpdateProfileModal from '../components/UpdateProfileModal';
 
 const Profile = () => {
   const { id } = useParams<{ id: string }>();
-  const { user } = useContext(AuthContext)!;
+  const { user, userId } = useContext(AuthContext)!;
   const [showEditModal, setShowEditModal] = useState(false);
 
   const {
@@ -39,7 +39,8 @@ const Profile = () => {
     );
   }
 
-  const isMyProfile = user?.id === userWithPosts?.id;
+  const isMyProfile = userId === userWithPosts?.id;
+  console.log(userId, userWithPosts);
 
   return (
     <div className="page page-profile">

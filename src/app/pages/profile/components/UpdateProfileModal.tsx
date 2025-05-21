@@ -125,7 +125,14 @@ const UpdateProfileModal: React.FC<UpdateProfileModalProps> = ({
                       alt="Avatar"
                       className="avatar-preview"
                     />
+                    <label
+                      htmlFor="avatar-upload"
+                      className="avatar-upload-label"
+                    >
+                      Edit
+                    </label>
                     <input
+                      id="avatar-upload"
                       type="file"
                       accept="image/*"
                       onChange={handleImageUpload}

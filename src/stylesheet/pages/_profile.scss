@@ -105,19 +105,19 @@
       }
 
       .profile-name {
-        font-size: map.get(variables.$font-size, lg);
+        font-size: map.get(variables.$font-size, normal);
         color: map.get(variables.$color, text-heading);
         margin-bottom: 0.25rem;
       }
 
       .profile-details {
-        font-size: map.get(variables.$font-size, normal);
+        font-size: map.get(variables.$font-size, sm);
         color: map.get(variables.$color, text-secondary);
         margin-bottom: 1rem;
       }
 
       .edit-profile-link {
-        font-size: map.get(variables.$font-size, normal);
+        font-size: map.get(variables.$font-size, sm);
         color: map.get(variables.$color, success);
         cursor: pointer;
         text-decoration: none;

@@ -52,7 +52,7 @@ const Login = () => {
         throw new Error('Invalid login response');
       }
 
-      setUserSession(userInfo, accessToken);
+      await setUserSession(accessToken);
       toast.success('Login successful!');
       navigate(location.state?.from?.pathname || '/', { replace: true });
     } catch (error: any) {

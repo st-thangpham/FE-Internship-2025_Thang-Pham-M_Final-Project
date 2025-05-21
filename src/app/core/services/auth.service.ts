@@ -47,6 +47,10 @@ export class AuthService extends AuthHelper {
     return await this.http.get<User>([ENDPOINT.auth.userInfo]);
   }
 
+  async updateProfile(body: Partial<User>): Promise<User> {
+    return await this.http.put<User>([ENDPOINT.auth.userInfo], body);
+  }
+
   signOut() {
     this.removeToken();
   }

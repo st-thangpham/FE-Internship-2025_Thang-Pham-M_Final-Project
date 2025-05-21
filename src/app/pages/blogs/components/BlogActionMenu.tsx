@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
-import ConfirmModal from '@app/shared/components/partials/ConfirmModal';
+import ConfirmModal from '@shared/components/partials/ConfirmModal';
 import { usePosts } from '@shared/hooks/userPosts';
 import { AuthContext } from '@app/shared/contexts/auth.context';
 
@@ -24,12 +24,12 @@ const BlogActionMenu: React.FC<BlogActionMenuProps> = ({
   status,
   isDetailPage = false,
 }) => {
-  const { user } = useContext(AuthContext)!;
+  const { userId } = useContext(AuthContext)!;
   const [showDropdown, setShowDropdown] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const navigate = useNavigate();
 
-  const isAuthor = user?.id === authorId;
+  const isAuthor = userId === authorId;
 
   const { removePost } = usePosts();
 
