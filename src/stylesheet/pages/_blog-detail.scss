@@ -95,10 +95,15 @@
     p {
       margin: 0 0 1.2em;
 
-      strong {
-        font-weight: 600;
-        color: map.get(variables.$color, primary);
-      }
+    }
+
+    strong {
+      font-weight: 600;
+      color: map.get(variables.$color, primary);
+    }
+
+    i {
+      font-style: italic;
     }
 
     figure.image {
