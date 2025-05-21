@@ -1,13 +1,14 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { useBlocker, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import Ckeditor from '@app/shared/components/Ckeditor';
+import Ckeditor from '@app/shared/components/partials/Ckeditor';
 import { Select } from '@shared/components/partials/Select';
 import { STATUS_OPTIONS, TAG_OPTIONS } from '@shared/contexts/constant';
 import { PostPayload } from '@shared/services/blog.service';
 import { usePosts } from '@shared/hooks/userPosts';
+import ConfirmModal from '@app/shared/components/partials/ConfirmModal';
 
 type FormValues = {
   title: string;
@@ -21,10 +22,14 @@ const BlogCreate = () => {
   const navigate = useNavigate();
   const { submitPost } = usePosts();
 
+  const [showLeaveModal, setShowLeaveModal] = useState(false);
+  const [allowLeave, setAllowLeave] = useState(false);
+
   const {
     control,
     getValues,
-    formState: { errors },
+    reset,
+    formState: { errors, dirtyFields },
   } = useForm<FormValues>({
     defaultValues: {
       title: '',
@@ -75,18 +80,42 @@ const BlogCreate = () => {
 
     const success = await submitPost(payload);
     if (success) {
-      navigate('/');
+      reset();
+      setAllowLeave(true);
+      blocker.reset();
     }
   };
 
-  useEffect(() => {
-    const handlePublish = () => {
-      submitBlog();
-    };
+  const hasDirtyFields = !!(
+    dirtyFields.title ||
+    dirtyFields.description ||
+    dirtyFields.rawContent ||
+    dirtyFields.status ||
+    dirtyFields.tags
+  );
 
-    window.addEventListener('submitBlog', handlePublish);
-    return () => window.removeEventListener('submitBlog', handlePublish);
+  const shouldBlock = useCallback(() => {
+    return !allowLeave && hasDirtyFields;
+  }, [allowLeave, hasDirtyFields]);
+
+  const blocker = useBlocker(shouldBlock);
+
+  useEffect(() => {
+    if (blocker.state === 'blocked') {
+      setShowLeaveModal(true);
+    }
+  }, [blocker.state]);
+
+  useEffect(() => {
+    window.addEventListener('submitBlog', submitBlog);
+    return () => window.removeEventListener('submitBlog', submitBlog);
   }, [submitBlog]);
+
+  useEffect(() => {
+    if (allowLeave) {
+      navigate('/');
+    }
+  }, [allowLeave, navigate]);
 
   return (
     <div className="page-write">
@@ -175,6 +204,22 @@ const BlogCreate = () => {
           </form>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={showLeaveModal}
+        title="Leave this page?"
+        message="You're writing a post. Are you sure you want to leave this page?"
+        cancelLabel="Cancel"
+        confirmLabel="Leave"
+        onCancel={() => {
+          blocker.reset();
+          setShowLeaveModal(false);
+        }}
+        onConfirm={() => {
+          blocker.proceed();
+          setShowLeaveModal(false);
+        }}
+      />
     </div>
   );
 };

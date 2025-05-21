@@ -3,7 +3,6 @@ import BlogListItem from '../components/BlogListItem';
 import BlogListItemSkeleton from '../components/BlogListItemSkeleton';
 import { Post } from '@shared/models/post';
 import { usePosts } from '@shared/hooks/userPosts';
-import { clearUserWithPosts } from '@store/post/post.slice';
 
 const SIZE_PAGE = 5;
 const SIZE_SKELETON = 3;
@@ -20,7 +19,7 @@ const BlogList = ({
   isProfilePage = false,
 }: BlogListProps) => {
   const {
-    posts,
+    postList,
     currentPage,
     loadMore,
     loading,
@@ -63,13 +62,13 @@ const BlogList = ({
       </li>
     ));
 
-  const data = usingPropPosts ? propPosts! : posts;
+  const data = usingPropPosts ? propPosts! : postList;
 
   return (
     <ul className="list list-blog">
       {!usingPropPosts &&
         loading &&
-        posts.length === 0 &&
+        postList.length === 0 &&
         renderSkeletons(SIZE_SKELETON)}
 
       {data.map((post, index) => {
@@ -85,7 +84,7 @@ const BlogList = ({
         );
       })}
 
-      {!usingPropPosts && loading && posts.length > 0 && renderSkeletons(1)}
+      {!usingPropPosts && loading && postList.length > 0 && renderSkeletons(1)}
 
       {data.length === 0 && !loading && (
         <li className="blog-notification">No blog posts found.</li>

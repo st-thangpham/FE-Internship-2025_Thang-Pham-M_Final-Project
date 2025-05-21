@@ -6,39 +6,51 @@ import { PostPayload, PostService } from '@shared/services/blog.service';
 const postService = new PostService();
 
 interface PostState {
-  posts: Post[];
-  loading: boolean;
-  error: string | null;
-  currentPage: number;
-  totalPages: number;
-  loadMore: boolean;
-  tagFilter: string;
+  postList: {
+    data: Post[];
+    loading: boolean;
+    error: string | null;
+    currentPage: number;
+    totalPages: number;
+    loadMore: boolean;
+    tagFilter: string;
+  };
 
-  post: Post | null;
-  loadingDetail: boolean;
-  errorDetail: string | null;
+  post: {
+    data: Post | null;
+    loadingDetail: boolean;
+    errorDetail: string | null;
+  };
 
-  userWithPosts: UserWithPosts | null;
-  loadingUser: boolean;
-  errorUser: string | null;
+  userWithPosts: {
+    data: UserWithPosts | null;
+    loadingUser: boolean;
+    errorUser: string | null;
+  };
 }
 
 const initialState: PostState = {
-  posts: [],
-  loading: false,
-  error: null,
-  currentPage: 1,
-  totalPages: 0,
-  loadMore: true,
-  tagFilter: '',
+  postList: {
+    data: [],
+    loading: false,
+    error: null,
+    currentPage: 1,
+    totalPages: 0,
+    loadMore: true,
+    tagFilter: '',
+  },
 
-  post: null,
-  loadingDetail: false,
-  errorDetail: null,
+  post: {
+    data: null,
+    loadingDetail: false,
+    errorDetail: null,
+  },
 
-  userWithPosts: null,
-  loadingUser: false,
-  errorUser: null,
+  userWithPosts: {
+    data: null,
+    loadingUser: false,
+    errorUser: null,
+  },
 };
 
 export const fetchPublicPosts = createAsyncThunk<
@@ -122,120 +134,127 @@ const postSlice = createSlice({
   initialState,
   reducers: {
     resetPosts(state) {
-      state.posts = [];
-      state.currentPage = 1;
-      state.totalPages = 0;
-      state.loadMore = true;
-      state.loading = false;
-      state.error = null;
+      state.postList.data = [];
+      state.postList.currentPage = 1;
+      state.postList.totalPages = 0;
+      state.postList.loadMore = true;
+      state.postList.loading = false;
+      state.postList.error = null;
     },
     setTagFilter(state, action: PayloadAction<string>) {
-      state.tagFilter = action.payload;
+      state.postList.tagFilter = action.payload;
     },
     resetPostDetail(state) {
-      state.post = null;
-      state.loadingDetail = false;
-      state.errorDetail = null;
+      state.post.data = null;
+      state.post.loadingDetail = false;
+      state.post.errorDetail = null;
     },
     clearUserWithPosts(state) {
-      state.userWithPosts = null;
-      state.loadingUser = false;
-      state.errorUser = null;
+      state.userWithPosts.data = null;
+      state.userWithPosts.loadingUser = false;
+      state.userWithPosts.errorUser = null;
     },
   },
   extraReducers: (builder) => {
     builder
       // fetch posts
       .addCase(fetchPublicPosts.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.postList.loading = true;
+        state.postList.error = null;
       })
       .addCase(fetchPublicPosts.fulfilled, (state, action) => {
         const { data, currentPage, totalPage } = action.payload;
-        state.loading = false;
-        state.currentPage = currentPage;
-        state.totalPages = totalPage;
+        state.postList.loading = false;
+        state.postList.currentPage = currentPage;
+        state.postList.totalPages = totalPage;
 
         if (currentPage === 1) {
-          state.posts = data;
+          state.postList.data = data;
         } else {
-          state.posts = [...state.posts, ...data];
+          state.postList.data = [...state.postList.data, ...data];
         }
 
-        state.loadMore = data.length > 0 && currentPage < totalPage;
+        state.postList.loadMore = data.length > 0 && currentPage < totalPage;
       })
       .addCase(fetchPublicPosts.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload ?? 'Failed to fetch posts';
+        state.postList.loading = false;
+        state.postList.error = action.payload ?? 'Failed to fetch posts';
       })
 
       // fetch post detail
       .addCase(fetchPostById.pending, (state) => {
-        state.loadingDetail = true;
-        state.errorDetail = null;
+        state.post.loadingDetail = true;
+        state.post.errorDetail = null;
       })
       .addCase(fetchPostById.fulfilled, (state, action) => {
-        state.loadingDetail = false;
-        state.post = action.payload;
+        state.post.loadingDetail = false;
+        state.post.data = action.payload;
       })
       .addCase(fetchPostById.rejected, (state, action) => {
-        state.loadingDetail = false;
-        state.errorDetail = action.payload ?? 'Failed to fetch post';
+        state.post.loadingDetail = false;
+        state.post.errorDetail = action.payload ?? 'Failed to fetch post';
       })
 
+      // create post
       .addCase(createPost.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.postList.loading = true;
+        state.postList.error = null;
       })
       .addCase(createPost.fulfilled, (state) => {
-        state.loading = false;
+        state.postList.loading = false;
       })
       .addCase(createPost.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
+        state.postList.loading = false;
+        state.postList.error = action.payload as string;
       })
 
+      // update post
       .addCase(updatePost.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.postList.loading = true;
+        state.postList.error = null;
       })
       .addCase(updatePost.fulfilled, (state) => {
-        state.loading = false;
+        state.postList.loading = false;
       })
       .addCase(updatePost.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || 'Failed to update post';
+        state.postList.loading = false;
+        state.postList.error = action.payload || 'Failed to update post';
       })
 
+      // delete post
       .addCase(deletePost.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.postList.loading = true;
+        state.postList.error = null;
       })
       .addCase(deletePost.fulfilled, (state, action) => {
         const deletedId = action.payload;
-        state.posts = state.posts.filter(
-          (post) => post.id !== Number(deletedId)
+
+        state.postList.data = state.postList.data.filter(
+          (post) => post.id !== +deletedId
         );
-        if (state.userWithPosts?.Posts) {
-          state.userWithPosts.Posts = state.userWithPosts.Posts.filter(
-            (post) => post.id !== Number(deletedId)
-          );
+
+        if (state.userWithPosts.data) {
+          state.userWithPosts.data.Posts =
+            state.userWithPosts.data.Posts.filter(
+              (post) => post.id !== +deletedId
+            );
         }
-        state.loading = false;
-        state.error = null;
+
+        state.postList.loading = false;
       })
       .addCase(deletePost.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload ?? 'Failed to delete post';
+        state.postList.loading = false;
+        state.postList.error = action.payload ?? 'Failed to delete post';
       })
 
+      // fetch post by user
       .addCase(fetchUserWithPosts.pending, (state) => {
-        state.loadingUser = true;
-        state.errorUser = null;
+        state.userWithPosts.loadingUser = true;
+        state.userWithPosts.errorUser = null;
       })
       .addCase(fetchUserWithPosts.fulfilled, (state, action) => {
-        state.loadingUser = false;
-        state.userWithPosts = new UserWithPosts({
+        state.userWithPosts.loadingUser = false;
+        state.userWithPosts.data = new UserWithPosts({
           ...action.payload,
           Posts: [...action.payload.Posts].sort(
             (a, b) =>
@@ -244,8 +263,9 @@ const postSlice = createSlice({
         });
       })
       .addCase(fetchUserWithPosts.rejected, (state, action) => {
-        state.loadingUser = false;
-        state.errorUser = action.payload ?? 'Failed to fetch user';
+        state.userWithPosts.loadingUser = false;
+        state.userWithPosts.errorUser =
+          action.payload ?? 'Failed to fetch user';
       });
   },
 });
