@@ -234,8 +234,8 @@ const postSlice = createSlice({
         );
 
         if (state.userWithPosts.data) {
-          state.userWithPosts.data.Posts =
-            state.userWithPosts.data.Posts.filter(
+          state.userWithPosts.data.posts =
+            state.userWithPosts.data.posts.filter(
               (post) => post.id !== +deletedId
             );
         }
@@ -256,7 +256,7 @@ const postSlice = createSlice({
         state.userWithPosts.loadingUser = false;
         state.userWithPosts.data = new UserWithPosts({
           ...action.payload,
-          Posts: [...action.payload.Posts].sort(
+          Posts: [...action.payload.posts].sort(
             (a, b) =>
               new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
           ),

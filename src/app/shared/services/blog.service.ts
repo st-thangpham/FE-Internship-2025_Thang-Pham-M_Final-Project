@@ -9,6 +9,18 @@ export interface UpdatePostPayload {
   status: string;
 }
 
+export interface UserWithPostsResponse {
+  email: string;
+  firstName: string;
+  gender: string;
+  id: number;
+  phone: string;
+  lastName: string;
+  displayName: string;
+  dob: string;
+  Posts: Post[];
+}
+
 export interface PostPayload extends Partial<Post> {}
 
 export class PostService {
@@ -52,7 +64,7 @@ export class PostService {
   }
 
   async getUserWithPosts(userId: string | number): Promise<UserWithPosts> {
-    const res = await this.http.get([
+    const res = await this.http.get<UserWithPostsResponse>([
       ENDPOINT.auth.index,
       String(userId),
       'posts',
