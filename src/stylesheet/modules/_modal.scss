@@ -13,16 +13,58 @@
 
   .modal-container {
     display: flex;
-    min-width: 600px;
+    min-width: 700px;
+    width: 30%;
     min-height: 400px;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 24px;
+    padding: 36px 24px;
     margin: 0 24px;
     border-radius: 4px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
     background-color: white;
+
+    &.form-modal {
+      width: 40%;
+
+      .form {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        padding: 24px 0;
+      }
+
+      .avatar-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+
+        @include mixins.respond-below(wide) {
+          margin-bottom: 24px;
+        }
+
+        .avatar-preview {
+          width: 150px;
+          height: 150px;
+          margin-bottom: 12px;
+          border: 2px solid map.get(variables.$color, grey-a);
+          object-fit: cover;
+          border-radius: 999px;
+        }
+
+        .avatar-input {
+          display: block;
+          margin: 0 auto;
+        }
+      }
+    }
+
+    @include mixins.respond-below(wide) {
+      min-width: 400px;
+    }
   }
 
   .modal-title {

@@ -12,11 +12,53 @@
 
   .profile-header {
     @include mixins.pxRem(margin, 20px 0);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .profile-info {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .profile-image {
+      @include mixins.pxRem(min-width, 50px);
+      @include mixins.pxRem(max-width, 50px);
+      display: none;
+      aspect-ratio: 1/1;
+      overflow: hidden;
+      border-radius: 999px
+    }
 
     .display-name {
       @include mixins.pxRem(font-size, 42px);
+      margin: 0;
       color: map.get(variables.$color, primary);
       line-height: 1.2;
+    }
+
+    .edit-profile {
+      display: none;
+      color: map.get(variables.$color, success);
+      cursor: pointer;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    @include mixins.respond-below(large) {
+
+      .profile-image,
+      .edit-profile {
+        display: block;
+      }
+
+      .display-name {
+        @include mixins.pxRem(font-size, map.get(variables.$font-size, xxl))
+      }
     }
   }
 
@@ -27,8 +69,8 @@
     border-bottom: 1px solid map.get(variables.$color, grey-a);
 
     .tab {
-      padding: 10px 16px;
       @include mixins.pxRem(font-size, map.get(variables.$font-size, sm));
+      padding: 10px 16px;
       color: map.get(variables.$color, grey-b);
       background: none;
       border: none;
@@ -63,19 +105,19 @@
       }
 
       .profile-name {
-        font-size: 1.25rem;
+        font-size: map.get(variables.$font-size, lg);
         color: map.get(variables.$color, text-heading);
         margin-bottom: 0.25rem;
       }
 
       .profile-details {
-        font-size: 0.875rem;
+        font-size: map.get(variables.$font-size, normal);
         color: map.get(variables.$color, text-secondary);
         margin-bottom: 1rem;
       }
 
       .edit-profile-link {
-        font-size: 0.875rem;
+        font-size: map.get(variables.$font-size, normal);
         color: map.get(variables.$color, success);
         cursor: pointer;
         text-decoration: none;
