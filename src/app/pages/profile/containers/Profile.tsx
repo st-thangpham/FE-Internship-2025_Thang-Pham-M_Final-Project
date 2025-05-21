@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
 import BlogList from '@app/pages/blogs/containers/BlogList';
-import ProfileInfo from './ProfileInfo';
+import ProfileInfo from '../components/ProfileInfo';
 
 import { usePosts } from '@shared/hooks/userPosts';
 

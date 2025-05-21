@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useNavigate, NavLink, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import ConfirmModal from '../ConfirmModal';
+import ConfirmModal from '../partials/ConfirmModal';
 import { AuthContext } from '@app/shared/contexts/auth.context';
 import { AuthStorageService } from '@app/core/services/auth-storage.service';
 

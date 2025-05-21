@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
-import ConfirmModal from '@shared/components/ConfirmModal';
+import ConfirmModal from '@app/shared/components/partials/ConfirmModal';
 import { usePosts } from '@shared/hooks/userPosts';
 import { AuthContext } from '@app/shared/contexts/auth.context';
 

@@ -3,10 +3,10 @@ import { Controller, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import Ckeditor from '@app/shared/components/Ckeditor';
+import Ckeditor from '@app/shared/components/partials/Ckeditor';
 import { Select } from '@shared/components/partials/Select';
 import { STATUS_OPTIONS, TAG_OPTIONS } from '@shared/contexts/constant';
-import ConfirmModal from '@shared/components/ConfirmModal';
+import ConfirmModal from '@app/shared/components/partials/ConfirmModal';
 import { usePosts } from '@shared/hooks/userPosts';
 
 type FormValues = {

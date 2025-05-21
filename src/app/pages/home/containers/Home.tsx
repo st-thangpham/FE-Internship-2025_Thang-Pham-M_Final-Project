@@ -1,6 +1,6 @@
 import React from 'react';
 import BlogList from '../../blogs/containers/BlogList';
-import RecommendedTopics from './RecommendedTopics';
+import RecommendedTopics from '../components/RecommendedTopics';
 
 const Home = () => {
   return (

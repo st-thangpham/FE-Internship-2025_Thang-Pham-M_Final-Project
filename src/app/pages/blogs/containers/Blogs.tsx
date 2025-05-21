@@ -2,7 +2,7 @@ import React from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import BlogList from '../../blogs/containers/BlogList';
-import Tags from './Tags';
+import Tags from '../components/Tags';
 
 const Blogs = () => {
   const [searchParams] = useSearchParams();
