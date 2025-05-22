@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -60,6 +60,8 @@ const UpdateProfileModal: React.FC<UpdateProfileModalProps> = ({
     resolver: zodResolver(schema),
   });
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const { setUser } = useContext(AuthContext)!;
   const authService = new AuthService();
 
@@ -99,14 +101,16 @@ const UpdateProfileModal: React.FC<UpdateProfileModalProps> = ({
 
   const onSubmit = async (data: UpdateProfileFormData) => {
     try {
+      setIsLoading(true);
       await authService.updateProfile(data);
       const updatedUser = await authService.getCurrentUser();
       setUser(updatedUser);
       toast.success('Update user profile successful!');
       onClose();
     } catch (err) {
-      console.error('Update failed:', err);
-      alert('Failed to update profile. Please try again.');
+      toast.error(err || 'Failed to update profile. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -243,13 +247,14 @@ const UpdateProfileModal: React.FC<UpdateProfileModalProps> = ({
             <Button
               type="submit"
               title="Update"
-              isDisabled={!isValid}
+              isDisabled={!isValid || isLoading}
               className="btn modal-button btn-confirm"
             />
             <Button
               type="button"
               title="Cancel"
               onClick={onClose}
+              isDisabled={isLoading}
               className="btn modal-button btn-cancel"
             />
           </div>

@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { Input, Button } from '@app/shared/components/partials';
+import { toast } from 'react-toastify';
+import { AuthService } from '@app/core/services/auth.service';
 
 interface ChangePasswordModalProps {
   isOpen: boolean;
@@ -42,6 +44,10 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
     resolver: zodResolver(schema),
   });
 
+  const [isLoading, setIsLoading] = useState(false);
+
+  const authService = new AuthService();
+
   useEffect(() => {
     const subscription = watch((value, { name }) => {
       const confirmValue = value.confirmNewPassword;
@@ -66,9 +72,24 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
   if (!isOpen) return null;
 
   const onSubmit = async (data: ChangePasswordFormData) => {
-    console.log('Change password data:', data);
-    // TODO: call API here
-    onClose();
+    try {
+      setIsLoading(true);
+      await authService.changePassword({
+        oldPassword: data.oldPassword,
+        newPassword: data.newPassword,
+      });
+      toast.success('Password updated successfully!');
+      onClose();
+    } catch (error: any) {
+      if (error?.response?.status === 401) {
+        toast.error(
+          error?.response?.data?.errors?.[0] ||
+            'Failed to change password. Please try again.'
+        );
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return ReactDOM.createPortal(
@@ -109,13 +130,14 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
             <Button
               type="submit"
               title="Change"
-              isDisabled={!isValid}
+              isDisabled={!isValid || isLoading}
               className="btn modal-button btn-confirm"
             />
             <Button
               type="button"
               title="Cancel"
               onClick={onClose}
+              isDisabled={isLoading}
               className="btn modal-button btn-cancel"
             />
           </div>

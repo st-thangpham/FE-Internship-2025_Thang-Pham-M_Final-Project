@@ -9,6 +9,7 @@ export const ENDPOINT = {
     login: `${RESOURCES.auth}/login`,
     register: `${RESOURCES.auth}/register`,
     userInfo: `${RESOURCES.auth}/me`,
+    changePassword: `${RESOURCES.auth}/change-password`,
   },
   blogs: {
     blogsList: `${RESOURCES.blogs}`,
