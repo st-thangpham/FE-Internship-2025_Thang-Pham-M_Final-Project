@@ -45,7 +45,7 @@ const BlogListItem: React.FC<BlogListItemProps> = ({
         </div>
       )}
 
-      <div className="blog-content">
+      <div className="blog-contents">
         <div className="blog-info">
           <Link className="blog-link" to={`/blogs/${post.id}`}>
             <h3 className="blog-title">{post.title}</h3>

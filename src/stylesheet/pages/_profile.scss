@@ -5,9 +5,9 @@
 .page-profile {
   .main-content {
     flex-direction: column;
+    justify-content: unset;
     max-width: 728px;
     margin: 0 auto;
-    justify-content: unset;
   }
 
   .profile-header {
@@ -27,7 +27,7 @@
       @include mixins.pxRem(max-width, 50px);
       display: none;
       object-fit: cover;
-      border-radius: 50%;
+      border-radius: 999px;
       aspect-ratio: 1/1;
     }
 
@@ -100,8 +100,8 @@
         width: 96px;
         height: 96px;
         border-radius: 999px;
-        object-fit: cover;
         margin-bottom: 1rem;
+        object-fit: cover;
       }
 
       &-name {
