@@ -16,14 +16,14 @@
 }
 
 .tag-item {
-  background-color: map.get(variables.$color, grey-a);
-  color: map.get(variables.$color, primary);
   padding: 8px 16px;
   border-radius: 999px;
-  font-size: map.get(variables.$font-size, sm);
-  cursor: pointer;
   white-space: nowrap;
   flex-shrink: 0;
+  font-size: map.get(variables.$font-size, sm);
+  background-color: map.get(variables.$color, grey-a);
+  color: map.get(variables.$color, primary);
+  cursor: pointer;
   transition: background-color 0.2s ease;
 
   &:hover {
@@ -44,10 +44,10 @@
 .tag-slider-list {
   display: flex;
   flex-wrap: nowrap;
-  overflow-x: auto;
-  scroll-behavior: smooth;
   gap: 8px;
   padding: 8px 32px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
   scrollbar-width: none;
   scroll-snap-type: x mandatory;
 

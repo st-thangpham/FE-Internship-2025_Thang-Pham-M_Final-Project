@@ -86,6 +86,7 @@ const UpdateProfileModal: React.FC<UpdateProfileModalProps> = ({
     if (!file) return;
 
     try {
+      setIsLoading(true);
       const imageService = new ImageService();
       const { signedRequest, url: accessUrl } = await imageService.getSignedUrl(
         'avatar',
@@ -96,6 +97,8 @@ const UpdateProfileModal: React.FC<UpdateProfileModalProps> = ({
       setValue('picture', accessUrl, { shouldValidate: true });
     } catch (err) {
       toast.error('Image upload failed. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -140,6 +143,9 @@ const UpdateProfileModal: React.FC<UpdateProfileModalProps> = ({
                 name="picture"
                 render={({ field }) => (
                   <div className="avatar-wrapper">
+                    {isLoading && (
+                      <div className="avatar-loading-overlay"></div>
+                    )}
                     <img
                       src={field.value}
                       alt="Avatar"
