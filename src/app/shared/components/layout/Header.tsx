@@ -1,14 +1,15 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { useNavigate, NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
+import { AuthStorageService } from '@core/services/auth-storage.service';
+import { AuthContext } from '@shared/contexts/auth.context';
+import ChangePasswordModal from '../partials/ChangePasswordModal';
 import ConfirmModal from '../partials/ConfirmModal';
-import { AuthContext } from '@app/shared/contexts/auth.context';
-import { AuthStorageService } from '@app/core/services/auth-storage.service';
 
-import logo from '/imgs/logo.png';
 import writeIcon from '/icons/write.svg';
 import defaultAvatar from '/imgs/avatar.jpg';
+import logo from '/imgs/logo.png';
 
 export const Header = () => {
   const { isAuthenticated, user, clearUserSession } = useContext(AuthContext)!;
@@ -18,6 +19,7 @@ export const Header = () => {
   const location = useLocation();
 
   const [confirmLogout, setConfirmLogout] = useState(false);
+  const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
 
   const [hidden, setHidden] = useState(false);
   const lastScrollY = useRef(0);
@@ -81,7 +83,13 @@ export const Header = () => {
         >
           Profile
         </NavLink>
-        <button className="dropdown-item" disabled>
+        <button
+          className="dropdown-item"
+          onClick={() => {
+            setShowDropdown(false);
+            setShowChangePasswordModal(true);
+          }}
+        >
           Change Password
         </button>
       </div>
@@ -173,6 +181,13 @@ export const Header = () => {
           confirmLabel="Sign out"
           onCancel={() => setConfirmLogout(false)}
           onConfirm={handleLogout}
+        />
+      )}
+
+      {showChangePasswordModal && (
+        <ChangePasswordModal
+          isOpen={showChangePasswordModal}
+          onClose={() => setShowChangePasswordModal(false)}
         />
       )}
     </header>

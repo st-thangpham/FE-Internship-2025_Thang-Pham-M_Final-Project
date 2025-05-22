@@ -6,7 +6,7 @@ import ProfileInfo from '../components/ProfileInfo';
 
 import { usePosts } from '@shared/hooks/userPosts';
 import { AuthContext } from '@app/shared/contexts/auth.context';
-import UpdateProfileModal from '../components/UpdateProfileModal';
+import UpdateProfileModal from '../../../shared/components/partials/UpdateProfileModal';
 
 const Profile = () => {
   const { id } = useParams<{ id: string }>();

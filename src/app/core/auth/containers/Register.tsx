@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -82,10 +82,22 @@ const Register = () => {
     control,
     handleSubmit,
     formState: { errors, isValid },
+    watch,
+    trigger,
   } = useForm<RegisterFormData>({
     mode: 'onChange',
     resolver: zodResolver(schema),
   });
+
+  useEffect(() => {
+    const subscription = watch((value, { name }) => {
+      const confirmValue = value.confirmPassword;
+      if (name === 'password' && confirmValue?.length > 0) {
+        trigger('confirmPassword');
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [watch, trigger]);
 
   const onSubmit = async (data: RegisterFormData) => {
     try {
