@@ -40,6 +40,26 @@ const BlogCreate = () => {
     },
   });
 
+  const hasDirtyFields = !!(
+    dirtyFields.title ||
+    dirtyFields.description ||
+    dirtyFields.rawContent ||
+    dirtyFields.status ||
+    dirtyFields.tags
+  );
+
+  const shouldBlock = useCallback(() => {
+    return !allowLeave && hasDirtyFields;
+  }, [allowLeave, hasDirtyFields]);
+
+  const blocker = useBlocker(shouldBlock);
+
+  useEffect(() => {
+    if (blocker.state === 'blocked') {
+      setShowLeaveModal(true);
+    }
+  }, [blocker.state]);
+
   const parseEditorContent = (html: string) => {
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, 'text/html');
@@ -78,33 +98,13 @@ const BlogCreate = () => {
       status: status as 'public' | 'private',
     };
 
-    const success = await submitPost(payload);
-    if (success) {
+    const res = await submitPost(payload);
+    if (res) {
       reset();
       setAllowLeave(true);
       blocker.reset();
     }
   };
-
-  const hasDirtyFields = !!(
-    dirtyFields.title ||
-    dirtyFields.description ||
-    dirtyFields.rawContent ||
-    dirtyFields.status ||
-    dirtyFields.tags
-  );
-
-  const shouldBlock = useCallback(() => {
-    return !allowLeave && hasDirtyFields;
-  }, [allowLeave, hasDirtyFields]);
-
-  const blocker = useBlocker(shouldBlock);
-
-  useEffect(() => {
-    if (blocker.state === 'blocked') {
-      setShowLeaveModal(true);
-    }
-  }, [blocker.state]);
 
   useEffect(() => {
     window.addEventListener('submitBlog', submitBlog);
@@ -113,7 +113,7 @@ const BlogCreate = () => {
 
   useEffect(() => {
     if (allowLeave) {
-      navigate('/');
+      navigate('/profile/me');
     }
   }, [allowLeave, navigate]);
 
