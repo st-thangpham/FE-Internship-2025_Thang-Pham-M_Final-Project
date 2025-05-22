@@ -36,7 +36,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
 
   return ReactDOM.createPortal(
     <div className="modal-overlay">
-      <div className="modal-container">
+      <div className="modal">
         <h2 className="modal-title">{title}</h2>
         <p className="modal-message">{message}</p>
 

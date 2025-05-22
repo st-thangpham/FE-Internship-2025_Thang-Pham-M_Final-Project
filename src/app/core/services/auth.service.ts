@@ -24,6 +24,11 @@ type LoginResponse = {
   userInfo: User;
 };
 
+type ChangePasswordPayload = {
+  oldPassword: string;
+  newPassword: string;
+};
+
 export class AuthService extends AuthHelper {
   private http = new ApiService();
 
@@ -49,6 +54,10 @@ export class AuthService extends AuthHelper {
 
   async updateProfile(body: Partial<User>): Promise<User> {
     return await this.http.put<User>([ENDPOINT.auth.userInfo], body);
+  }
+
+  async changePassword(body: ChangePasswordPayload): Promise<void> {
+    const res = await this.http.put([ENDPOINT.auth.changePassword], body);
   }
 
   signOut() {

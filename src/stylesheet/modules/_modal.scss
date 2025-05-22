@@ -11,7 +11,7 @@
   align-items: center;
   z-index: 1000;
 
-  .modal-container {
+  .modal {
     display: flex;
     min-width: 700px;
     width: 30%;
@@ -25,63 +25,71 @@
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
     background-color: white;
 
-    &.form-modal {
+    &.modal-form {
       width: 40%;
+    }
 
-      .form {
-        display: flex;
-        align-items: center;
-        width: 100%;
-        padding: 24px 0;
-      }
+    .form {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      padding: 24px 0;
 
-      .avatar-wrapper {
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-
-        @include mixins.respond-below(wide) {
-          margin-bottom: 24px;
-        }
-
-        .avatar-preview {
-          position: relative;
-          width: 150px;
-          height: 150px;
-          margin-bottom: 12px;
-          border: 2px solid map.get(variables.$color, grey-a);
-          object-fit: cover;
-          border-radius: 999px;
-        }
-
-        .avatar-upload-label {
-          position: absolute;
-          bottom: 12px;
-          right: 36px;
-          background-color: map.get(variables.$color, grey-b);
-          color: white;
-          padding: 6px 8px;
-          font-size: 12px;
-          border-radius: 999px;
-          cursor: pointer;
-          transition: background-color 0.2s;
-
-          &:hover {
-            background-color: map.get(variables.$color, primary);
-          }
-        }
-
-        .avatar-input {
-          display: none;
-        }
+      &.form-password {
+        max-width: 300px;
       }
     }
 
     @include mixins.respond-below(wide) {
       min-width: 400px;
+    }
+  }
+
+  .avatar-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+
+    @include mixins.respond-below(wide) {
+      margin-bottom: 24px;
+    }
+
+    .avatar-preview {
+      position: relative;
+      width: 150px;
+      height: 150px;
+      margin-bottom: 12px;
+      border: 2px solid map.get(variables.$color, grey-a);
+      object-fit: cover;
+      border-radius: 999px;
+    }
+
+    .avatar-upload-label {
+      position: absolute;
+      bottom: 12px;
+      right: 20%;
+      background-color: map.get(variables.$color, grey-b);
+      color: white;
+      padding: 6px 8px;
+      font-size: 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+
+      &:hover {
+        background-color: map.get(variables.$color, primary);
+      }
+
+      @include mixins.respond-below(wide) {
+        right: 30%;
+      }
+    }
+
+    .avatar-input {
+      display: none;
     }
   }
 
