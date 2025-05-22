@@ -95,8 +95,15 @@ const UpdateProfileModal: React.FC<UpdateProfileModalProps> = ({
       await imageService.uploadToS3(signedRequest, file);
       setValue('picture', accessUrl, { shouldValidate: true });
     } catch (err) {
-      console.error('Image upload failed', err);
+      toast.error('Image upload failed. Please try again.');
     }
+  };
+
+  const handleAvatarError = (
+    e: React.SyntheticEvent<HTMLImageElement, Event>
+  ) => {
+    toast.error('Image could not be loaded. Check your image file name!');
+    e.currentTarget.src = defaultAvatar;
   };
 
   const onSubmit = async (data: UpdateProfileFormData) => {
@@ -137,6 +144,7 @@ const UpdateProfileModal: React.FC<UpdateProfileModalProps> = ({
                       src={field.value}
                       alt="Avatar"
                       className="avatar-preview"
+                      onError={handleAvatarError}
                     />
                     <label
                       htmlFor="avatar-upload"
