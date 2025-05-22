@@ -18,8 +18,8 @@ const BlogListItem: React.FC<BlogListItemProps> = ({
   post,
   isProfilePage = false,
 }) => {
-  const { user } = useContext(AuthContext)!;
-  const isAuthor = user?.id === post.userId;
+  const { userId } = useContext(AuthContext)!;
+  const isAuthor = userId === post.userId;
 
   const handleImageError = (
     e: React.SyntheticEvent<HTMLImageElement, Event>
@@ -28,7 +28,7 @@ const BlogListItem: React.FC<BlogListItemProps> = ({
   };
 
   return (
-    <>
+    <div className="blog">
       {!isProfilePage && (
         <div className="blog-author">
           <img
@@ -75,7 +75,7 @@ const BlogListItem: React.FC<BlogListItemProps> = ({
           </Link>
         )}
       </div>
-    </>
+    </div>
   );
 };
 

@@ -1,4 +1,6 @@
+import { UserWithPostsResponse } from '../services/blog.service';
 import { Post } from './post';
+
 import defaultAvatar from '/imgs/avatar.jpg';
 
 export class User {
@@ -26,10 +28,10 @@ export class User {
 }
 
 export class UserWithPosts extends User {
-  Posts: Post[];
+  posts: Post[];
 
-  constructor(data: Partial<UserWithPosts>) {
+  constructor(data: Partial<UserWithPostsResponse>) {
     super(data);
-    this.Posts = (data.Posts ?? []).map((p) => new Post(p));
+    this.posts = (data.Posts ?? []).map((p) => new Post(p));
   }
 }
