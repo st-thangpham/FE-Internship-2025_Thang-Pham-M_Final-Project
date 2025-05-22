@@ -26,9 +26,9 @@
       @include mixins.pxRem(min-width, 50px);
       @include mixins.pxRem(max-width, 50px);
       display: none;
+      object-fit: cover;
+      border-radius: 50%;
       aspect-ratio: 1/1;
-      overflow: hidden;
-      border-radius: 999px
     }
 
     .display-name {
@@ -91,32 +91,32 @@
   }
 
   .sidebar {
-    .profile-info {
+    .profile {
       display: flex;
       flex-direction: column;
       padding-top: 2rem;
 
-      .profile-avatar {
+      &-avatar {
         width: 96px;
         height: 96px;
-        border-radius: 50%;
+        border-radius: 999px;
         object-fit: cover;
         margin-bottom: 1rem;
       }
 
-      .profile-name {
+      &-name {
         font-size: map.get(variables.$font-size, normal);
         color: map.get(variables.$color, text-heading);
         margin-bottom: 0.25rem;
       }
 
-      .profile-details {
+      &-details {
         font-size: map.get(variables.$font-size, sm);
         color: map.get(variables.$color, text-secondary);
         margin-bottom: 1rem;
       }
 
-      .edit-profile-link {
+      &-edit {
         font-size: map.get(variables.$font-size, sm);
         color: map.get(variables.$color, success);
         cursor: pointer;

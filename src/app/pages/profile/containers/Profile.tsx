@@ -28,7 +28,7 @@ const Profile = () => {
     return () => {
       clearUserPosts();
     };
-  }, [id, fetchUserPosts, clearUserPosts]);
+  }, [id, fetchUserPosts, clearUserPosts, user]);
 
   if (errorUser) {
     return (
@@ -40,7 +40,6 @@ const Profile = () => {
   }
 
   const isMyProfile = userId === userWithPosts?.id;
-  console.log(userId, userWithPosts);
 
   return (
     <div className="page page-profile">
@@ -69,10 +68,6 @@ const Profile = () => {
                       isOpen={showEditModal}
                       onClose={() => setShowEditModal(false)}
                       user={user}
-                      onSubmit={(data) => {
-                        console.log('Update form submitted:', data);
-                        setShowEditModal(false);
-                      }}
                     />
                   </>
                 )}

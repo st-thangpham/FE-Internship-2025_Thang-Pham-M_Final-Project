@@ -13,6 +13,7 @@ export interface AuthContextType {
   isAuthenticated: boolean;
   setUserSession: (token: string) => Promise<void>;
   clearUserSession: () => void;
+  setUser: (user: User | null) => void;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -49,12 +50,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     initializeUser();
   }, []);
 
-  // Login flow
   const setUserSession = async (token: string) => {
     authStorage.setToken(token);
     const userInfo = await authService.getCurrentUser();
     setUser(userInfo);
     setIsAuthenticated(true);
+    const decoded = new AuthHelper().getUserInfo();
+    setUserId(decoded?.userId || null);
   };
 
   const clearUserSession = () => {
@@ -71,6 +73,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         isAuthenticated,
         setUserSession,
         clearUserSession,
+        setUser,
       }}
     >
       {children}

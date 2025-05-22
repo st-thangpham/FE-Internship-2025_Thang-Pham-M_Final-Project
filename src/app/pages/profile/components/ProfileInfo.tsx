@@ -14,7 +14,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
   onEdit,
 }) => {
   return (
-    <div className="profile-info">
+    <div className="profile">
       <img
         src={userProfile.avatar}
         alt={userProfile.displayName}
@@ -29,7 +29,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
       </div>
 
       {isMyProfile && (
-        <a className="edit-profile-link" onClick={onEdit}>
+        <a className="profile-edit" onClick={onEdit}>
           Edit profile
         </a>
       )}

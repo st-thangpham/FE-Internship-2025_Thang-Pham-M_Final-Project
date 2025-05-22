@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import ReactDOM from 'react-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { format, parse } from 'date-fns';
+import { toast } from 'react-toastify';
 
 import {
   Input,
@@ -14,6 +15,8 @@ import {
 import { isValidDDMMYYYY } from '@app/core/helpers/date-format.helper';
 import { User } from '@app/shared/models/user';
 import { ImageService } from '@app/shared/services/image.service';
+import { AuthService } from '@core/services/auth.service';
+import { AuthContext } from '@shared/contexts/auth.context';
 
 import defaultAvatar from '/imgs/avatar.jpg';
 
@@ -21,7 +24,6 @@ interface UpdateProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
   user: User;
-  onSubmit: (data: UpdateProfileFormData) => void;
 }
 
 const schema = z.object({
@@ -45,7 +47,6 @@ const UpdateProfileModal: React.FC<UpdateProfileModalProps> = ({
   isOpen,
   onClose,
   user,
-  onSubmit,
 }) => {
   const {
     register,
@@ -59,9 +60,11 @@ const UpdateProfileModal: React.FC<UpdateProfileModalProps> = ({
     resolver: zodResolver(schema),
   });
 
+  const { setUser } = useContext(AuthContext)!;
+  const authService = new AuthService();
+
   useEffect(() => {
     if (user && isOpen) {
-      console.log(user);
       reset({
         picture: user.picture || defaultAvatar,
         firstName: user.firstName,
@@ -94,16 +97,22 @@ const UpdateProfileModal: React.FC<UpdateProfileModalProps> = ({
     }
   };
 
-  useEffect(() => {
-    if (isOpen) {
-      document.body.classList.add('overflow-hidden');
-    } else {
-      document.body.classList.remove('overflow-hidden');
+  const onSubmit = async (data: UpdateProfileFormData) => {
+    try {
+      await authService.updateProfile(data);
+      const updatedUser = await authService.getCurrentUser();
+      setUser(updatedUser);
+      toast.success('Update user profile successful!');
+      onClose();
+    } catch (err) {
+      console.error('Update failed:', err);
+      alert('Failed to update profile. Please try again.');
     }
+  };
 
-    return () => {
-      document.body.classList.remove('overflow-hidden');
-    };
+  useEffect(() => {
+    document.body.classList.toggle('overflow-hidden', isOpen);
+    return () => document.body.classList.remove('overflow-hidden');
   }, [isOpen]);
 
   if (!isOpen) return null;
@@ -112,7 +121,7 @@ const UpdateProfileModal: React.FC<UpdateProfileModalProps> = ({
     <div className="modal-overlay">
       <div className="modal-container form-modal">
         <h2 className="modal-title">Update Profile</h2>
-        <form onSubmit={handleSubmit(onSubmit)} className="form row">
+        <form className="form row" onSubmit={handleSubmit(onSubmit)}>
           <div className="col-12 col-wide-4">
             <div className="avatar-upload">
               <Controller
