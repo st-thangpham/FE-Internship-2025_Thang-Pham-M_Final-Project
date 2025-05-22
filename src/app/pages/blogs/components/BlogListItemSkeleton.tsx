@@ -8,7 +8,7 @@ const BlogListItemSkeleton: React.FC = () => {
         <div className="skeleton skeleton-author-name author-name" />
       </div>
 
-      <div className="blog-content">
+      <div className="blog-contents">
         <div className="blog-info">
           <div className="skeleton skeleton-title blog-title" />
           <div className="skeleton skeleton-description blog-description" />
