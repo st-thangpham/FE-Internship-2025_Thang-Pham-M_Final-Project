@@ -61,6 +61,7 @@ const UpdateProfileModal: React.FC<UpdateProfileModalProps> = ({
   });
 
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
 
   const { setUser } = useContext(AuthContext)!;
   const authService = new AuthService();
@@ -79,26 +80,12 @@ const UpdateProfileModal: React.FC<UpdateProfileModalProps> = ({
     }
   }, [user, isOpen, reset]);
 
-  const handleImageUpload = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (!file) return;
-
-    try {
-      setIsLoading(true);
-      const imageService = new ImageService();
-      const { signedRequest, url: accessUrl } = await imageService.getSignedUrl(
-        'avatar',
-        file.name,
-        file.type
-      );
-      await imageService.uploadToS3(signedRequest, file);
-      setValue('picture', accessUrl, { shouldValidate: true });
-    } catch (err) {
-      toast.error('Image upload failed. Please try again.');
-    } finally {
-      setIsLoading(false);
+    if (file) {
+      setSelectedImageFile(file);
+      const localUrl = URL.createObjectURL(file);
+      setValue('picture', localUrl, { shouldValidate: true });
     }
   };
 
@@ -112,9 +99,26 @@ const UpdateProfileModal: React.FC<UpdateProfileModalProps> = ({
   const onSubmit = async (data: UpdateProfileFormData) => {
     try {
       setIsLoading(true);
+
+      if (selectedImageFile) {
+        const imageService = new ImageService();
+        const { signedRequest, url: accessUrl } =
+          await imageService.getSignedUrl(
+            'avatar',
+            selectedImageFile.name,
+            selectedImageFile.type
+          );
+        await imageService.uploadToS3(signedRequest, selectedImageFile);
+        data.picture = accessUrl;
+      }
       await authService.updateProfile(data);
       const updatedUser = await authService.getCurrentUser();
-      setUser(updatedUser);
+      setUser({
+        ...updatedUser,
+        id: user.id,
+        fullName: `${updatedUser.firstName} ${updatedUser.lastName}`,
+        avatar: updatedUser.picture || defaultAvatar,
+      });
       toast.success('Update user profile successful!');
       onClose();
     } catch (err) {
@@ -162,7 +166,7 @@ const UpdateProfileModal: React.FC<UpdateProfileModalProps> = ({
                       id="avatar-upload"
                       type="file"
                       accept="image/*"
-                      onChange={handleImageUpload}
+                      onChange={handleImageChange}
                       className="avatar-input"
                     />
                   </div>

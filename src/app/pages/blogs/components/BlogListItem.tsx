@@ -21,7 +21,7 @@ const BlogListItem: React.FC<BlogListItemProps> = ({
   isProfilePage = false,
 }) => {
   const { user } = useContext(AuthContext)!;
-  const isAuthor = user.id === post.userId;
+  const isAuthor = user?.id === post.userId;
 
   const handleImageError = (
     e: React.SyntheticEvent<HTMLImageElement, Event>

@@ -29,7 +29,7 @@ const BlogActionMenu: React.FC<BlogActionMenuProps> = ({
   const [showConfirm, setShowConfirm] = useState(false);
   const navigate = useNavigate();
 
-  const isAuthor = user.id === authorId;
+  const isAuthor = user?.id === authorId;
 
   const { removePost } = usePosts();
 
