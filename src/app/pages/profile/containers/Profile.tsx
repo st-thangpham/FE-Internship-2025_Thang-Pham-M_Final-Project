@@ -78,11 +78,11 @@ const Profile = () => {
               </div>
 
               <section className="section section-blog">
-                {loadingUser ? (
-                  <div className="loading">Loading profile...</div>
-                ) : (
-                  <BlogList posts={userWithPosts?.posts || []} isProfilePage />
-                )}
+                <BlogList
+                  posts={userWithPosts?.posts || []}
+                  loading={loadingUser}
+                  isProfilePage
+                />
               </section>
             </div>
 

@@ -9,7 +9,6 @@ const authService = new AuthService();
 
 export interface AuthContextType {
   user: User | null;
-  // userId: Number;
   isAuthenticated: boolean;
   setUserSession: (token: string) => Promise<void>;
   clearUserSession: () => void;
@@ -78,7 +77,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     <AuthContext.Provider
       value={{
         user,
-        // userId,
         isAuthenticated,
         setUserSession,
         clearUserSession,
