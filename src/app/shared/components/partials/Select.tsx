@@ -87,7 +87,7 @@ export const Select: React.FC<SelectProps> = ({
         )}
       </div>
       {isShowError && <span className="msg-error">{errorMsg}</span>}
-      {warning && <span className="msg-error">{warning}</span>}{' '}
+      {warning && <span className="msg-error">{warning}</span>}
     </div>
   );
 };

@@ -7,8 +7,8 @@ import Ckeditor from '@app/shared/components/partials/Ckeditor';
 import { Select } from '@shared/components/partials/Select';
 import { STATUS_OPTIONS, TAG_OPTIONS } from '@shared/contexts/constant';
 import { PostPayload } from '@shared/services/blog.service';
-import { usePosts } from '@shared/hooks/userPosts';
-import ConfirmModal from '@app/shared/components/partials/ConfirmModal';
+import { usePosts } from '@shared/hooks/usePosts';
+import ConfirmModal from '@shared/components/partials/ConfirmModal';
 
 type FormValues = {
   title: string;
@@ -85,8 +85,8 @@ const BlogCreate = () => {
       return toast.error('Content must be at least 100 characters.');
     }
 
-    if (!tags || tags.length === 0) {
-      return toast.error('Please select at least one tag.');
+    if (!cover) {
+      return toast.error('Please upload your cover.');
     }
 
     const payload: PostPayload = {
@@ -157,7 +157,6 @@ const BlogCreate = () => {
                 <Controller
                   control={control}
                   name="tags"
-                  rules={{ required: 'Tags are required' }}
                   render={({ field }) => (
                     <Select
                       name="tags"
@@ -177,7 +176,6 @@ const BlogCreate = () => {
                 <Controller
                   control={control}
                   name="status"
-                  rules={{ required: 'Status is required' }}
                   render={({ field }) => (
                     <Select
                       name="status"
@@ -185,7 +183,6 @@ const BlogCreate = () => {
                       options={STATUS_OPTIONS}
                       value={field.value}
                       onChange={field.onChange}
-                      errorMsg={errors.status?.message}
                     />
                   )}
                 />

@@ -39,12 +39,14 @@
     }
 
     .edit-profile {
+      @include mixins.pxRem(font-size, map.get(variables.$font-size, sm));
       display: none;
       color: map.get(variables.$color, success);
       cursor: pointer;
       text-decoration: none;
 
       &:hover {
+        color: map.get(variables.$color, primary);
         text-decoration: underline;
       }
     }
@@ -117,12 +119,13 @@
       }
 
       &-edit {
-        font-size: map.get(variables.$font-size, sm);
+        font-size: map.get(variables.$font-size, xs);
         color: map.get(variables.$color, success);
         cursor: pointer;
         text-decoration: none;
 
         &:hover {
+          color: map.get(variables.$color, primary);
           text-decoration: underline;
         }
       }

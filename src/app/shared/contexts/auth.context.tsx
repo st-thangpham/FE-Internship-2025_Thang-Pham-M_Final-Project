@@ -9,7 +9,7 @@ const authService = new AuthService();
 
 export interface AuthContextType {
   user: User | null;
-  userId: Number;
+  // userId: Number;
   isAuthenticated: boolean;
   setUserSession: (token: string) => Promise<void>;
   clearUserSession: () => void;
@@ -26,7 +26,6 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [userId, setUserId] = useState<Number>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // Load user info on app reload if token exists
@@ -36,10 +35,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (token) {
         try {
           const userInfo = await authService.getCurrentUser();
-          setUser(userInfo);
-          setIsAuthenticated(true);
           const decoded = new AuthHelper().getUserInfo();
-          setUserId(decoded?.userId || null);
+          const updatedUser = {
+            ...userInfo,
+            id: +decoded?.userId,
+            fullName: `${userInfo.firstName} ${userInfo.lastName}`,
+            avatar: userInfo.picture,
+          };
+          setUser(updatedUser);
+          setIsAuthenticated(true);
         } catch (err) {
           authStorage.removeToken();
           setIsAuthenticated(false);
@@ -53,10 +57,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const setUserSession = async (token: string) => {
     authStorage.setToken(token);
     const userInfo = await authService.getCurrentUser();
-    setUser(userInfo);
-    setIsAuthenticated(true);
     const decoded = new AuthHelper().getUserInfo();
-    setUserId(decoded?.userId || null);
+    const updatedUser = {
+      ...userInfo,
+      id: +decoded?.userId,
+      fullName: `${userInfo.firstName} ${userInfo.lastName}`,
+      avatar: userInfo.picture,
+    };
+    setUser(updatedUser);
+    setIsAuthenticated(true);
   };
 
   const clearUserSession = () => {
@@ -69,7 +78,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     <AuthContext.Provider
       value={{
         user,
-        userId,
+        // userId,
         isAuthenticated,
         setUserSession,
         clearUserSession,

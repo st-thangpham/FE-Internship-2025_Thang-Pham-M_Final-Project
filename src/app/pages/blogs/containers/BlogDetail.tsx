@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 
 import { formatDate } from '@app/core/helpers/date-format.helper';
 import BlogActionMenu from '../components/BlogActionMenu';
-import { usePosts } from '@app/shared/hooks/userPosts';
+import { usePosts } from '@shared/hooks/usePosts';
 
 import defaultAvatar from '/imgs/avatar.jpg';
 import defaultCover from '/imgs/logo.png';

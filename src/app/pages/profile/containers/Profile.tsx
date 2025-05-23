@@ -4,13 +4,13 @@ import { useParams } from 'react-router-dom';
 import BlogList from '@app/pages/blogs/containers/BlogList';
 import ProfileInfo from '../components/ProfileInfo';
 
-import { usePosts } from '@shared/hooks/userPosts';
-import { AuthContext } from '@app/shared/contexts/auth.context';
-import UpdateProfileModal from '../../../shared/components/partials/UpdateProfileModal';
+import { usePosts } from '@shared/hooks/usePosts';
+import { AuthContext } from '@shared/contexts/auth.context';
+import UpdateProfileModal from '@shared/components/UpdateProfileModal';
 
 const Profile = () => {
   const { id } = useParams<{ id: string }>();
-  const { user, userId } = useContext(AuthContext)!;
+  const { user } = useContext(AuthContext)!;
   const [showEditModal, setShowEditModal] = useState(false);
 
   const {
@@ -21,6 +21,8 @@ const Profile = () => {
     clearUserPosts,
   } = usePosts();
 
+  const isMyProfile = user.id === userWithPosts?.id;
+
   useEffect(() => {
     if (id) {
       fetchUserPosts(id);
@@ -30,7 +32,7 @@ const Profile = () => {
     };
   }, [id, fetchUserPosts, clearUserPosts, user]);
 
-  if (errorUser) {
+  if (!loadingUser && errorUser) {
     return (
       <div className="page page-blog-detail not-found">
         <h2>Profile Page Not Found</h2>
@@ -38,8 +40,6 @@ const Profile = () => {
       </div>
     );
   }
-
-  const isMyProfile = userId === userWithPosts?.id;
 
   return (
     <div className="page page-profile">
@@ -79,7 +79,7 @@ const Profile = () => {
 
               <section className="section section-blog">
                 {loadingUser ? (
-                  <div className="loading">Loading blogs...</div>
+                  <div className="loading">Loading profile...</div>
                 ) : (
                   <BlogList posts={userWithPosts?.posts || []} isProfilePage />
                 )}
