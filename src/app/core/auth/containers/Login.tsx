@@ -1,14 +1,13 @@
-import React, { useContext, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-
+import React, { useContext, useEffect, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import { z } from 'zod';
 
-import { loginAccount } from '@app/core/services/auth.service';
 import { Button, Input } from '@app/shared/components/partials';
 import { AuthContext } from '@app/shared/contexts/auth.context';
+import { AuthService } from '@app/core/services/auth.service';
 
 const schema = z.object({
   email: z
@@ -25,8 +24,10 @@ type LoginFormData = z.infer<typeof schema>;
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const { setUserSession } = useContext(AuthContext)!;
+  const { setUserSession } = useContext(AuthContext);
+  const authService = new AuthService();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const {
     register,
@@ -40,7 +41,7 @@ const Login = () => {
   const onSubmit = async (data: LoginFormData) => {
     try {
       setIsLoading(true);
-      const res = await loginAccount({
+      const res = await authService.signIn({
         email: data.email,
         password: data.password,
       });
@@ -51,9 +52,9 @@ const Login = () => {
         throw new Error('Invalid login response');
       }
 
-      setUserSession(userInfo, accessToken);
+      await setUserSession(accessToken);
       toast.success('Login successful!');
-      navigate('/');
+      navigate(location.state?.from?.pathname || '/', { replace: true });
     } catch (error: any) {
       toast.error(
         error?.response?.data?.errors[0] || 'Invalid email or password.'

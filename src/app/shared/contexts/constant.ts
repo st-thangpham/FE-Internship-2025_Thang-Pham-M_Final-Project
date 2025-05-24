@@ -1,5 +1,7 @@
 export const ACCESS_TOKEN_KEY = 'token';
 
+export const SIZE_PAGE = 5;
+
 export const tags = [
   'React',
   'JavaScript',

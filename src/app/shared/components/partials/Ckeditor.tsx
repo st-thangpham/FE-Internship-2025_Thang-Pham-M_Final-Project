@@ -3,19 +3,22 @@
  * https://ckeditor.com/ckeditor-5/builder/#installation/NoJgNARCB0Cs0AYKQIwICwgBxYOy9gQDYUBmEAThQpuyJFNhthS1NKI9yPQS2QgBTAHbIEYYCjDjxUqQgC6kLCyIBDAEawICoA==
  */
 
-import { useState, useEffect, useRef, useMemo } from 'react';
-import { CKEditor, useCKEditorCloud } from '@ckeditor/ckeditor5-react';
-
 import React from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
+
+import { CKEditor, useCKEditorCloud } from '@ckeditor/ckeditor5-react';
+import { HeadingOption } from '@ckeditor/ckeditor5-heading';
+import { S3UploadAdapter } from '../../services/S3UploadAdapter';
 
 const LICENSE_KEY =
   'eyJhbGciOiJFUzI1NiJ9.eyJleHAiOjE3NDgzMDM5OTksImp0aSI6IjI4YmEyZmMwLTUwNjctNGJlZi05NzM0LTE2Njk3Zjc3MTc1YSIsInVzYWdlRW5kcG9pbnQiOiJodHRwczovL3Byb3h5LWV2ZW50LmNrZWRpdG9yLmNvbSIsImRpc3RyaWJ1dGlvbkNoYW5uZWwiOlsiY2xvdWQiLCJkcnVwYWwiLCJzaCJdLCJ3aGl0ZUxhYmVsIjp0cnVlLCJsaWNlbnNlVHlwZSI6InRyaWFsIiwiZmVhdHVyZXMiOlsiKiJdLCJ2YyI6IjgzOTExODMyIn0.--XLR0j-7KbSk_tHi2d0y38JFM99-B_dfamx_J7-zBEDG65k-NfERXti08ImCNnoTyf1XgC3p1gGWkz8hPSvtw';
 
 type CkeditorProps = {
   onChange?: (data: string) => void;
+  value?: string;
 };
 
-export default function Ckeditor({ onChange }: CkeditorProps) {
+export default function Ckeditor({ onChange, value }: CkeditorProps) {
   const editorContainerRef = useRef<HTMLDivElement | null>(null);
   const editorRef = useRef(null);
   const [isLayoutReady, setIsLayoutReady] = useState(false);
@@ -296,7 +299,7 @@ export default function Ckeditor({ onChange }: CkeditorProps) {
               title: 'Heading 4',
               class: 'ck-heading_heading4',
             },
-          ],
+          ] as HeadingOption[],
         },
         link: {
           addTargetToExternalLinks: true,
@@ -312,7 +315,8 @@ export default function Ckeditor({ onChange }: CkeditorProps) {
           ],
         },
         initialData:
-          '<h2 class="document-title">Title</h2>\n<h3 class="document-subtitle">Subtitle</h3>\n<p>Upload cover photo here</p>',
+          value || '<p>Upload cover photo here.</p>\n<p>Share with us!</p>',
+
         extraPlugins: [
           function CustomUploadAdapterPlugin(editor: any) {
             editor.plugins.get('FileRepository').createUploadAdapter = (
@@ -337,6 +341,7 @@ export default function Ckeditor({ onChange }: CkeditorProps) {
             <CKEditor
               editor={ClassicEditor}
               config={editorConfig}
+              data={value}
               onChange={(_, editor) => {
                 const data = editor.getData();
                 onChange?.(data);
@@ -347,62 +352,4 @@ export default function Ckeditor({ onChange }: CkeditorProps) {
       </div>
     </div>
   );
-}
-
-// --------------------
-// Custom Upload Adapter
-// --------------------
-
-class S3UploadAdapter {
-  loader: any;
-
-  constructor(loader: any) {
-    this.loader = loader;
-  }
-
-  async upload() {
-    const file = await this.loader.file;
-    const fileName = encodeURIComponent(file.name);
-    const fileType = encodeURIComponent(file.type);
-    const token = localStorage.getItem('token');
-
-    if (!token) {
-      throw new Error('Access token not found in localStorage');
-    }
-
-    const res = await fetch(
-      `https://simpcat.online/api/v1/signatures?type_upload=cover-post&file_name=${fileName}&file_type=${fileType}`,
-      {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    if (!res.ok) {
-      const errorText = await res.text();
-      console.error('Failed to get signed URL:', errorText);
-      throw new Error('Could not get signed URL');
-    }
-
-    const { signedRequest, url } = await res.json();
-
-    const uploadRes = await fetch(signedRequest, {
-      method: 'PUT',
-      body: file,
-    });
-
-    if (!uploadRes.ok) {
-      const errorText = await uploadRes.text();
-      console.error('S3 upload failed:', errorText);
-      throw new Error('S3 upload failed');
-    }
-
-    return {
-      default: url,
-    };
-  }
-
-  abort() {}
 }

@@ -40,8 +40,10 @@ input:-webkit-autofill:active {
     @include mixins.pxRem(padding, 8 15);
     @include mixins.pxRem(font-size, map.get(vars.$font-size, normal));
     @include mixins.pxRem(line-height, 22.4);
+    display: flex;
+    align-items: center;
     width: 100%;
-    height: 40px;
+    max-height: 40px;
     color: map.get(vars.$color, secondary);
     outline: none;
     border: 1px solid map.get(vars.$color, bg-light-secondary);
@@ -58,7 +60,7 @@ input:-webkit-autofill:active {
         left: 0;
         bottom: 0;
         width: 0;
-        background-color: map.get(vars.$color, primary);
+        background-color: map.get(vars.$color, grey-b);
         transition: all 0.3s ease-in-out;
       }
 
@@ -167,10 +169,29 @@ input:-webkit-autofill:active {
     padding: 0;
     display: flex;
     align-items: center;
+    cursor: pointer;
+    border: unset;
+    background-color: unset;
+    box-shadow: unset;
+    max-height: unset;
 
     .form-control__multi-value {
-      background-color: map.get(vars.$color, bg-light-secondary);
-      color: map.get(vars.$color, secondary);
+      background-color: map.get(vars.$color, grey-a);
+      cursor: pointer;
     }
+
+    .form-control__value-container {
+      max-height: 40px;
+      z-index: 0;
+      overflow-y: scroll;
+      -ms-overflow-style: none;
+      /* IE and Edge */
+      scrollbar-width: none;
+      /* Firefox */
+    }
+  }
+
+  .form-control__menu {
+    z-index: 100;
   }
 }

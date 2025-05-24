@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -7,7 +7,6 @@ import { toast } from 'react-toastify';
 import { z } from 'zod';
 
 import { isValidDDMMYYYY } from '@app/core/helpers/date-format.helper';
-import { registerAccount } from '@app/core/services/auth.service';
 import {
   Button,
   CalendarInput,
@@ -15,6 +14,7 @@ import {
   Select,
 } from '@app/shared/components/partials';
 import { format, parse } from 'date-fns';
+import { AuthService } from '@app/core/services/auth.service';
 
 const schema = z
   .object({
@@ -22,13 +22,6 @@ const schema = z
       .string()
       .email('Invalid email address')
       .nonempty('Email is required'),
-
-    password: z
-      .string()
-      .min(6, 'Password must be at least 6 characters')
-      .max(20, 'Password must not exceed 20 characters'),
-
-    confirmPassword: z.string().nonempty('Please confirm your password'),
 
     firstName: z
       .string()
@@ -64,6 +57,13 @@ const schema = z
       .nonempty('Display name is required')
       .min(3, 'Display name must be at least 3 characters'),
   })
+  .extend({
+    password: z
+      .string()
+      .min(6, 'Password must be at least 6 characters')
+      .max(20, 'Password must not exceed 20 characters'),
+    confirmPassword: z.string().nonempty('Please confirm your password'),
+  })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Passwords do not match',
     path: ['confirmPassword'],
@@ -74,21 +74,35 @@ type RegisterFormData = z.infer<typeof schema>;
 const Register = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const authService = new AuthService();
+  const todayStr = format(new Date(), 'dd/MM/yyyy');
 
   const {
     register,
     control,
     handleSubmit,
     formState: { errors, isValid },
+    watch,
+    trigger,
   } = useForm<RegisterFormData>({
     mode: 'onChange',
     resolver: zodResolver(schema),
   });
 
+  useEffect(() => {
+    const subscription = watch((value, { name }) => {
+      const confirmValue = value.confirmPassword;
+      if (name === 'password' && confirmValue?.length > 0) {
+        trigger('confirmPassword');
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [watch, trigger]);
+
   const onSubmit = async (data: RegisterFormData) => {
     try {
       setIsLoading(true);
-      await registerAccount({
+      await authService.register({
         email: data.email,
         password: data.password,
         firstName: data.firstName,
@@ -130,6 +144,7 @@ const Register = () => {
             errorMsg={errors.password?.message}
             isRequired
           />
+
           <Input
             type="password"
             name="confirmPassword"
@@ -199,6 +214,7 @@ const Register = () => {
               <Controller
                 control={control}
                 name="dob"
+                defaultValue={todayStr}
                 render={({ field }) => {
                   const parsedDate = field.value
                     ? parse(field.value, 'dd/MM/yyyy', new Date())

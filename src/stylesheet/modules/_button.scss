@@ -75,14 +75,21 @@ $button-sizes: (
   }
 
   &.btn-avatar {
+    position: relative;
     @include mixins.pxRem(width, 30);
     @include mixins.pxRem(height, 30);
     @include mixins.border-radius(50%);
     padding: 0;
     font-size: 0;
     line-height: 0;
+    background: transparent;
+    border: none;
+    cursor: pointer;
 
     .img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
       @include mixins.border-radius(50%);
     }
 
@@ -106,10 +113,15 @@ $button-sizes: (
   }
 
   &.btn-icon {
-    @include mixins.pxRem(width, 20);
-    @include mixins.pxRem(height, 20);
+    @include mixins.pxRem(width, 26);
+    @include mixins.pxRem(height, 26);
     padding: 0;
     line-height: 0;
+    opacity: 0.6;
+
+    &:hover {
+      opacity: 1;
+    }
   }
 
   &.btn-scroll {
@@ -182,5 +194,62 @@ $button-sizes: (
     border: none;
     border-radius: 999px;
     cursor: pointer;
+  }
+
+  &.btn-cancel {
+    background-color: transparent;
+    border: 1px solid map.get(variables.$color, grey-b);
+    color: map.get(variables.$color, black);
+
+    &:hover {
+      background-color: map.get(variables.$color, grey-a);
+    }
+  }
+
+  &.btn-confirm {
+    background-color: map.get(variables.$color, grey-b);
+    color: map.get(variables.$color, white);
+
+    &:hover {
+      background-color: map.get(variables.$color, primary);
+    }
+  }
+
+  &.btn-action {
+    position: relative;
+    width: 24px;
+    height: 24px;
+    border: none;
+    padding: 4px;
+    background: transparent;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: color 0.2s;
+
+    &:hover {
+      background-color: map.get(variables.$color, grey-a);
+    }
+
+    &::after {
+      content: 'More';
+      position: absolute;
+      left: 50%;
+      top: -40px;
+      transform: translateX(-50%);
+      background-color: map.get(variables.$color, black);
+      color: map.get(variables.$color, white);
+      padding: 8px 16px;
+      font-size: 12px;
+      border-radius: 4px;
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.2s;
+      pointer-events: none;
+      z-index: 99;
+    }
+
+    &:hover::after {
+      opacity: 1;
+    }
   }
 }

@@ -12,8 +12,8 @@
   .content-layout {
     display: flex;
     flex-direction: column;
-    gap: 40px;
     height: auto;
+    gap: 40px;
   }
 
   .main-content {
@@ -24,12 +24,6 @@
     .page-title {
       @include mixins.pxRem(font-size, 42);
       text-align: center;
-    }
-
-    .line {
-      width: 100%;
-      height: 1px;
-      background-color: map.get(variables.$color, grey-a);
     }
   }
 }

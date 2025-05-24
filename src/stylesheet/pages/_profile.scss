@@ -1,0 +1,134 @@
+@use "sass:map";
+@use "../base/mixins";
+@use "../base/variables";
+
+.page-profile {
+  .main-content {
+    flex-direction: column;
+    justify-content: unset;
+    max-width: 728px;
+    margin: 0 auto;
+  }
+
+  .profile-header {
+    @include mixins.pxRem(margin, 20px 0);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .profile-info {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .profile-image {
+      @include mixins.pxRem(min-width, 50px);
+      @include mixins.pxRem(max-width, 50px);
+      display: none;
+      object-fit: cover;
+      border-radius: 999px;
+      aspect-ratio: 1/1;
+    }
+
+    .display-name {
+      @include mixins.pxRem(font-size, 42px);
+      margin: 0;
+      color: map.get(variables.$color, primary);
+      line-height: 1.2;
+    }
+
+    .edit-profile {
+      @include mixins.pxRem(font-size, map.get(variables.$font-size, sm));
+      display: none;
+      color: map.get(variables.$color, success);
+      cursor: pointer;
+      text-decoration: none;
+
+      &:hover {
+        color: map.get(variables.$color, primary);
+        text-decoration: underline;
+      }
+    }
+
+    @include mixins.respond-below(large) {
+
+      .profile-image,
+      .edit-profile {
+        display: block;
+      }
+
+      .display-name {
+        @include mixins.pxRem(font-size, map.get(variables.$font-size, xxl))
+      }
+    }
+  }
+
+  .profile-tabs {
+    @include mixins.pxRem(margin-bottom, 44px);
+    display: flex;
+    gap: 1rem;
+    border-bottom: 1px solid map.get(variables.$color, grey-a);
+
+    .tab {
+      @include mixins.pxRem(font-size, map.get(variables.$font-size, sm));
+      padding: 10px 16px;
+      color: map.get(variables.$color, grey-b);
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover {
+        color: map.get(variables.$color, primary);
+      }
+
+      &.active {
+        color: map.get(variables.$color, primary);
+        border-color: map.get(variables.$color, primary);
+        font-weight: 500;
+      }
+    }
+  }
+
+  .sidebar {
+    .profile {
+      display: flex;
+      flex-direction: column;
+      padding-top: 2rem;
+
+      &-avatar {
+        width: 96px;
+        height: 96px;
+        border-radius: 999px;
+        margin-bottom: 1rem;
+        object-fit: cover;
+      }
+
+      &-name {
+        font-size: map.get(variables.$font-size, normal);
+        color: map.get(variables.$color, text-heading);
+        margin-bottom: 0.25rem;
+      }
+
+      &-details {
+        font-size: map.get(variables.$font-size, sm);
+        color: map.get(variables.$color, text-secondary);
+        margin-bottom: 1rem;
+      }
+
+      &-edit {
+        font-size: map.get(variables.$font-size, xs);
+        color: map.get(variables.$color, success);
+        cursor: pointer;
+        text-decoration: none;
+
+        &:hover {
+          color: map.get(variables.$color, primary);
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}

@@ -1,65 +1,99 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { Link } from 'react-router-dom';
 
 import { Post } from '@shared/models/post';
+import { formatDate } from '@app/core/helpers/date-format.helper';
+import BlogActionMenu from './BlogActionMenu';
+import { AuthContext } from '@app/shared/contexts/auth.context';
 
 import defaultAvatar from '/imgs/avatar.jpg';
 import logo from '/imgs/logo.png';
+import likeIcon from '/icons/like.svg';
+import commentIcon from '/icons/comment.svg';
 
 interface BlogListItemProps {
   post: Post;
+  isProfilePage?: boolean;
 }
 
-const BlogListItem: React.FC<BlogListItemProps> = ({ post }) => {
+const BlogListItem: React.FC<BlogListItemProps> = ({
+  post,
+  isProfilePage = false,
+}) => {
+  const { user } = useContext(AuthContext)!;
+  const isAuthor = user?.id === post.userId;
+
   const handleImageError = (
     e: React.SyntheticEvent<HTMLImageElement, Event>
   ) => {
     e.currentTarget.src = logo;
   };
 
-  const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-    const now = new Date();
-
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-
-    if (date.getFullYear() === now.getFullYear()) {
-      return `${day}/${month}`;
-    }
-
-    return `${day}/${month}/${date.getFullYear()}`;
-  };
-
   return (
-    <>
-      <div className="blog-author">
-        <img
-          src={post.user.picture || defaultAvatar}
-          alt={post.user.displayName}
-          className="author-avatar"
-        />
-        <span className="author-name txt-link">{post.user.displayName}</span>
-      </div>
+    <div className="blog">
+      {!isProfilePage && (
+        <div className="blog-author">
+          <img
+            src={post?.user?.picture || defaultAvatar}
+            alt={post.user.displayName}
+            className="author-avatar"
+          />
+          <Link
+            className="author-name txt-link"
+            to={isAuthor ? `/profile/me` : `/profile/${post.user.id}`}
+          >
+            {post.user.displayName}
+          </Link>
+        </div>
+      )}
 
-      <a className="blog-content">
+      <div className="blog-contents">
         <div className="blog-info">
-          <h3 className="blog-title">{post.title}</h3>
-          <p className="blog-description">{post.description}</p>
-          <p className="blog-created-at">{formatDate(post.createdAt)}</p>
+          <Link className="blog-link" to={`/blogs/${post.id}`}>
+            <h3 className="blog-title">{post.title}</h3>
+            <p className="blog-description">{post.description}</p>
+          </Link>
+          <div className="blog-actions">
+            <div className="blog-stats">
+              <span className="blog-stat">{formatDate(post.createdAt)}</span>
+              <span className="blog-stat">
+                <img
+                  className="blog-stat-icon"
+                  src={likeIcon}
+                  alt="Like icon"
+                />
+                {post.likes}
+              </span>
+              <span className="blog-stat">
+                <img
+                  className="blog-stat-icon"
+                  src={commentIcon}
+                  alt="Comment icon"
+                />
+                {post.comments}
+              </span>
+            </div>
+            <BlogActionMenu
+              postId={post.id}
+              authorId={post.userId}
+              showAction={true}
+              status={post.status}
+            />
+          </div>
         </div>
 
         {post.cover && (
-          <div className="blog-cover">
+          <Link className="blog-cover blog-link" to={`/blogs/${post.id}`}>
             <img
               src={post.cover}
               alt="Blog's Cover"
               className="cover-image"
               onError={handleImageError}
             />
-          </div>
+          </Link>
         )}
-      </a>
-    </>
+      </div>
+    </div>
   );
 };
 

@@ -1,12 +1,15 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'; // thêm useSearchParams
 import { tags } from '@shared/contexts/constant';
 
 const Tags = () => {
   const navigate = useNavigate();
   const listRef = useRef<HTMLUListElement>(null);
+  const [searchParams] = useSearchParams();
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(false);
+
+  const activeTag = searchParams.get('tag');
 
   const checkScroll = () => {
     if (listRef.current) {
@@ -14,10 +17,6 @@ const Tags = () => {
       setAtStart(scrollLeft <= 0);
       setAtEnd(scrollLeft + clientWidth >= scrollWidth - 1);
     }
-  };
-
-  const handleClick = (tag: string) => {
-    navigate(`/blog?tag=${encodeURIComponent(tag)}`);
   };
 
   const scroll = (direction: 'left' | 'right') => {
@@ -39,19 +38,27 @@ const Tags = () => {
     }
   }, []);
 
+  const handleTagClick = (tag: string) => {
+    navigate(`/blogs?tag=${encodeURIComponent(tag)}`);
+  };
+
   return (
     <div className="tags-wrapper">
       {!atStart && (
         <button
           className="btn btn-scroll left"
           onClick={() => scroll('left')}
-        ></button>
+        />
       )}
 
       <div className="tag-slider-container">
         <ul className="tag-slider-list" ref={listRef}>
           {tags.map((tag) => (
-            <li key={tag} className="tag-item" onClick={() => handleClick(tag)}>
+            <li
+              key={tag}
+              className={`tag-item ${activeTag === tag ? 'is-active' : ''}`}
+              onClick={() => handleTagClick(tag)}
+            >
               {tag}
             </li>
           ))}
@@ -62,7 +69,7 @@ const Tags = () => {
         <button
           className="btn btn-scroll right"
           onClick={() => scroll('right')}
-        ></button>
+        />
       )}
     </div>
   );

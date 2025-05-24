@@ -6,7 +6,6 @@ export interface AuthStorage {
 
 export class AuthStorageService implements AuthStorage {
   ACCESS_TOKEN = 'token';
-  USER_INFO = 'userInfo';
 
   setToken(token?: string) {
     if (token) {
@@ -20,18 +19,5 @@ export class AuthStorageService implements AuthStorage {
 
   removeToken() {
     localStorage.removeItem(this.ACCESS_TOKEN);
-  }
-
-  setUserInfo(user: any) {
-    localStorage.setItem(this.USER_INFO, JSON.stringify(user));
-  }
-
-  getUserInfo() {
-    const user = localStorage.getItem(this.USER_INFO);
-    return user ? JSON.parse(user) : null;
-  }
-
-  removeUserInfo() {
-    localStorage.removeItem(this.USER_INFO);
   }
 }

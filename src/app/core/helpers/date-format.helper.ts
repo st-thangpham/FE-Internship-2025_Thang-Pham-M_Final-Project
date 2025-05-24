@@ -8,3 +8,17 @@ export const isValidDDMMYYYY = (dateStr: string): boolean => {
     date.getFullYear() === yyyy
   );
 };
+
+export const formatDate = (dateStr: string) => {
+  const date = new Date(dateStr);
+  const now = new Date();
+
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+
+  if (date.getFullYear() === now.getFullYear()) {
+    return `${day}/${month}`;
+  }
+
+  return `${day}/${month}/${date.getFullYear()}`;
+};

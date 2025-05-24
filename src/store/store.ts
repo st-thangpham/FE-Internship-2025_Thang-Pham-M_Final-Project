@@ -1,10 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit';
-import userReducer from './userSlice';
+import postReducer from './post/post.slice';
 
 export const store = configureStore({
   reducer: {
-    user: userReducer,
+    posts: postReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
