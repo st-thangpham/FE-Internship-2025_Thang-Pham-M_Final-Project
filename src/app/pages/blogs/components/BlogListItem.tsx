@@ -8,6 +8,8 @@ import { AuthContext } from '@app/shared/contexts/auth.context';
 
 import defaultAvatar from '/imgs/avatar.jpg';
 import logo from '/imgs/logo.png';
+import likeIcon from '/icons/like.svg';
+import commentIcon from '/icons/comment.svg';
 
 interface BlogListItemProps {
   post: Post;
@@ -18,8 +20,8 @@ const BlogListItem: React.FC<BlogListItemProps> = ({
   post,
   isProfilePage = false,
 }) => {
-  const { userId } = useContext(AuthContext)!;
-  const isAuthor = userId === post.userId;
+  const { user } = useContext(AuthContext)!;
+  const isAuthor = user?.id === post.userId;
 
   const handleImageError = (
     e: React.SyntheticEvent<HTMLImageElement, Event>
@@ -52,9 +54,25 @@ const BlogListItem: React.FC<BlogListItemProps> = ({
             <p className="blog-description">{post.description}</p>
           </Link>
           <div className="blog-actions">
-            <span className="blog-created-at">
-              {formatDate(post.createdAt)}
-            </span>
+            <div className="blog-stats">
+              <span className="blog-stat">{formatDate(post.createdAt)}</span>
+              <span className="blog-stat">
+                <img
+                  className="blog-stat-icon"
+                  src={likeIcon}
+                  alt="Like icon"
+                />
+                {post.likes}
+              </span>
+              <span className="blog-stat">
+                <img
+                  className="blog-stat-icon"
+                  src={commentIcon}
+                  alt="Comment icon"
+                />
+                {post.comments}
+              </span>
+            </div>
             <BlogActionMenu
               postId={post.id}
               authorId={post.userId}

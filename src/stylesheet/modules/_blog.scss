@@ -153,9 +153,23 @@
     margin-bottom: 30px;
   }
 
-  &-created-at {
-    @include mixins.pxRem(font-size, map.get(variables.$font-size, xs));
+  &-stats {
+    display: flex;
+    align-items: center;
+    gap: 36px;
+  }
+
+  &-stat {
+    @include mixins.pxRem(font-size, map.get(variables.$font-size, sm));
+    display: flex;
+    align-items: center;
+    gap: 6px;
     color: map.get(variables.$color, state-grey-b);
+
+    &-icon {
+      @include mixins.pxRem(width, 20px);
+      opacity: 0.6;
+    }
   }
 
   &-cover {

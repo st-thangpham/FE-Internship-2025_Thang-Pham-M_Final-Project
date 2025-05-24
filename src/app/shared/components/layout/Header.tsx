@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 
 import { AuthStorageService } from '@core/services/auth-storage.service';
 import { AuthContext } from '@shared/contexts/auth.context';
-import ChangePasswordModal from '../partials/ChangePasswordModal';
+import ChangePasswordModal from '../ChangePasswordModal';
 import ConfirmModal from '../partials/ConfirmModal';
 
 import writeIcon from '/icons/write.svg';

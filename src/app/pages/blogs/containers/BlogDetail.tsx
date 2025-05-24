@@ -3,10 +3,12 @@ import { Link, useParams } from 'react-router-dom';
 
 import { formatDate } from '@app/core/helpers/date-format.helper';
 import BlogActionMenu from '../components/BlogActionMenu';
-import { usePosts } from '@app/shared/hooks/userPosts';
+import { usePosts } from '@shared/hooks/usePosts';
 
 import defaultAvatar from '/imgs/avatar.jpg';
 import defaultCover from '/imgs/logo.png';
+import likeIcon from '/icons/like.svg';
+import commentIcon from '/icons/comment.svg';
 
 const BlogDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -50,8 +52,8 @@ const BlogDetail = () => {
       <div className="container">
         <article className="blog">
           <div className="blog-header">
-            <h2 className="title">{post.title}</h2>
-            <h3 className="description">{post.description}</h3>
+            <h2 className="blog-title">{post.title}</h2>
+            <h3 className="blog-description">{post.description}</h3>
 
             <div className="blog-author">
               <div className="author-info">
@@ -67,18 +69,34 @@ const BlogDetail = () => {
                   {post.user.displayName}
                 </Link>
               </div>
-              <div className="blog-actions">
-                <span className="blog-created-at">
-                  {formatDate(post.createdAt)}
+              <span className="blog-stat">{formatDate(post.createdAt)}</span>
+            </div>
+            <div className="blog-actions">
+              <div className="blog-stats">
+                <span className="blog-stat">
+                  <img
+                    className="blog-stat-icon"
+                    src={likeIcon}
+                    alt="Like icon"
+                  />
+                  {post.likes}
                 </span>
-                <BlogActionMenu
-                  postId={post.id}
-                  authorId={post.userId}
-                  showAction={true}
-                  status={post.status}
-                  isDetailPage={true}
-                />
+                <span className="blog-stat">
+                  <img
+                    className="blog-stat-icon"
+                    src={commentIcon}
+                    alt="Comment icon"
+                  />
+                  {post.comments}
+                </span>
               </div>
+              <BlogActionMenu
+                postId={post.id}
+                authorId={post.userId}
+                showAction={true}
+                status={post.status}
+                isDetailPage={true}
+              />
             </div>
           </div>
 
